@@ -7,7 +7,7 @@ import org.rowlandhall.meepmeep.MeepMeep;
 import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
 import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepTesting {
+public class MeepMeepTestingAlex {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -16,7 +16,7 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(35, 60, Math.toRadians(-90)))
                         .strafeTo(new Vector2d(-12, 60))
-                        .waitSeconds(1)
+                        .waitSeconds(2)
                         .splineToConstantHeading(new Vector2d(12, 12), Math.toRadians(0))
                         .turn(Math.toRadians(90))
                         .build());
