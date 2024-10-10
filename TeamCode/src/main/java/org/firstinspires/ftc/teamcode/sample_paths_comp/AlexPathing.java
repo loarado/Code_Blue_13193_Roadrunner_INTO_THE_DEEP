@@ -38,6 +38,10 @@ public class AlexPathing extends LinearOpMode {
                             .waitSeconds(2)
                             .strafeTo(new Vector2d(52,34))
                             .splineTo(new Vector2d(54, 54), Math.toRadians(0))
+                            .waitSeconds(2)
+                            .splineTo(new Vector2d(40,12), Math.toRadians(180))
+                            .strafeTo(new Vector2d(24,12))
+                            .waitSeconds(2)
                             .build());
 
     }
