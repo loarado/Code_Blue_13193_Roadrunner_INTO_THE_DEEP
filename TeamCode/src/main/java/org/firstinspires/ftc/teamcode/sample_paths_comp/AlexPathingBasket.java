@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 
 
-@TeleOp(name = "Alex Pathing", group = "Autonomous")
-public class AlexPathing extends LinearOpMode {
+@TeleOp(name = "Alex Pathing Basket", group = "Autonomous")
+public class AlexPathingBasket extends LinearOpMode {
 
     @Override
     public void runOpMode() {

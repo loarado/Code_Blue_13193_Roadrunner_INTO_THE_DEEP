@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 
 
-@TeleOp(name = "Nicholas Pathing", group = "Autonomous")
-public class NicholasPathing extends LinearOpMode {
+@TeleOp(name = "Nicholas Pathing Basket", group = "Autonomous")
+public class NicholasPathingBasket extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -41,6 +41,5 @@ public class NicholasPathing extends LinearOpMode {
                             .splineTo(new Vector2d(55,55), Math.toRadians(45))
                             .waitSeconds(2)
                             .build());
-
     }
 }
