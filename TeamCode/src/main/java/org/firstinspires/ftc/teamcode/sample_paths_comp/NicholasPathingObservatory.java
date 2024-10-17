@@ -1,10 +1,16 @@
 package org.firstinspires.ftc.teamcode.sample_paths_comp;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 
@@ -25,8 +31,22 @@ public class NicholasPathingObservatory extends LinearOpMode {
                 drive.actionBuilder(beginPose)
                         .strafeTo(new Vector2d(-8, 34))
                         .waitSeconds(3)
-                        .strafeTo(new Vector2d(-20, 40))
-                        .strafeToSplineHeading(new Vector2d(-20, 60), Math.toRadians(90))
+                        .strafeTo(new Vector2d(-48, 40))
+                        .waitSeconds(.5)
+                        .strafeToSplineHeading(new Vector2d(-48, 60), Math.toRadians(90))
+                        .waitSeconds(.5)
+                        .strafeTo(new Vector2d(-48,12))
+                        .waitSeconds(.5)
+                        .strafeTo(new Vector2d(-60,12))
+                        .waitSeconds(.5)
+                        .strafeToSplineHeading(new Vector2d(-58, 60), Math.toRadians(180))
+                        .waitSeconds(.5)
+                        .strafeTo(new Vector2d(-58,24))
+                        .waitSeconds(.5)
+                        .strafeTo(new Vector2d(-62,24))
+                        .waitSeconds(.5)
+                        .strafeToSplineHeading(new Vector2d(-62,60),Math.toRadians(90))
+                        .waitSeconds(.5)
                         .build());
     }
 }
