@@ -19,15 +19,14 @@ public class NicholasPathingObservatory extends LinearOpMode {
 
         waitForStart();
 
-            if (isStopRequested()) return;
+        if (isStopRequested()) return;
 
-            Actions.runBlocking(
-                    drive.actionBuilder(beginPose)
-                            .strafeTo(new Vector2d(-8,34))
-                            .waitSeconds(3)
-                            .strafeTo(new Vector2d(-20,40))
-                            .strafeToSplineHeading(new Vector2d(-20,60,Math.toRadians(90)))
-                            .build());(
-
+        Actions.runBlocking(
+                drive.actionBuilder(beginPose)
+                        .strafeTo(new Vector2d(-8, 34))
+                        .waitSeconds(3)
+                        .strafeTo(new Vector2d(-20, 40))
+                        .strafeToSplineHeading(new Vector2d(-20, 60), Math.toRadians(90))
+                        .build());
     }
 }

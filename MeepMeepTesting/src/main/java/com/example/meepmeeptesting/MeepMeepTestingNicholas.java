@@ -18,7 +18,6 @@ public class MeepMeepTestingNicholas {
                         .strafeTo(new Vector2d(-8,34))
                         .waitSeconds(3)
                         .strafeTo(new Vector2d(-48,40))
-                        .lineToSplineHeading(new Pose2d(-48,60, Math.toRadians(90)))
 
                         .build());
 
