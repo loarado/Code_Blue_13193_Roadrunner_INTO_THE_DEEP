@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sample_paths_comp;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.BasicPaths;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;

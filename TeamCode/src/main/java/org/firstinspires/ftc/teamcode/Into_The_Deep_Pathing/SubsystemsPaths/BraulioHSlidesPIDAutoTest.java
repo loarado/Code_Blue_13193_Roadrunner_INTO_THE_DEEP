@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sample_paths_comp;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
 
 import androidx.annotation.NonNull;
 
@@ -13,16 +13,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.pidTest.H_Slides_Methods;
-import org.firstinspires.ftc.teamcode.tuning.pidTest.PIDF_H_Slides;
 
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
 
 
-@TeleOp(name = "Braulio Subsystems Test", group = "Autonomous")
-public class BraulioSubsystemsTest extends LinearOpMode {
+@TeleOp(name = "BraulioHSlidesPIDAutoTest", group = "Autonomous")
+public class BraulioHSlidesPIDAutoTest extends LinearOpMode {
     public double distance = 0;
     public class HorizontalSlides {
         private DcMotor hSlides;
@@ -65,15 +63,10 @@ public class BraulioSubsystemsTest extends LinearOpMode {
                     new SequentialAction(
                             t1.build(),
                             hslide.HSlideTo(300),
-                            wait,
                             hslide.HSlideTo(50),
-                            wait,
                             hslide.HSlideTo(700),
-                            wait,
                             hslide.HSlideTo(200),
-                            wait,
-                            hslide.HSlideTo(600),
-                            wait
+                            hslide.HSlideTo(600)
 
                     )
             );
