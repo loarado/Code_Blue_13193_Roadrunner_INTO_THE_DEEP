@@ -15,11 +15,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
-import org.firstinspires.ftc.teamcode.tuning.pidTest.H_Slides_Methods;
 
 
-@TeleOp(name = "BraulioAutoRunToPosSubsystemsTest", group = "Autonomous")
-public class BraulioAutoRunToPosSubsystemsTest extends LinearOpMode {
+@TeleOp(name = "BraulioAutoRunToPosHslideTest", group = "Autonomous")
+public class BraulioAutoRunToPosHslideTest extends LinearOpMode {
     public int distance = 0;
     public class HorizontalSlides {
         private DcMotor hSlides;

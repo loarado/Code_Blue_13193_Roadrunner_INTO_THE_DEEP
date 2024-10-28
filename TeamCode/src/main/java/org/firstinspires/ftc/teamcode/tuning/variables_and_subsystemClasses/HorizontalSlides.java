@@ -4,22 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths.BraulioAutoRunToPosSubsystemsTest;
-import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
-import org.firstinspires.ftc.teamcode.tuning.pidTest.H_Slides_Methods;
-
 public class HorizontalSlides {
     public DcMotor hSlides;
+
+    SubsystemsVariables var = new SubsystemsVariables();
+
     public HorizontalSlides(HardwareMap hardwareMap) {
     }
 
@@ -32,9 +24,9 @@ public class HorizontalSlides {
 public class hSlideToMax implements Action  {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
-        hSlides.setTargetPosition(800);
+        hSlides.setTargetPosition(var.hSlideRuleMax);
         hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hSlides.setPower(0.5);
+        hSlides.setPower(var.hSlideSpeed);
         while(hSlides.isBusy()) {
             
         }
@@ -47,13 +39,17 @@ public Action HSlideToMax() {
     public class hSlideToDist implements Action  {
         int distance = 0;
         public hSlideToDist(int dist) {
-            distance = dist;
+            if(dist<=800) {
+                distance = dist;
+            }else{
+                distance = 800;
+            }
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             hSlides.setTargetPosition(distance);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hSlides.setPower(0.5);
+            hSlides.setPower(var.hSlideSpeed);
             while(hSlides.isBusy()) {
 
             }
@@ -68,7 +64,7 @@ public class hSlideTo0 implements Action  {
     public boolean run(@NonNull TelemetryPacket packet) {
         hSlides.setTargetPosition(0);
         hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hSlides.setPower(0.5);
+        hSlides.setPower(var.hSlideSpeed);
         while(hSlides.isBusy()) {
             
         }
