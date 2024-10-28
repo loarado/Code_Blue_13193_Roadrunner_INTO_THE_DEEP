@@ -75,6 +75,22 @@ public class Elbow {
 
 
 
+    public class prepElbowIntake implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            elbow.setPosition(var.PrepIntakeElbowPos);
+
+            return false;
+
+        }
+    }
+    public Action PrepElbowIntake() {
+        return new prepElbowIntake();
+    }
+
+
+
     public class elbowToDist implements Action  {
 
         double distance = 0;
