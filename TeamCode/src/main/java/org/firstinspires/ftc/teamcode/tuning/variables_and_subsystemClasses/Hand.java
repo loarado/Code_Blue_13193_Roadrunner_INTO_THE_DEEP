@@ -8,20 +8,26 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hand {
+
+    //Instantiate the sensor/servo/motor
     public Servo leftHand;
     public Servo rightHand;
 
+    // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
-    
-    public Hand(HardwareMap hardwareMap) {
-    }
 
-    public void setHands(HardwareMap hardwareMap) {
+
+    public Hand(HardwareMap hardwareMap) {
+
+        //Constructor
         leftHand = hardwareMap.get(Servo.class, "leftHand");
         leftHand.setDirection(Servo.Direction.FORWARD);
         rightHand = hardwareMap.get(Servo.class, "rightHand");
         rightHand.setDirection(Servo.Direction.FORWARD);
+
     }
+
+    // Actions are below
     
     public class handOuttake implements Action  {
         @Override
@@ -36,6 +42,9 @@ public class Hand {
     public Action HandOuttake() {
         return new handOuttake();
     }
+
+
+
     public class handStop implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -49,6 +58,9 @@ public class Hand {
     public Action HandStop() {
         return new handStop();
     }
+
+
+
     public class handIntake implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -62,4 +74,9 @@ public class Hand {
     public Action HandIntake() {
         return new handIntake();
     }
+
+
+    //ADD MORE ACTIONS HERE IF NEEDED
+
+
     }

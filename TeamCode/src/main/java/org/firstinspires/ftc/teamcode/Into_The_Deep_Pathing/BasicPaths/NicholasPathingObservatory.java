@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
 @TeleOp(name = "Nicholas Pathing Observatory", group = "Autonomous")

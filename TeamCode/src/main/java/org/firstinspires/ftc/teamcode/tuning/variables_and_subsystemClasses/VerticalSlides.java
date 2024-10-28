@@ -9,83 +9,108 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class VerticalSlides {
 
+    //Instantiate the sensor/servo/motor
     public DcMotor lArm;
     public DcMotor rArm;
 
+    // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
 
-    public VerticalSlides(HardwareMap hardwareMap) {
-    }
 
-    public void setVSlides(HardwareMap hardwareMap) {
+    public VerticalSlides(HardwareMap hardwareMap) {
+
+        //Constructor
         lArm = hardwareMap.get(DcMotor.class, "lArm");
         lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lArm.setDirection(DcMotor.Direction.REVERSE);
         rArm = hardwareMap.get(DcMotor.class, "rArm");
         rArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rArm.setDirection(DcMotor.Direction.FORWARD);
+
     }
+
+    // Actions are below
     
-public class vSlidesToMax implements Action  {
-    @Override
-    public boolean run(@NonNull TelemetryPacket packet) {
-        rArm.setTargetPosition(var.vSlidePhysicalMax);
-        lArm.setTargetPosition(var.vSlidePhysicalMax);
-        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rArm.setPower(var.vSlideSpeed);
-        lArm.setPower(var.vSlideSpeed);
-        while(lArm.isBusy()&& rArm.isBusy()) {
-            
+    public class vSlidesToMax implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            rArm.setTargetPosition(var.vSlidePhysicalMax);
+            lArm.setTargetPosition(var.vSlidePhysicalMax);
+            rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rArm.setPower(var.vSlideSpeed);
+            lArm.setPower(var.vSlideSpeed);
+
+            //WAIT FOR SLIDES TO REACH POSITION
+
+            return (lArm.isBusy()&&rArm.isBusy());
         }
-        return false;
     }
-}
-public Action VSlideToMax() {
-    return new vSlidesToMax();
-}
+    public Action VSlideToMax() {
+        return new vSlidesToMax();
+    }
+
+
+
     public class vSlidesToDist implements Action  {
+
         int distance = 0;
+
         public vSlidesToDist(int dist) {
-            if(dist<=3800) {
+
+            //Constructor to set "distance", can't be above physical max
+
+            if(dist<=var.vSlidePhysicalMax) {
                 distance = dist;
             }else{
-                distance = 3800;
+                distance = var.vSlidePhysicalMax;
             }
+
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
             rArm.setTargetPosition(distance);
             lArm.setTargetPosition(distance);
             rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rArm.setPower(var.vSlideSpeed);
             lArm.setPower(var.vSlideSpeed);
-            while(lArm.isBusy()&& rArm.isBusy()) {
 
-            }
-            return false;
+            //WAIT FOR SLIDES TO REACH POSITION
+
+            return (lArm.isBusy()&&rArm.isBusy());
         }
     }
     public Action VSlidesToDist(int dist) {
         return new vSlidesToDist(dist);
     }
-public class vSlidesTo0 implements Action  {
-    @Override
-    public boolean run(@NonNull TelemetryPacket packet) {
-        rArm.setTargetPosition(0);
-        lArm.setTargetPosition(0);
-        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rArm.setPower(var.vSlideSpeed);
-        lArm.setPower(var.vSlideSpeed);
-        while(lArm.isBusy()&& rArm.isBusy()) {
-            
+
+
+
+    public class vSlidesTo0 implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            rArm.setTargetPosition(0);
+            lArm.setTargetPosition(0);
+            rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rArm.setPower(var.vSlideSpeed);
+            lArm.setPower(var.vSlideSpeed);
+
+            //WAIT FOR SLIDES TO REACH POSITION
+
+            return (lArm.isBusy()&&rArm.isBusy());
         }
-        return false;
     }
-}
-public Action VSlidesTo0() {
-    return new vSlidesTo0();
-}
+    public Action VSlidesTo0() {
+        return new vSlidesTo0();
+    }
+
+
+    //ADD MORE ACTIONS HERE IF NEEDED
+
+
     }

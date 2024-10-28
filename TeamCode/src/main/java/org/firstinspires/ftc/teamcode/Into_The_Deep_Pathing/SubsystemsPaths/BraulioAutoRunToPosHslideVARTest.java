@@ -9,7 +9,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.HorizontalSlides;
 
 
@@ -22,7 +22,6 @@ public class BraulioAutoRunToPosHslideVARTest extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         HorizontalSlides hslide = new HorizontalSlides(hardwareMap);
-        hslide.sethSlides(hardwareMap);
         waitForStart();
 
         TrajectoryActionBuilder t1 = drive.actionBuilder(beginPose)

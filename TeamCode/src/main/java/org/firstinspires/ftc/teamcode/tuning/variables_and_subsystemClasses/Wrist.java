@@ -8,17 +8,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Wrist {
+
+    //Instantiate the sensor/servo/motor
     public Servo wrist;
 
+    // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
-    
-    public Wrist(HardwareMap hardwareMap) {
-    }
 
-    public void setwrist(HardwareMap hardwareMap) {
+
+    public Wrist(HardwareMap hardwareMap) {
+
+        //Constructor
         wrist = hardwareMap.get(Servo.class, "wrist");
         wrist.setDirection(Servo.Direction.FORWARD);
+
     }
+
+    //Actions are below
     
     public class wristOuttake implements Action  {
         @Override
@@ -29,9 +35,12 @@ public class Wrist {
             return false;
         }
     }
-    public Action wristOuttake() {
+    public Action WristOuttake() {
         return new wristOuttake();
     }
+
+
+
     public class wristMiddle implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -41,9 +50,12 @@ public class Wrist {
             return false;
         }
     }
-    public Action wristMiddle() {
+    public Action WristMiddle() {
         return new wristMiddle();
     }
+
+
+
     public class wristIntake implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -53,12 +65,18 @@ public class Wrist {
             return false;
         }
     }
-    public Action wristIntake() {
+    public Action WristIntake() {
         return new wristIntake();
     }
+
+
+
     public class wristToDist implements Action  {
+
         double distance = 0;
+
         public wristToDist(double dist) {
+            //Constructor to set "distance"
             distance = dist;
         }
         @Override
@@ -69,7 +87,12 @@ public class Wrist {
             return false;
         }
     }
-    public Action wristToDist(int dist) {
+    public Action WristToDist(int dist) {
         return new wristToDist(dist);
     }
+
+
+    //ADD MORE ACTIONS HERE IF NEEDED
+
+
     }

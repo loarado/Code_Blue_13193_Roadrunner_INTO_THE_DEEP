@@ -9,10 +9,10 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.tuning.Drawing;
-import org.firstinspires.ftc.teamcode.tuning.MecanumDrive;
-import org.firstinspires.ftc.teamcode.tuning.TankDrive;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.Drawing;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.TankDrive;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.TuningOpModes;
 
 @Disabled
 public class LocalizationTest extends LinearOpMode {
