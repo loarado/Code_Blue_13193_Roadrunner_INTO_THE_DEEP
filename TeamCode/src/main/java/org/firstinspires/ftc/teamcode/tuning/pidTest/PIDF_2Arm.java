@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
-@TeleOp(name = "PIDF 2 Arms")
+@Autonomous(name = "PIDF 2 Arms")
 public class PIDF_2Arm extends LinearOpMode {
     private PIDController controller;
 

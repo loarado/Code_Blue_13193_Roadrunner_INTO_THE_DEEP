@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
-@TeleOp(name = "PIDF H Slides")
+@Autnomous(name = "PIDF H Slides")
 public class PIDF_H_Slides extends LinearOpMode {
     private PIDController controller;
     private static PIDController controllerSend;

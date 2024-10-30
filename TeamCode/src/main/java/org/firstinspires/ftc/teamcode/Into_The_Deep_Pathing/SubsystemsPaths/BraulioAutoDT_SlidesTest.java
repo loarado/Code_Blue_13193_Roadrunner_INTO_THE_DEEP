@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-@TeleOp(name = "Auto DT & Slides Test", group = "Autonomous")
+@Autonomous(name = "Auto DT & Slides Test", group = "Autonomous")
 public class BraulioAutoDT_SlidesTest extends LinearOpMode {
     public int distance = 0;
 

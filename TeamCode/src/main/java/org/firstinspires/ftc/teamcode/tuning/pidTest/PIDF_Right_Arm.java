@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
-@TeleOp(name = "PIDF Right Arm")
+@Autonomous(name = "PIDF Right Arm")
 public class PIDF_Right_Arm extends LinearOpMode {
     private PIDController controller;
 

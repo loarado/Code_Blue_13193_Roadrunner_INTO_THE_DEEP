@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
-@TeleOp(name = "Oscar Pathing Subsystems", group = "Autonomous")
+@Autonomous(name = "Oscar Pathing Subsystems", group = "Autonomous")
 public class OscarPathingSubsystems extends LinearOpMode {
     public class ServoTest {
         private Servo servo0;

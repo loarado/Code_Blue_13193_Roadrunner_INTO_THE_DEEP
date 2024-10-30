@@ -21,14 +21,14 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-@Autonomous(name = "Auto ALL Subsystems Test", group = "Autonomous")
-public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
+@Autonomous(name = "Auto Basket Test", group = "Autonomous")
+public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
     public int distance = 0;
 
     @Override
     public void runOpMode() {
 
-        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(-90));
+        Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(-90));
 
         // INSTANTIATE SUBSYSTEMS AND DT
 
@@ -68,9 +68,31 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
 
         waitForStart();
 
-        TrajectoryActionBuilder t1 = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(0, -20))
-                .waitSeconds(1);
+        TrajectoryActionBuilder offTheWall = drive.actionBuilder(beginPose)
+                .strafeTo(new Vector2d(48, 40))
+                .waitSeconds(2)
+                .turn(Math.toRadians(-45))
+                .strafeTo(new Vector2d(54,54))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(54, 50))
+                .turn(Math.toRadians(45))
+                .strafeTo(new Vector2d(58, 40))
+                .strafeTo(new Vector2d(54,40))
+                .turn(Math.toRadians(-45))
+                .strafeTo(new Vector2d(54,54))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(54, 50))
+                .turn(Math.toRadians(135))
+                .strafeTo(new Vector2d(58,28))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(50,28))
+                .turn(Math.toRadians(225))
+                .strafeTo(new Vector2d(54,54))
+                .waitSeconds(2)
+                .splineTo(new Vector2d(40,12), Math.toRadians(180))
+                .strafeTo(new Vector2d(24,12))
+                .waitSeconds(2)
+                .build();
         TrajectoryActionBuilder t2 = drive.actionBuilder(beginPose)
                 .strafeTo(new Vector2d(0, 20))
                 .waitSeconds(1);
@@ -84,7 +106,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             to showcase what is possible and so we can better understand
                              how this works */
 
-                            t1.build(),
+                            offTheWall.build(),
                             hslide.HSlideToMax(),
                             new ParallelAction(
                               hand.HandIntake(),

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.HorizontalSlides;
 
 
-@TeleOp(name = "BraulioAutoRunToPosHslideVARTest", group = "Autonomous")
+@Autonomous(name = "BraulioAutoRunToPosHslideVARTest", group = "Autonomous")
 public class BraulioAutoRunToPosHslideVARTest extends LinearOpMode {
     public int distance = 0;
 
