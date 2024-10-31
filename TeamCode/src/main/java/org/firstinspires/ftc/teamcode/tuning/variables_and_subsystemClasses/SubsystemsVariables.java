@@ -12,20 +12,24 @@ public class SubsystemsVariables {
     subsystems so if we need to change any we can do it easily without
     causing any problems. You welcome :) */
 
-    public final double OuttakeWristPos = 0.58;
+    public final double OuttakeWristPos = 0.38;
 
-    public final double IntakeWristPos = 0.38;
+    public final double IntakeWristPos = 0.58;
 
-    public final double MiddleWristPos = 0.48;
+    public final double MiddleWristPos = 0.5;
+
+    public final double FrontIntakeWristPos = 0.64;
 
 
-    public final double OuttakeElbowPos = 0.3;
+    public final double OuttakeElbowPos = 0.23;
 
-    public final double IntakeElbowPos = 0.43;
+    public final double IntakeElbowPos = 0.55;
 
-    public final double PrepIntakeElbowPos = 0.4;
+    public final double PrepIntakeElbowPos = 0.3;
 
-    public final double MiddleElbowPos = 0.33;
+    public final double MiddleElbowPos = 0.5;
+
+    public final double FrontIntakeElbowPos = 0.1;
 
     public final double rightHandIn = -1;
     public final double rightHandOut = 1;
