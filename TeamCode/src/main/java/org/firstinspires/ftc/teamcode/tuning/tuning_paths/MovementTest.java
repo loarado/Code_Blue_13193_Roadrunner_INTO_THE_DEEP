@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
-@TeleOp(name = "Movement Test", group = "Autonomous")
+@Autonomous(name = "Movement Test", group = "Autonomous")
 public class MovementTest extends LinearOpMode {
 
     @Override

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
-@TeleOp(name = "Nicholas Pathing Observatory", group = "Autonomous")
+@Autonomous(name = "Nicholas Pathing Observatory", group = "Autonomous")
 public class NicholasPathingObservatory extends LinearOpMode {
 
     @Override

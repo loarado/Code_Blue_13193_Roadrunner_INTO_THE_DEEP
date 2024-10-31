@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
-@TeleOp(name = "One Tile Backwards One Tile Forwards", group = "Autonomous")
+@Autonomous(name = "One Tile Backwards One Tile Forwards", group = "Autonomous")
 public class OneBackOneForwards extends LinearOpMode {
 
     @Override

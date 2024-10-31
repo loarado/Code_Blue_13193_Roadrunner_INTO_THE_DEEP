@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 
-@TeleOp(name = "One right One left", group = "Autonomous")
+@Autonomous(name = "One right One left", group = "Autonomous")
 public class OneRightOneLeft extends LinearOpMode {
 
     @Override
