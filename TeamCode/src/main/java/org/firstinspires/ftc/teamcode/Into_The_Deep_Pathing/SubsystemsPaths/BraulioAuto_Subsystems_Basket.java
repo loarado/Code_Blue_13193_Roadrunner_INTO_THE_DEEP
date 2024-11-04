@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -91,8 +92,7 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
                 .waitSeconds(2)
                 .splineTo(new Vector2d(40,12), Math.toRadians(180))
                 .strafeTo(new Vector2d(24,12))
-                .waitSeconds(2)
-                .build();
+                .waitSeconds(2);
         TrajectoryActionBuilder t2 = drive.actionBuilder(beginPose)
                 .strafeTo(new Vector2d(0, 20))
                 .waitSeconds(1);

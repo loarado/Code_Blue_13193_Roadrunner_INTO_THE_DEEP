@@ -65,6 +65,26 @@ public class HorizontalSlides {
 
 
 
+    public class hSlideToTransfer implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            hSlides.setTargetPosition(var.hSlideOuttakePos);
+            hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hSlides.setPower(var.hSlideSpeed);
+
+            //WAIT FOR SLIDE TO REACH POSITION
+
+            return hSlides.isBusy();
+
+        }
+    }
+    public Action HSlideToTransfer() {
+        return new hSlideToTransfer();
+    }
+
+
+
     public class hSlideToDist implements Action  {
 
         int distance = 0;

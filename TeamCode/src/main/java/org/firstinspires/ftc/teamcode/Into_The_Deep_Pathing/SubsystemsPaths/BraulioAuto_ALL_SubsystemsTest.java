@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -100,7 +101,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                                     hand.HandStop()
                             ),
                             new ParallelAction(
-                                    hslide.HSlideTo0(),
+                                    hslide.HSlideToTransfer(),
                                     wrist.WristOuttake(),
                                     elbow.ElbowOuttake(),
                                     lights.LightsBlue()
@@ -121,20 +122,18 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             ),
                             t2.build(),
                             new ParallelAction(
-                                    outtake.OuttakeOut(),
-                                    specigrabber.SpecigrabberOpen()
+                                    outtake.OuttakeOut()
                             ),
                             new SleepAction(1),
                             new ParallelAction(
-                                    outtake.OuttakeIdle(),
-                                    specigrabber.SpecigrabberClose()
+                                    outtake.OuttakeIdle()
                             ),
                             new SleepAction(1),
                             new ParallelAction(
                                     vslides.VSlidesTo0(),
-                                    lights.LightsRainbow(),
-                                    specigrabber.SpecigrabberOpen()
-                            )
+                                    lights.LightsRainbow()
+                            ),
+                            specigrabber.SpecigrabberOpen()
                     )
             );
         }

@@ -21,9 +21,10 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-@TeleOp(name = "TeleOp AndroidStudio Test", group = "TeleOp")
-public class TeleOpTest extends LinearOpMode {
+@TeleOp(name = "Into The Deep TeleOp", group = "TeleOp")
+public class CompTeleOp extends LinearOpMode {
 
+    // Motor declarations
     private DcMotor leftFront;
     private DcMotor leftBack;
     private DcMotor lArm;
@@ -36,18 +37,35 @@ public class TeleOpTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        double driveSpeed;
+        double driveSpeed; // Variable for controlling robot driving speed
 
-        // Used for robot control
+        // Variables for robot movement
         float x;
         double y;
         double rx;
         double denominator;
 
+        // Instantiate subsystem classes, which control specific robot mechanisms:
+        // HorizontalSlides: Controls horizontal movement of slides
+        // VerticalSlides: Controls vertical movement of slides
+        // Elbow: Controls elbow component of the arm
+        // Wrist: Controls wrist position
+        // Hand: Controls hand mechanism for intaking game elements
+        // Outtake: Controls outtake servo for depositing elements
+        // Specigrabber: Controls claw mechanism for grabbing elements
+        HorizontalSlides hslide = new HorizontalSlides(hardwareMap);
+        VerticalSlides vslides = new VerticalSlides(hardwareMap);
+        Elbow elbow = new Elbow(hardwareMap);
+        Wrist wrist = new Wrist(hardwareMap);
+        Hand hand = new Hand(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap);
+        Specigrabber specigrabber = new Specigrabber(hardwareMap);
 
+        // 'var' holds subsystem-specific variables such as physical limits and velocities
+        // for easier access and adjustment across the tele-op program
+        SubsystemsVariables var = new SubsystemsVariables();
 
-        // INSTANTIATE SUBSYSTEMS
-
+        // Hardware initialization
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         lArm = hardwareMap.get(DcMotor.class, "lArm");
@@ -57,59 +75,38 @@ public class TeleOpTest extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
 
-        HorizontalSlides hslide = new HorizontalSlides(hardwareMap);
-
-        VerticalSlides vslides = new VerticalSlides(hardwareMap);
-
-        Elbow elbow = new Elbow(hardwareMap);
-
-        Wrist wrist = new Wrist(hardwareMap);
-
-        Hand hand = new Hand(hardwareMap);
-
-        Outtake outtake = new Outtake(hardwareMap);
-
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
-
-        // Reverse Motors
+        // Set motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         lArm.setDirection(DcMotor.Direction.REVERSE);
 
+        // Initialize control variables
+        driveSpeed = 0.45; // Initial drive speed factor
+        boolean intakeMode = false; // Tracks intake mode state (on/off)
+        boolean currentlyIntaking = false; // Indicates if intake is active
+        boolean gamepadApressed = false; // Tracks A button state
+        int vSlidesPos = 0; // Variable for vertical slides position
+        int hSlidesPos = 0; // Variable for horizontal slides position
 
-        // Set Variables
-        driveSpeed = 0.5;
-        boolean intakeMode = false;
-        boolean currentlyIntaking = false;
-        boolean gamepadApressed = false;
-        int vSlidesPos = 0;
-        int hSlidesPos = 0;
-        SubsystemsVariables var = new SubsystemsVariables();
-
-
-        // Reset Encoders
+        // Reset encoders to set initial motor positions
         hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-        // Set horizontal slides initial pos
+        // Set horizontal slides initial position
         hSlides.setTargetPosition(0);
         hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-        // Sets vertical slides initial pos
+        // Set vertical slides initial position
         lArm.setTargetPosition(0);
         rArm.setTargetPosition(0);
         lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-        //set lights
+        // Set initial LED pattern
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
 
-
-        //initialize servos
+        // Initialize servos to default positions using ParallelAction
         Actions.runBlocking(
                 new ParallelAction(
                         wrist.WristMiddle(),
@@ -119,14 +116,14 @@ public class TeleOpTest extends LinearOpMode {
                 )
         );
 
-
+        // Wait for start button to be pressed
         waitForStart();
 
         if (opModeIsActive()) {
 
             while (opModeIsActive()) {
 
-                //Control the claw servo
+                // Claw control - closes claw if X is pressed, opens if Y is pressed
                 if (gamepad1.x || gamepad1.square) {
                     Actions.runBlocking(
                             specigrabber.SpecigrabberClose()
@@ -138,8 +135,8 @@ public class TeleOpTest extends LinearOpMode {
                     );
                 }
 
-
-                // Slides go up when pressing left bumper, but not past the physical max
+                // Vertical slide control - moves slides up when left bumper is pressed,
+                // but not past the maximum allowed height
                 if (gamepad1.left_bumper && vSlidesPos < var.vSlidePhysicalMax) {
                     vSlidesPos += 25;
                     lArm.setTargetPosition(vSlidesPos);
@@ -150,7 +147,7 @@ public class TeleOpTest extends LinearOpMode {
                     ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
-                // Slides go down when pressing right bumper, but not past the physical max of 0
+                // Moves slides down when right bumper is pressed, but stops at minimum height
                 if (gamepad1.right_bumper && vSlidesPos > 0) {
                     vSlidesPos -= 25;
                     lArm.setTargetPosition(vSlidesPos);
@@ -161,46 +158,36 @@ public class TeleOpTest extends LinearOpMode {
                     ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
-
-                // Horizontal Slides go out when pressing the left trigger more than 0.1, but not past the physical max
+                // Horizontal slides control - moves slides outward with left trigger,
+                // increases speed with harder press, but stops at max position
                 if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlidePhysicalMax) {
-
-                    //Slides move faster the harder you press the trigger
-                    hSlidesPos += (int) (8*(gamepad1.left_trigger));
-
+                    hSlidesPos += (int) (8 * (gamepad1.left_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
-                // Horizontal Slides go in when pressing the right trigger more than 0.1, but not past the physical max
+                // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos) {
-
-                    //Slides move faster the harder you press the trigger
-                    hSlidesPos -= (int) (8*(gamepad1.right_trigger));
-
+                    hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
-
-                // Buttons A and B are for intaking and transferring to our outtake
+                // Intake mode toggle with A button
                 if ((gamepad1.a || gamepad1.cross) && !gamepadApressed) {  // When A button is newly pressed
-
-                    if(!currentlyIntaking){
+                    if (!currentlyIntaking) {  // Ensures prep mode is first if idle
                         intakeMode = false;
                     }
-
                     currentlyIntaking = true;
                     intakeMode = !intakeMode;  // Toggle intake mode
 
                     Actions.runBlocking(
-                            //Stop hand wheels from spinning when the Hslides position is less than 200 and you press A
-                            hand.HandStop()
+                            hand.HandStop()  // Stops hand wheel spinning if hSlides position is low and A is pressed
                     );
 
-                    // Run intake actions based on the new intake mode state
+                    // Adjusts wrist and elbow positions based on intakeMode state
                     if (intakeMode && hSlides.getCurrentPosition() > 100) {
                         Actions.runBlocking(
                                 new ParallelAction(
@@ -209,7 +196,7 @@ public class TeleOpTest extends LinearOpMode {
                                         hand.HandIntake()
                                 )
                         );
-                    } else if (hSlides.getCurrentPosition() > 100){
+                    } else if (hSlides.getCurrentPosition() > 100) {
                         Actions.runBlocking(
                                 new ParallelAction(
                                         wrist.WristIntake(),
@@ -219,13 +206,10 @@ public class TeleOpTest extends LinearOpMode {
                         );
                     }
                 }
-                // Update the previous state of the A button
                 gamepadApressed = gamepad1.a || gamepad1.cross;
 
-
-                //Transfer game element if the arm is currently intaking and you press B
+                // Transfer action with B button if intake is active
                 if ((gamepad1.b || gamepad1.circle) && currentlyIntaking) {
-
                     currentlyIntaking = false;
 
                     Actions.runBlocking(
@@ -238,51 +222,42 @@ public class TeleOpTest extends LinearOpMode {
                                             vslides.VSlidesTo0()
                                     ),
                                     hand.HandOuttake()
-
                             )
                     );
 
-                    //set hSlidesPos so the next time you manually move the hSlides they don't go to your last position
-                    //and instead move from the transfer position (which is 'OuttakePos')
+                    // Resets hSlides position variable to OuttakePos for consistency
                     hSlidesPos = var.hSlideOuttakePos;
                 }
 
-
-                if (gamepad1.dpad_up){
+                // Adjust horizontal slides with dpad up (to max) and down (to 0)
+                if (gamepad1.dpad_up) {
                     Actions.runBlocking(
                             new SequentialAction(
                                     hslide.HSlideToMax()
                             )
                     );
-
-                    //set hSlidesPos so the next time you manually move the hSlides they don't go to your last position
-                    //and instead move from the Max position
                     hSlidesPos = var.hSlideRuleMax;
                 }
-
-
-                if (gamepad1.dpad_down){
+                if (gamepad1.dpad_down) {
                     Actions.runBlocking(
                             new SequentialAction(
-                                    hslide.HSlideTo0()
+                                    hslide.HSlideToTransfer()
                             )
                     );
-
-                    //set hSlidesPos so the next time you manually move the hSlides they don't go to your last position
-                    //and instead move from position 0
-                    hSlidesPos = 0;
+                    hSlidesPos = var.hSlideOuttakePos;
                 }
 
+                // Controls outtake position with dpad left (deposit) and right (idle)
+                if (gamepad1.dpad_left&&lArm.getCurrentPosition()>500&&specigrabber.specigrabber.getPosition()>0.7) {
+                    //If the robot wont break, move the outtake box
 
-                //Control the outtake servo which rotates the box that stores the game element to deposit it
-                if (gamepad1.dpad_left){
                     Actions.runBlocking(
                             new SequentialAction(
                                     outtake.OuttakeOut()
                             )
                     );
                 }
-                if (gamepad1.dpad_right){
+                if (gamepad1.dpad_right) {
                     Actions.runBlocking(
                             new SequentialAction(
                                     outtake.OuttakeIdle()
@@ -290,28 +265,22 @@ public class TeleOpTest extends LinearOpMode {
                     );
                 }
 
+                if(hSlides.getCurrentPosition()>300||lArm.getCurrentPosition()>1400||rArm.getCurrentPosition()>1400||currentlyIntaking){
+                    driveSpeed = 0.3;
+                } else{
+                    driveSpeed = 0.45;
+                }
 
-                // Driving Code
-                x = -(gamepad1.left_stick_x * 1);
-                y = -(gamepad1.left_stick_y * 1.1);
-                rx = gamepad1.right_stick_x * 0.75;
-                denominator = JavaUtil.maxOfList(JavaUtil.createListWith(JavaUtil.sumOfList(JavaUtil.createListWith(Math.abs(x), Math.abs(y), Math.abs(rx))), driveSpeed));
+                // Drive controls
+                x = -gamepad1.left_stick_x;
+                y = gamepad1.left_stick_y;
+                rx = -gamepad1.right_stick_x;
 
-                // Powers wheel motors
-                leftBack.setPower((y + x + rx) / denominator);
-                leftFront.setPower(((y - x) + rx) / denominator);
-                rightBack.setPower(((y - x) - rx) / denominator);
-                rightFront.setPower(((y + x) - rx) / denominator);
-
-                // Displays x, y, rx, rightVerticalSlidePos, leftVerticalSlidePos, and horizontalSlidesPos
-                telemetry.addData("x = ", x);
-                telemetry.addData("y = ", y);
-                telemetry.addData("rx = ", rx);
-                telemetry.addData("currentRightArmPos = ", rArm.getCurrentPosition());
-                telemetry.addData("currentLeftArmPos = ", lArm.getCurrentPosition());
-                telemetry.addData("currentHorizontalSlidesPos = ", hSlides.getCurrentPosition());
-                telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
-                telemetry.update();
+                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                leftFront.setPower((y + x + rx) / denominator * driveSpeed);
+                leftBack.setPower((y - x + rx) / denominator * driveSpeed);
+                rightFront.setPower((y - x - rx) / denominator * driveSpeed);
+                rightBack.setPower((y + x - rx) / denominator * driveSpeed);
             }
         }
     }
