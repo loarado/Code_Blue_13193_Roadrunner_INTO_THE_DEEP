@@ -24,6 +24,17 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wris
 @TeleOp(name = "Into The Deep TeleOp", group = "TeleOp")
 public class CompTeleOp extends LinearOpMode {
 
+    /*
+
+                         READ ME
+
+    BEFORE EDITING THIS TELE-OP, MAKE SURE TO READ THE
+             " INTO THE DEEP TELE-OP CONTROLS "
+    DRIVE FILE IN THE GOOGLE DRIVE, THIS LISTS WHAT WE SHOULD
+    HAVE EACH BUTTON DO TO OPTIMIZE THE TELE-OP PERIOD.
+
+     */
+
     // Motor declarations
     private DcMotor leftFront;
     private DcMotor leftBack;
