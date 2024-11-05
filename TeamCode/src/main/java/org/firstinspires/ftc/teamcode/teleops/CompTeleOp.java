@@ -391,10 +391,6 @@ public class CompTeleOp extends LinearOpMode {
                     // Resets hSlides position variable to OuttakePos for consistency
                     hSlidesPos = var.hSlideOuttakePos;
 
-                } else if ((gamepad1.b || gamepad1.circle)) {
-                    runningActions.add(
-                            hand.HandOuttake() //If you press B and weren't intaking just move the wheels to outtake
-                    );
                 }
 
 

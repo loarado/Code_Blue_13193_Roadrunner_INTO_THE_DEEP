@@ -1,17 +1,14 @@
-package org.firstinspires.ftc.teamcode.tuning.pidTest;
+package org.firstinspires.ftc.teamcode.teleops;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
-@TeleOp(name = "PIDF RESET ENCODERS")
-public class PIDF_RESET_ENCODERS extends LinearOpMode {
+@TeleOp(name = "RESET ENCODERS")
+public class RESET_ENCODERS extends LinearOpMode {
 
 
     private DcMotorEx hSlides;
@@ -36,7 +33,7 @@ public class PIDF_RESET_ENCODERS extends LinearOpMode {
 
             while (opModeIsActive()) {
 
-                telemetry.addData("uh we did it wow", 1);
+                telemetry.addData("uh we did it yay", 1);
 
                 telemetry.update();
             }
