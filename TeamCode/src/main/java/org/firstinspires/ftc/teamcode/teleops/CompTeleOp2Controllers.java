@@ -140,14 +140,10 @@ public class CompTeleOp2Controllers extends LinearOpMode {
         AccelConstraint accSlow = new ProfileAccelConstraint(-30, 30);
         AccelConstraint accFast = new ProfileAccelConstraint(-45, 45);
 
-        // Reset encoders to set initial motor positions
-        hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         // Set horizontal slides initial position
-        hSlides.setTargetPosition(0);
+        hSlides.setTargetPosition(var.hSlideOuttakePos);
         hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
         // Set vertical slides initial position
         lArm.setTargetPosition(0);
@@ -204,7 +200,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
                 runningActions = newActions;
 
-                if(gamepad1.options && !optionsPressed){
+                if(gamepad2.options && !optionsPressed){
 
                 Actions.runBlocking(
                         traj
@@ -238,7 +234,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
 
 
-                if ((gamepad1.x || gamepad1.square)&&!gamepadXpressed) {
+                if ((gamepad2.x || gamepad1.square)&&!gamepadXpressed) {
 
                     if(SpecimenMode && !outtakeIsOut) {
 
@@ -276,7 +272,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
-                if (gamepad1.left_bumper && vSlidesPos < var.vSlidePhysicalMax) {
+                if (gamepad2.left_bumper && vSlidesPos < var.vSlidePhysicalMax) {
                     vSlidesPos += 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -287,7 +283,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
-                if (gamepad1.right_bumper && vSlidesPos > 0) {
+                if (gamepad2.right_bumper && vSlidesPos > 0) {
                     vSlidesPos -= 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -475,7 +471,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad1.dpad_down && vslides.getCurrentPosition() > 50) {
+                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50) {
 
                     runningActions.add(
                             new ParallelAction(
@@ -509,13 +505,13 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad1.left_stick_button){
+                if (gamepad2.left_stick_button){
                     BasketMode = false;
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                 }
 
-                if (gamepad1.right_stick_button){
+                if (gamepad2.right_stick_button){
                     BasketMode = true;
                     SpecimenMode = false;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
