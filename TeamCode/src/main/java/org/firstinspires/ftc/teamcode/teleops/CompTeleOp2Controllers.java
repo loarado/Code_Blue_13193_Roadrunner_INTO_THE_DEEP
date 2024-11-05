@@ -1,18 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Arclength;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -42,8 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@TeleOp(name = "1 Driver Comp Tele-Op", group = "TeleOp")
-public class CompTeleOp extends LinearOpMode {
+@TeleOp(name = "2 Drivers Comp TeleOp", group = "TeleOp")
+public class CompTeleOp2Controllers extends LinearOpMode {
 
     /*
 
