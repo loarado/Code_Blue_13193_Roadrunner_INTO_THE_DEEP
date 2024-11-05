@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class VerticalSlides {
@@ -29,6 +30,10 @@ public class VerticalSlides {
 
     }
 
+    public int getCurrentPosition(){
+        return (lArm.getCurrentPosition() + rArm.getCurrentPosition())/2;
+    }
+
     // Actions are below
     
     public class vSlidesToMax implements Action  {
@@ -39,8 +44,8 @@ public class VerticalSlides {
             lArm.setTargetPosition(var.vSlidePhysicalMax);
             rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rArm.setPower(var.vSlideSpeed);
-            lArm.setPower(var.vSlideSpeed);
+            ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+            ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
 
             //WAIT FOR SLIDES TO REACH POSITION
 
@@ -56,6 +61,7 @@ public class VerticalSlides {
     public class vSlidesToDist implements Action  {
 
         int distance = 0;
+        double velocity = var.vSlideVelocity;
 
         public vSlidesToDist(int dist) {
 
@@ -68,6 +74,24 @@ public class VerticalSlides {
             }
 
         }
+        public vSlidesToDist(int dist, double velo) {
+
+            //Constructor to set "distance", can't be above physical max
+
+            if(dist<=var.vSlidePhysicalMax) {
+                distance = dist;
+            }else{
+                distance = var.vSlidePhysicalMax;
+            }
+
+            if(velo>0 && velo<var.vSlideVelocity) {
+                velocity = velo;
+            }else{
+                velocity = var.vSlideVelocity;
+            }
+
+        }
+
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
@@ -75,13 +99,16 @@ public class VerticalSlides {
             lArm.setTargetPosition(distance);
             rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rArm.setPower(var.vSlideSpeed);
-            lArm.setPower(var.vSlideSpeed);
+            ((DcMotorEx) lArm).setVelocity(velocity);
+            ((DcMotorEx) rArm).setVelocity(velocity);
 
             //WAIT FOR SLIDES TO REACH POSITION
 
             return (lArm.isBusy()&&rArm.isBusy());
         }
+    }
+    public Action VSlidesToDist(int dist, double velo) {
+        return new vSlidesToDist(dist);
     }
     public Action VSlidesToDist(int dist) {
         return new vSlidesToDist(dist);
@@ -97,8 +124,8 @@ public class VerticalSlides {
             lArm.setTargetPosition(0);
             rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rArm.setPower(var.vSlideSpeed);
-            lArm.setPower(var.vSlideSpeed);
+            ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+            ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
 
             //WAIT FOR SLIDES TO REACH POSITION
 

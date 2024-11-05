@@ -1,8 +1,25 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.AccelConstraint;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Elbow;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Hand;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.HorizontalSlides;
@@ -19,6 +37,9 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Spec
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @TeleOp(name = "Into The Deep TeleOp", group = "TeleOp")
@@ -45,8 +66,17 @@ public class CompTeleOp extends LinearOpMode {
     private DcMotor rightFront;
     private RevBlinkinLedDriver lights;
 
+    private FtcDashboard dash = FtcDashboard.getInstance();
+    private List<Action> runningActions = new ArrayList<>();
+
     @Override
     public void runOpMode() {
+
+
+        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
 
         double driveSpeed; // Variable for controlling robot driving speed
 
@@ -92,12 +122,29 @@ public class CompTeleOp extends LinearOpMode {
         lArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize control variables
-        driveSpeed = 0.45; // Initial drive speed factor
+        driveSpeed = 0.5; // Initial drive speed factor
         boolean intakeMode = false; // Tracks intake mode state (on/off)
         boolean currentlyIntaking = false; // Indicates if intake is active
+        boolean SampleTransferred = false; // Indicates if a transfer has occurred and if we have a sample in our outtake
         boolean gamepadApressed = false; // Tracks A button state
+        boolean gamepadXpressed = false; // Tracks Y button state
+        boolean dPadDownPressed = false; // Tracks DpadDpwn button state
+        boolean dPadRightPressed = false; // Tracks DpadRight button state
+        boolean optionsPressed = false;
         int vSlidesPos = 0; // Variable for vertical slides position
         int hSlidesPos = 0; // Variable for horizontal slides position
+
+        boolean SpecimenMode = false;
+        boolean BasketMode = true;
+        
+        boolean outtakeIsOut = false;
+        boolean specigrabberIsOpen = false;
+
+        VelConstraint velSlow = new TranslationalVelConstraint(30);
+        VelConstraint velFast = new TranslationalVelConstraint(45);
+
+        AccelConstraint accSlow = new ProfileAccelConstraint(-30, 30);
+        AccelConstraint accFast = new ProfileAccelConstraint(-45, 45);
 
         // Reset encoders to set initial motor positions
         hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -115,7 +162,7 @@ public class CompTeleOp extends LinearOpMode {
         rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set initial LED pattern
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
         // Initialize servos to default positions using ParallelAction
         Actions.runBlocking(
@@ -127,24 +174,111 @@ public class CompTeleOp extends LinearOpMode {
                 )
         );
 
+
+
         // Wait for start button to be pressed
         waitForStart();
 
         if (opModeIsActive()) {
 
+
+
             while (opModeIsActive()) {
 
-                // Claw control - closes claw if X is pressed, opens if Y is pressed
-                if (gamepad1.x || gamepad1.square) {
-                    Actions.runBlocking(
-                            specigrabber.SpecigrabberClose()
-                    );
+                drive.updatePoseEstimate();
+
+                TrajectoryActionBuilder t1 = drive.actionBuilder(drive.pose)
+                        .turnTo(Math.toRadians(1))
+                        .waitSeconds(0.5)
+                        .strafeTo(new Vector2d(0,0),velSlow, accSlow)
+                        .waitSeconds(0.5);
+
+                Action traj = t1.build();
+
+                TelemetryPacket packet = new TelemetryPacket();
+
+
+                // updated based on gamepads
+
+                // update running actions
+                List<Action> newActions = new ArrayList<>();
+                for (Action action : runningActions) {
+                    action.preview(packet.fieldOverlay());
+                    if (action.run(packet)) {
+                        newActions.add(action);
+                    }
                 }
+                runningActions = newActions;
+
+                if(gamepad1.options && !optionsPressed){
+
+                Actions.runBlocking(
+                        traj
+                );
+
+                }
+                optionsPressed = gamepad1.options;
+
+                if(gamepad1.share){
+                    drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
+                    drive.updatePoseEstimate();
+                }
+
+
                 if (gamepad1.y || gamepad1.triangle) {
-                    Actions.runBlocking(
-                            specigrabber.SpecigrabberOpen()
+
+                    runningActions.add(
+                            new ParallelAction(
+                                    elbow.ElbowEject(),
+                                    wrist.WristMiddle()
+                            )
+                    );
+                    if(hSlides.getCurrentPosition()<175){
+                        runningActions.add(
+                                 hslide.HSlideToDist(175)
+                        );
+                    }
+                    runningActions.add(
+                            hand.HandOuttake()
                     );
                 }
+
+
+                if ((gamepad1.x || gamepad1.square)&&!gamepadXpressed) {
+
+                    if(SpecimenMode && !outtakeIsOut) {
+
+                        if (specigrabberIsOpen) {
+                            runningActions.add(
+                                    specigrabber.SpecigrabberClose()
+                            );
+                            specigrabberIsOpen = false;
+                        }else{
+                            runningActions.add(
+                                    specigrabber.SpecigrabberOpen()
+                            );
+                            specigrabberIsOpen = true;
+                        }
+
+                    } else if (BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400){
+                        if(outtakeIsOut){
+                            runningActions.add(
+                                    outtake.OuttakeIdle()
+                            );
+                            outtakeIsOut = false;
+                        }else{
+                            runningActions.add(
+                                    outtake.OuttakeOut()
+                            );
+                            outtakeIsOut = true;
+                            SampleTransferred = false;
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                        }
+                    }
+
+                }
+                gamepadXpressed  = gamepad1.x || gamepad1.square;
+
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
@@ -169,9 +303,11 @@ public class CompTeleOp extends LinearOpMode {
                     ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
+
+
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
-                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlidePhysicalMax) {
+                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax) {
                     hSlidesPos += (int) (8 * (gamepad1.left_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -186,44 +322,56 @@ public class CompTeleOp extends LinearOpMode {
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
+
+
                 // Intake mode toggle with A button
                 if ((gamepad1.a || gamepad1.cross) && !gamepadApressed) {  // When A button is newly pressed
-                    if (!currentlyIntaking) {  // Ensures prep mode is first if idle
-                        intakeMode = false;
-                    }
-                    currentlyIntaking = true;
-                    intakeMode = !intakeMode;  // Toggle intake mode
 
-                    Actions.runBlocking(
-                            hand.HandStop()  // Stops hand wheel spinning if hSlides position is low and A is pressed
+                    runningActions.add(
+                            hand.HandStop()
                     );
 
-                    // Adjusts wrist and elbow positions based on intakeMode state
-                    if (intakeMode && hSlides.getCurrentPosition() > 100) {
-                        Actions.runBlocking(
-                                new ParallelAction(
-                                        wrist.WristIntake(),
-                                        elbow.PrepElbowIntake(),
-                                        hand.HandIntake()
-                                )
-                        );
-                    } else if (hSlides.getCurrentPosition() > 100) {
-                        Actions.runBlocking(
-                                new ParallelAction(
-                                        wrist.WristIntake(),
-                                        elbow.ElbowIntake(),
-                                        hand.HandIntake()
-                                )
-                        );
+                    if(hSlides.getCurrentPosition() > 150) {
+
+                        if (!currentlyIntaking) {  // Ensures prep mode is first if idle
+                            intakeMode = false;
+                        }
+                        currentlyIntaking = true;
+                        intakeMode = !intakeMode;  // Toggle intake mode
+
+                        // Adjusts wrist and elbow positions based on intakeMode state
+                        if (intakeMode) {
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                            runningActions.add(
+                                    new ParallelAction(
+                                            wrist.WristIntake(),
+                                            elbow.PrepElbowIntake(),
+                                            hand.HandIntake()
+                                    )
+                            );
+                        } else {
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                            runningActions.add(
+                                    new ParallelAction(
+                                            wrist.WristIntake(),
+                                            elbow.ElbowIntake(),
+                                            hand.HandIntake()
+                                    )
+                            );
+                        }
                     }
                 }
                 gamepadApressed = gamepad1.a || gamepad1.cross;
+
+
 
                 // Transfer action with B button if intake is active
                 if ((gamepad1.b || gamepad1.circle) && currentlyIntaking) {
                     currentlyIntaking = false;
 
-                    Actions.runBlocking(
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+
+                    runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
                                             wrist.WristOuttake(),
@@ -232,66 +380,210 @@ public class CompTeleOp extends LinearOpMode {
                                             hslide.HSlideToTransfer(),
                                             vslides.VSlidesTo0()
                                     ),
+                                    new SleepAction(1),
                                     hand.HandOuttake()
                             )
                     );
 
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_RED);
+
+                    SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
                     hSlidesPos = var.hSlideOuttakePos;
+
+                } else if ((gamepad1.b || gamepad1.circle)) {
+                    runningActions.add(
+                            hand.HandOuttake() //If you press B and weren't intaking just move the wheels to outtake
+                    );
                 }
 
-                // Adjust horizontal slides with dpad up (to max) and down (to 0)
+
+
                 if (gamepad1.dpad_up) {
-                    Actions.runBlocking(
-                            new SequentialAction(
-                                    hslide.HSlideToMax()
-                            )
+                    runningActions.add(
+                            hand.HandStop()
                     );
-                    hSlidesPos = var.hSlideRuleMax;
-                }
-                if (gamepad1.dpad_down) {
-                    Actions.runBlocking(
-                            new SequentialAction(
-                                    hslide.HSlideToTransfer()
-                            )
-                    );
-                    hSlidesPos = var.hSlideOuttakePos;
+                    if (SpecimenMode){
+                        runningActions.add(
+                                vslides.VSlidesToDist(var.vSlideHighChamber)
+                        );
+                        vSlidesPos = var.vSlideHighChamber;
+                    } else if (BasketMode) {
+                        runningActions.add(
+                                vslides.VSlidesToDist(var.vSlideHighBasket)
+                        );
+                        vSlidesPos = var.vSlideHighBasket;
+                    }
                 }
 
-                // Controls outtake position with dpad left (deposit) and right (idle)
-                if (gamepad1.dpad_left&&lArm.getCurrentPosition()>500&&specigrabber.specigrabber.getPosition()>0.7) {
-                    //If the robot wont break, move the outtake box
 
-                    Actions.runBlocking(
-                            new SequentialAction(
-                                    outtake.OuttakeOut()
-                            )
+
+                if (gamepad1.dpad_left) {
+                    runningActions.add(
+                            hand.HandStop()
                     );
+                    if (SpecimenMode){
+                        runningActions.add(
+                                vslides.VSlidesToDist(var.vSlideLowChamber)
+                        );
+                        vSlidesPos = var.vSlideLowChamber;
+                    } else if (BasketMode) {
+                        runningActions.add(
+                                vslides.VSlidesToDist(var.vSlideLowBasket)
+                        );
+                        vSlidesPos = var.vSlideLowBasket;
+                    }
                 }
-                if (gamepad1.dpad_right) {
-                    Actions.runBlocking(
-                            new SequentialAction(
+
+
+
+                if (gamepad1.dpad_right && !dPadRightPressed) {
+                    if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideHighChamber + 30 && vslides.getCurrentPosition() > var.vSlideHighChamber - 30)) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                        runningActions.add(
+                                new SequentialAction(
+                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 300),
+                                        specigrabber.SpecigrabberOpen()
+                                )
+                        );
+                        vSlidesPos=var.vSlideHighChamberDrop;
+                        specigrabberIsOpen = true;
+                    } else if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideLowChamber + 30 && vslides.getCurrentPosition() > var.vSlideLowChamber - 30)) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                        runningActions.add(
+                                new SequentialAction(
+                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 300),
+                                        specigrabber.SpecigrabberOpen()
+                                )
+                        );
+                        vSlidesPos=var.vSlideLowChamberDrop;
+                        specigrabberIsOpen = true;
+                    } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && SampleTransferred){
+                        runningActions.add(
+                                outtake.OuttakeOut()
+                        );
+                        outtakeIsOut = true;
+                        SampleTransferred = false;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                    } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && !SampleTransferred){
+                        runningActions.add(
+                                new ParallelAction(
+                                        outtake.OuttakeIdle(),
+                                        vslides.VSlidesTo0()
+                                )
+                        );
+                        vSlidesPos = 0;
+                        outtakeIsOut = false;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    }
+                }
+                dPadRightPressed = gamepad1.dpad_right;
+
+
+
+                if (gamepad1.dpad_down && vslides.getCurrentPosition() > 50) {
+
+                    runningActions.add(
+                            new ParallelAction(
+                                    vslides.VSlidesTo0(),
                                     outtake.OuttakeIdle()
                             )
+                        );
+
+                } else if(gamepad1.dpad_down && !dPadDownPressed){
+                    runningActions.add(
+                            hand.HandStop()
+                    );
+
+                    if(hSlides.getCurrentPosition() > 225) {
+
+                        currentlyIntaking = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+
+                            runningActions.add(
+                                    new ParallelAction(
+                                            wrist.WristToDist(var.FrontIntakeWristPos),
+                                            elbow.ElbowToDist(var.FrontIntakeElbowPos),
+                                            hand.HandIntake()
+                                    )
+                            );
+
+                    }
+
+                }
+                dPadDownPressed = gamepad1.dpad_down;
+
+
+
+                if (gamepad1.left_stick_button){
+                    BasketMode = false;
+                    SpecimenMode = true;
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                }
+
+                if (gamepad1.right_stick_button){
+                    BasketMode = true;
+                    SpecimenMode = false;
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                }
+
+
+
+                //Slower when intaking or when stuff is extended
+                if(hSlides.getCurrentPosition()>250||lArm.getCurrentPosition()>1400||rArm.getCurrentPosition()>1400||currentlyIntaking){
+                    driveSpeed = 2.5;
+                } else{
+                    driveSpeed = 1.5;
+                }
+
+
+
+                //Failsafes
+                if(vslides.getCurrentPosition()<400&& outtakeIsOut && !specigrabberIsOpen){
+                    runningActions.add(
+                            outtake.OuttakeIdle()
                     );
                 }
 
-                if(hSlides.getCurrentPosition()>300||lArm.getCurrentPosition()>1400||rArm.getCurrentPosition()>1400||currentlyIntaking){
-                    driveSpeed = 0.3;
-                } else{
-                    driveSpeed = 0.45;
+                if(currentlyIntaking && hSlidesPos<150){
+                    hSlidesPos = 150;
                 }
 
-                // Drive controls
-                x = -gamepad1.left_stick_x;
-                y = gamepad1.left_stick_y;
-                rx = -gamepad1.right_stick_x;
+                if(vSlidesPos<0){
+                    vSlidesPos = 0;
+                } else if (vSlidesPos>var.vSlidePhysicalMax) {
+                    vSlidesPos = var.vSlidePhysicalMax;
+                }
 
-                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                leftFront.setPower((y + x + rx) / denominator * driveSpeed);
-                leftBack.setPower((y - x + rx) / denominator * driveSpeed);
-                rightFront.setPower((y - x - rx) / denominator * driveSpeed);
-                rightBack.setPower((y + x - rx) / denominator * driveSpeed);
+
+                // Driving Code
+                x = -(gamepad1.left_stick_x * 1);
+                y = -(gamepad1.left_stick_y * 1.1);
+                rx = gamepad1.right_stick_x * 0.75;
+                denominator = JavaUtil.maxOfList(JavaUtil.createListWith(JavaUtil.sumOfList(JavaUtil.createListWith(Math.abs(x), Math.abs(y), Math.abs(rx))), driveSpeed));
+
+                // Powers wheel motors
+                leftBack.setPower((y + x + rx) / denominator);
+                leftFront.setPower(((y - x) + rx) / denominator);
+                rightBack.setPower(((y - x) - rx) / denominator);
+                rightFront.setPower(((y + x) - rx) / denominator);
+
+                // Displays x, y, rx, rightVerticalSlidePos, leftVerticalSlidePos, and horizontalSlidesPos
+                telemetry.addData("x = ", x);
+                telemetry.addData("y = ", y);
+                telemetry.addData("rx = ", rx);
+                telemetry.addData("currentRightArmPos = ", rArm.getCurrentPosition());
+                telemetry.addData("currentLeftArmPos = ", lArm.getCurrentPosition());
+                telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
+                telemetry.addData("currentHorizontalSlidesPos = ", hSlides.getCurrentPosition());
+                telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
+                telemetry.addData("IntakeMode = ", intakeMode);
+                telemetry.addData("Currently Intaking: = ", currentlyIntaking);
+                telemetry.addData("Transfer: = ", SampleTransferred);
+                telemetry.update();
+
+                dash.sendTelemetryPacket(packet);
+
             }
         }
     }

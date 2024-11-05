@@ -16,7 +16,7 @@ public class OneRightOneLeft extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d beginPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(0, 61.7, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
         waitForStart();
@@ -28,18 +28,18 @@ public class OneRightOneLeft extends LinearOpMode {
             if (isStopRequested()) return;
 
             Actions.runBlocking(
-                    drive.actionBuilder(beginPose).strafeTo(new Vector2d(36.3, 61.7)).waitSeconds(2).build());
+                    drive.actionBuilder(beginPose).strafeTo(new Vector2d(24, 61.7)).waitSeconds(2).build());
 
             if(time.time() > 1) {
 
                 time.reset();
 
-                beginPose = new Pose2d(36.3, 61.7, Math.toRadians(90));
+                beginPose = new Pose2d(24, 61.7, Math.toRadians(90));
 
                 Actions.runBlocking(
-                        drive.actionBuilder(beginPose).strafeTo(new Vector2d(11.8, 61.7)).waitSeconds(2).build());
+                        drive.actionBuilder(beginPose).strafeTo(new Vector2d(0, 61.7)).waitSeconds(2).build());
 
-                beginPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
+                beginPose = new Pose2d(24, 61.7, Math.toRadians(90));
 
             }
         }

@@ -24,6 +24,7 @@ public class Specigrabber {
 
     }
 
+
     // Actions are below
 
     public class specigrabberClose implements Action  {

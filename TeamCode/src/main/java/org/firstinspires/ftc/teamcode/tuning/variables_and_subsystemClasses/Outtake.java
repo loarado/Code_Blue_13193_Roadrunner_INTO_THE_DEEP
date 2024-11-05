@@ -24,6 +24,7 @@ public class Outtake {
 
     }
 
+
     // Actions are below
 
     public class outtakeOut implements Action  {
@@ -75,7 +76,7 @@ public class Outtake {
 
         }
     }
-    public Action outtakeToDist(int dist) {
+    public Action outtakeToDist(double dist) {
         return new outtakeToDist(dist);
     }
 

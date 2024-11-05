@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class HorizontalSlides {
@@ -32,7 +33,7 @@ public class HorizontalSlides {
         public boolean run(@NonNull TelemetryPacket packet) {
             hSlides.setTargetPosition(var.hSlideRuleMax);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hSlides.setPower(var.hSlideSpeed);
+            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             //WAIT FOR SLIDE TO REACH POSITION
 
@@ -51,7 +52,7 @@ public class HorizontalSlides {
 
             hSlides.setTargetPosition(0);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hSlides.setPower(var.hSlideSpeed);
+            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             //WAIT FOR SLIDE TO REACH POSITION
 
@@ -71,7 +72,7 @@ public class HorizontalSlides {
 
             hSlides.setTargetPosition(var.hSlideOuttakePos);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hSlides.setPower(var.hSlideSpeed);
+            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             //WAIT FOR SLIDE TO REACH POSITION
 
@@ -106,7 +107,7 @@ public class HorizontalSlides {
 
             hSlides.setTargetPosition(distance);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hSlides.setPower(var.hSlideSpeed);
+            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             //WAIT FOR SLIDE TO REACH POSITION
 

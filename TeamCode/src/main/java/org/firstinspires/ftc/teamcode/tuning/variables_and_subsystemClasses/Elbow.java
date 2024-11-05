@@ -108,10 +108,25 @@ public class Elbow {
 
         }
     }
-    public Action ElbowToDist(int dist) {
+    public Action ElbowToDist(double dist) {
         return new elbowToDist(dist);
     }
 
+
+
+    public class elbowEject implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            elbow.setPosition(var.EjectElbowPos);
+
+            return false;
+
+        }
+    }
+    public Action ElbowEject() {
+        return new elbowEject();
+    }
 
     //ADD MORE ACTIONS HERE IF NEEDED
 

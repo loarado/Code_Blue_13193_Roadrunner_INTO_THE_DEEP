@@ -163,7 +163,7 @@ public class TeleOpTest extends LinearOpMode {
 
 
                 // Horizontal Slides go out when pressing the left trigger more than 0.1, but not past the physical max
-                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlidePhysicalMax) {
+                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax) {
 
                     //Slides move faster the harder you press the trigger
                     hSlidesPos += (int) (8*(gamepad1.left_trigger));

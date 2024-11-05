@@ -87,7 +87,7 @@ public class Wrist {
             return false;
         }
     }
-    public Action WristToDist(int dist) {
+    public Action WristToDist(double dist) {
         return new wristToDist(dist);
     }
 
