@@ -108,7 +108,7 @@ public class VerticalSlides {
         }
     }
     public Action VSlidesToDist(int dist, double velo) {
-        return new vSlidesToDist(dist);
+        return new vSlidesToDist(dist, velo);
     }
     public Action VSlidesToDist(int dist) {
         return new vSlidesToDist(dist);

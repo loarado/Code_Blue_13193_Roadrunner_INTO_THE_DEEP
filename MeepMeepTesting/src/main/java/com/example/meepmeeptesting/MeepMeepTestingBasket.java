@@ -20,11 +20,22 @@ public class MeepMeepTestingBasket {
                         .splineTo(new Vector2d(54, 54), Math.toRadians(0))
                         .waitSeconds(1)
                         .setReversed(false)
-                        .strafeTo(new Vector2d(48.5, 48))
+                        .strafeTo(new Vector2d(48, 48))
                         .turn(Math.toRadians(45))
                         .waitSeconds(1)
                         .setReversed(true)
                         .splineTo(new Vector2d(54, 54), Math.toRadians(45))
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(54, 48))
+                        .turn(Math.toRadians(45))
+                        .strafeTo(new Vector2d(58.5, 48))
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(57, 48))
+                        .splineTo(new Vector2d(54, 54), Math.toRadians(135))
+                        .waitSeconds(1)
+                        .setReversed(false)
+                        .splineTo(new Vector2d(40,12), Math.toRadians(180))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(24,12), Math.toRadians(0)))
                         .build());
 //test
 

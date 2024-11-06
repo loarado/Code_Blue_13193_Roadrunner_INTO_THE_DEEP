@@ -207,7 +207,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 );
 
                 }
-                optionsPressed = gamepad1.options;
+                optionsPressed = gamepad2.options;
 
                 if(gamepad1.share){
                     drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
@@ -234,7 +234,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
 
 
-                if ((gamepad2.x || gamepad1.square)&&!gamepadXpressed) {
+                if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed) {
 
                     if(SpecimenMode && !outtakeIsOut) {
 
@@ -267,7 +267,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 }
-                gamepadXpressed  = gamepad1.x || gamepad1.square;
+                gamepadXpressed  = gamepad2.x || gamepad2.square;
 
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
@@ -381,15 +381,11 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     // Resets hSlides position variable to OuttakePos for consistency
                     hSlidesPos = var.hSlideOuttakePos;
 
-                } else if ((gamepad1.b || gamepad1.circle)) {
-                    runningActions.add(
-                            hand.HandOuttake() //If you press B and weren't intaking just move the wheels to outtake
-                    );
                 }
 
 
 
-                if (gamepad1.dpad_up) {
+                if (gamepad2.dpad_up) {
                     runningActions.add(
                             hand.HandStop()
                     );
@@ -408,7 +404,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad1.dpad_left) {
+                if (gamepad2.dpad_left) {
                     runningActions.add(
                             hand.HandStop()
                     );
@@ -427,12 +423,12 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad1.dpad_right && !dPadRightPressed) {
+                if (gamepad2.dpad_right && !dPadRightPressed) {
                     if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideHighChamber + 30 && vslides.getCurrentPosition() > var.vSlideHighChamber - 30)) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 300),
+                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 30),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -442,7 +438,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 300),
+                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 30),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -467,7 +463,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
                 }
-                dPadRightPressed = gamepad1.dpad_right;
+                dPadRightPressed = gamepad2.dpad_right;
 
 
 
@@ -501,7 +497,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 }
-                dPadDownPressed = gamepad1.dpad_down;
+                dPadDownPressed = gamepad1.dpad_down || gamepad2.dpad_down;
 
 
 

@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Elbow;
@@ -23,15 +22,14 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-
-@Autonomous(name = "Auto Basket Test", group = "Autonomous")
-public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
+@Autonomous(name = "Auto Observatory Test", group = "Autonomous")
+public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
     public int distance = 0;
 
     @Override
     public void runOpMode() {
 
-        Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(180));
+        Pose2d beginPose = new Pose2d(-24, 64.25, Math.toRadians(180));
 
         // INSTANTIATE SUBSYSTEMS AND DT
 
@@ -134,7 +132,7 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,950)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
                             new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
@@ -170,14 +168,14 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,950)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
                             new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     sample2.build(),
-                                    vslides.VSlidesToDist(0, 950),
+                                    vslides.VSlidesToDist(0, 650),
                                     outtake.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
@@ -206,14 +204,14 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket3.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,950)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
                             new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(650,950),
+                                    vslides.VSlidesToDist(1000,650),
                                     outtake.OuttakeIdle()
                             )
 
