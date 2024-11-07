@@ -89,7 +89,7 @@ public class SubsystemsVariables {
 
 
 
-    public final double outtakeIdle = .95;
+    public final double outtakeIdle = 1;
     public final double outtakeOut = 0.33;
 
 

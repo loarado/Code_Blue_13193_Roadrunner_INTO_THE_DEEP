@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -7,9 +12,9 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Elbow;
@@ -23,13 +28,16 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-
-@Autonomous(name = "Auto Basket Test", group = "Autonomous")
-public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
+@Autonomous(name = "Auto Basket Path", group = "Autonomous")
+public class BraulioAuto_Basket_Path extends LinearOpMode {
     public int distance = 0;
+
+
 
     @Override
     public void runOpMode() {
+
+
 
         Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(180));
 
@@ -60,6 +68,7 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
         int hSlideGrabExtension = 370;
 
         int VSlideTempVelo = 950;
+
 
         Actions.runBlocking(
 
@@ -115,7 +124,31 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
                 .strafeTo(new Vector2d(24,12));
 
-        double sleepTime = 1;
+
+
+        SequentialAction GrabSample = new SequentialAction(
+                new ParallelAction(
+                        hslide.HSlideToDist(hSlideGrabExtension),
+                        wrist.WristIntake(),
+                        elbow.PrepElbowIntake(),
+                        hand.HandIntake()
+                ),
+                new SleepAction(2),
+                elbow.ElbowIntake(),
+                new SleepAction(2),
+                hand.HandStop(),
+                new ParallelAction(
+                        wrist.WristOuttake(),
+                        elbow.ElbowOuttake(),
+                        hslide.HSlideToTransfer()
+                ),
+                new SleepAction(2),
+                hand.HandOuttake(),
+                new SleepAction(2),
+                hand.HandStop()
+        );
+
+        double sleepTime = 1.25;
 
         if (isStopRequested()) { return; }
 
@@ -123,88 +156,28 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
                     new SequentialAction(
 
                             new ParallelAction(
-                                    bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    bucket1.build()
                             ),
                             new SleepAction(3),
-                            outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
                             new ParallelAction(
-                                    sample1.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
-                                    outtake.OuttakeIdle()
+                                    sample1.build()
                             ),
                             new SleepAction(sleepTime),
 
-                            new SequentialAction(
-                                    new ParallelAction(
-                                            hslide.HSlideToDist(hSlideGrabExtension),
-                                            wrist.WristIntake(),
-                                            elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    elbow.ElbowIntake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop(),
-                                    new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
-                                            hslide.HSlideToTransfer()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    hand.HandOuttake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop()
-                            ),
-
                             new ParallelAction(
-                                    bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    bucket2.build()
                             ),
                             new SleepAction(3),
-                            outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
                             new ParallelAction(
-                                    sample2.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
-                                    outtake.OuttakeIdle()
+                                    sample2.build()
                             ),
                             new SleepAction(sleepTime),
-
-                            new SequentialAction(
-                                    new ParallelAction(
-                                            hslide.HSlideToDist(hSlideGrabExtension),
-                                            wrist.WristIntake(),
-                                            elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    elbow.ElbowIntake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop(),
-                                    new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
-                                            hslide.HSlideToTransfer()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    hand.HandOuttake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop()
-                            ),
-
                             new ParallelAction(
-                                    bucket3.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    bucket3.build()
                             ),
                             new SleepAction(3),
-                            outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
                             new ParallelAction(
-                                    park.build(),
-                                    vslides.VSlidesToDist(650,VSlideTempVelo),
-                                    outtake.OuttakeIdle()
+                                    park.build()
                             )
 
                     )

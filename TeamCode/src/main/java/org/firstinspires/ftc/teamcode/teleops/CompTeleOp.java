@@ -131,14 +131,19 @@ public class CompTeleOp extends LinearOpMode {
         boolean dPadDownPressed = false; // Tracks DpadDpwn button state
         boolean dPadRightPressed = false; // Tracks DpadRight button state
         boolean optionsPressed = false;
-        int vSlidesPos = 0; // Variable for vertical slides position
-        int hSlidesPos = 0; // Variable for horizontal slides position
+        boolean leftStickPressed = false;
+        boolean rightStickPressed = false;
+        int vSlidesPos = vslides.getCurrentPosition(); // Variable for vertical slides position
+        int hSlidesPos = hSlides.getCurrentPosition(); // Variable for horizontal slides position
 
         boolean SpecimenMode = false;
         boolean BasketMode = true;
-        
+
         boolean outtakeIsOut = false;
         boolean specigrabberIsOpen = false;
+
+        int debugModeSet = 0;
+        boolean debugModeIsOn = false;
 
         VelConstraint velSlow = new TranslationalVelConstraint(30);
         VelConstraint velFast = new TranslationalVelConstraint(45);
@@ -146,33 +151,12 @@ public class CompTeleOp extends LinearOpMode {
         AccelConstraint accSlow = new ProfileAccelConstraint(-30, 30);
         AccelConstraint accFast = new ProfileAccelConstraint(-45, 45);
 
-        // Reset encoders to set initial motor positions
-        hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Set horizontal slides initial position
-        hSlides.setTargetPosition(0);
-        hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // Set vertical slides initial position
-        lArm.setTargetPosition(0);
-        rArm.setTargetPosition(0);
-        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set initial LED pattern
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
         // Initialize servos to default positions using ParallelAction
-        Actions.runBlocking(
-                new ParallelAction(
-                        wrist.WristMiddle(),
-                        elbow.ElbowMiddle(),
-                        specigrabber.SpecigrabberClose(),
-                        outtake.OuttakeIdle()
-                )
-        );
+
 
 
 
@@ -183,8 +167,38 @@ public class CompTeleOp extends LinearOpMode {
 
 
 
+            while ((gamepad1.left_stick_x+gamepad1.left_stick_y+gamepad1.right_stick_x+gamepad1.right_stick_y==0)){
+                telemetry.addLine("WAITING FOR START");
+                telemetry.update();
+            }
+
+            // Set horizontal slides initial position
+            hSlides.setTargetPosition(var.hSlideOuttakePos);
+            hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+
+            // Set vertical slides initial position
+            lArm.setTargetPosition(0);
+            rArm.setTargetPosition(0);
+            lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            Actions.runBlocking(
+                    new ParallelAction(
+                            wrist.WristMiddle(),
+                            elbow.ElbowMiddle(),
+                            specigrabber.SpecigrabberClose(),
+                            outtake.OuttakeIdle()
+                    )
+            );
+
+
+
             while (opModeIsActive()) {
 
+
+
+                //For roadrunner localization during tele-op
                 drive.updatePoseEstimate();
 
                 TrajectoryActionBuilder t1 = drive.actionBuilder(drive.pose)
@@ -197,10 +211,6 @@ public class CompTeleOp extends LinearOpMode {
 
                 TelemetryPacket packet = new TelemetryPacket();
 
-
-                // updated based on gamepads
-
-                // update running actions
                 List<Action> newActions = new ArrayList<>();
                 for (Action action : runningActions) {
                     action.preview(packet.fieldOverlay());
@@ -212,9 +222,13 @@ public class CompTeleOp extends LinearOpMode {
 
                 if(gamepad1.options && !optionsPressed){
 
-                Actions.runBlocking(
-                        traj
-                );
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+
+                    Actions.runBlocking(
+                            traj
+                    );
+
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
                 }
                 optionsPressed = gamepad1.options;
@@ -225,6 +239,11 @@ public class CompTeleOp extends LinearOpMode {
                 }
 
 
+                //Above is for making the robot move to a position automatically
+
+
+
+                //EJECT BUTTON
                 if (gamepad1.y || gamepad1.triangle) {
 
                     runningActions.add(
@@ -235,8 +254,9 @@ public class CompTeleOp extends LinearOpMode {
                     );
                     if(hSlides.getCurrentPosition()<175){
                         runningActions.add(
-                                 hslide.HSlideToDist(175)
+                                hslide.HSlideToDist(175)
                         );
+                        hSlidesPos=175;
                     }
                     runningActions.add(
                             hand.HandOuttake()
@@ -244,6 +264,7 @@ public class CompTeleOp extends LinearOpMode {
                 }
 
 
+                //CLAW AND OUTTAKE OPEN AND CLOSE BUTTON
                 if ((gamepad1.x || gamepad1.square)&&!gamepadXpressed) {
 
                     if(SpecimenMode && !outtakeIsOut) {
@@ -280,9 +301,11 @@ public class CompTeleOp extends LinearOpMode {
                 gamepadXpressed  = gamepad1.x || gamepad1.square;
 
 
+
+
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
-                if (gamepad1.left_bumper && vSlidesPos < var.vSlidePhysicalMax) {
+                if (gamepad1.left_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
                     vSlidesPos += 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -293,7 +316,7 @@ public class CompTeleOp extends LinearOpMode {
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
-                if (gamepad1.right_bumper && vSlidesPos > 0) {
+                if (gamepad1.right_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
                     vSlidesPos -= 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -305,9 +328,33 @@ public class CompTeleOp extends LinearOpMode {
 
 
 
+                //DEBUG VERSIONS
+                if (gamepad1.left_bumper && debugModeIsOn) {
+                    vSlidesPos += 15;
+                    lArm.setTargetPosition(vSlidesPos);
+                    rArm.setTargetPosition(vSlidesPos);
+                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                }
+                if (gamepad1.right_bumper && debugModeIsOn) {
+                    vSlidesPos -= 15;
+                    lArm.setTargetPosition(vSlidesPos);
+                    rArm.setTargetPosition(vSlidesPos);
+                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                }
+
+
+
+
+
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
-                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax) {
+                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
                     hSlidesPos += (int) (8 * (gamepad1.left_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -315,13 +362,27 @@ public class CompTeleOp extends LinearOpMode {
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
-                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos) {
+                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos && !debugModeIsOn) {
                     hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
+                if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
+                    hSlidesPos += (int) (8 * (gamepad1.left_trigger));
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+                }
+
+                // Moves slides inward with right trigger, but stops at minimum position
+                if (gamepad1.right_trigger > 0.1 && debugModeIsOn) {
+                    hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+                }
 
 
                 // Intake mode toggle with A button
@@ -438,7 +499,7 @@ public class CompTeleOp extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 300),
+                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 30),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -448,7 +509,7 @@ public class CompTeleOp extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 300),
+                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 30),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -484,7 +545,7 @@ public class CompTeleOp extends LinearOpMode {
                                     vslides.VSlidesTo0(),
                                     outtake.OuttakeIdle()
                             )
-                        );
+                    );
 
                 } else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(
@@ -496,13 +557,13 @@ public class CompTeleOp extends LinearOpMode {
                         currentlyIntaking = true;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
 
-                            runningActions.add(
-                                    new ParallelAction(
-                                            wrist.WristToDist(var.FrontIntakeWristPos),
-                                            elbow.ElbowToDist(var.FrontIntakeElbowPos),
-                                            hand.HandIntake()
-                                    )
-                            );
+                        runningActions.add(
+                                new ParallelAction(
+                                        wrist.WristToDist(var.FrontIntakeWristPos),
+                                        elbow.ElbowToDist(var.FrontIntakeElbowPos),
+                                        hand.HandIntake()
+                                )
+                        );
 
                     }
 
@@ -511,18 +572,28 @@ public class CompTeleOp extends LinearOpMode {
 
 
 
-                if (gamepad1.left_stick_button){
+                if (gamepad1.left_stick_button&&!debugModeIsOn&&!gamepad1.right_stick_button){
                     BasketMode = false;
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                 }
 
-                if (gamepad1.right_stick_button){
+                if (gamepad1.right_stick_button&&!debugModeIsOn&&!gamepad1.left_stick_button){
                     BasketMode = true;
                     SpecimenMode = false;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 }
 
+                if (gamepad1.left_stick_button&&debugModeIsOn&&!leftStickPressed&&!gamepad1.right_stick_button){
+                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
+                }
+
+                if (gamepad1.right_stick_button&&debugModeIsOn&&!rightStickPressed&&!gamepad1.left_stick_button){
+                    hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
+                }
 
 
                 //Slower when intaking or when stuff is extended
@@ -541,15 +612,34 @@ public class CompTeleOp extends LinearOpMode {
                     );
                 }
 
-                if(currentlyIntaking && hSlidesPos<150){
+                if(currentlyIntaking && hSlidesPos<150 && !debugModeIsOn){
                     hSlidesPos = 150;
                 }
 
-                if(vSlidesPos<0){
+                if(vSlidesPos<0 && !debugModeIsOn){
                     vSlidesPos = 0;
-                } else if (vSlidesPos>var.vSlidePhysicalMax) {
+                } else if (vSlidesPos>var.vSlidePhysicalMax && !debugModeIsOn) {
                     vSlidesPos = var.vSlidePhysicalMax;
                 }
+
+                if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&!debugModeIsOn){
+                    debugModeSet+=1;
+                    if (debugModeSet >= 70){
+                        debugModeIsOn = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                        debugModeSet = 0;
+                    }
+                }
+                if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&debugModeIsOn){
+                    debugModeSet += 1;
+                    if (debugModeSet >= 70) {
+                        debugModeIsOn = false;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                        debugModeSet=0;
+                    }
+                }
+                leftStickPressed = gamepad1.left_stick_button;
+                rightStickPressed = gamepad1.right_stick_button;
 
 
                 // Driving Code
@@ -576,6 +666,8 @@ public class CompTeleOp extends LinearOpMode {
                 telemetry.addData("IntakeMode = ", intakeMode);
                 telemetry.addData("Currently Intaking: = ", currentlyIntaking);
                 telemetry.addData("Transfer: = ", SampleTransferred);
+                telemetry.addData("DebugModeSet: = ", debugModeSet);
+                telemetry.addData("DebugMode: = ", debugModeIsOn);
                 telemetry.update();
 
                 dash.sendTelemetryPacket(packet);
