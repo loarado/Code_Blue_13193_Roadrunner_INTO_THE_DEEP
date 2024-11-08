@@ -71,6 +71,21 @@ public class Wrist {
 
 
 
+    public class wristDebug implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            wrist.setPosition(var.DebugWristPos);
+
+            return false;
+        }
+    }
+    public Action WristDebug() {
+        return new wristDebug();
+    }
+
+
+
     public class wristToDist implements Action  {
 
         double distance = 0;

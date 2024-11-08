@@ -128,6 +128,39 @@ public class Elbow {
         return new elbowEject();
     }
 
+
+
+    public class elbowDebugUp implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            elbow.setPosition(var.DebugUpElbowPos);
+
+            return false;
+
+        }
+    }
+    public Action ElbowDebugUp() {
+        return new elbowDebugUp();
+    }
+
+
+
+    public class elbowDebugDown implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+
+            elbow.setPosition(var.DebugLowElbowPos);
+
+            return false;
+
+        }
+    }
+    public Action ElbowDebugDown() {
+        return new elbowDebugDown();
+    }
+
+
     //ADD MORE ACTIONS HERE IF NEEDED
 
 

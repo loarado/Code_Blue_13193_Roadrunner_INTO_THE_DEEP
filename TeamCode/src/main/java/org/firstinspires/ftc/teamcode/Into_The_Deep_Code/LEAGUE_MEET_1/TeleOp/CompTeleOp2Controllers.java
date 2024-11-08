@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
@@ -167,15 +168,15 @@ public class CompTeleOp2Controllers extends LinearOpMode {
             }
 
             // Set horizontal slides initial position
-            hSlides.setTargetPosition(var.hSlideOuttakePos);
+            hSlides.setTargetPosition(hSlidesPos);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             // Set vertical slides initial position
-            lArm.setTargetPosition(0);
-            rArm.setTargetPosition(0);
+            lArm.setTargetPosition(vSlidesPos);
+            rArm.setTargetPosition(vSlidesPos);
             lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             Actions.runBlocking(
                     new ParallelAction(
@@ -238,7 +239,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //EJECT BUTTON
-                if (gamepad1.y || gamepad1.triangle) {
+                if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn) {
 
                     runningActions.add(
                             new ParallelAction(
@@ -255,11 +256,34 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             hand.HandOuttake()
                     );
+                } else if ((gamepad1.y || gamepad1.triangle)&&debugModeIsOn) {
+                    runningActions.add(
+                            new ParallelAction(
+                                    wrist.WristDebug(),
+                                    elbow.ElbowDebugUp()
+                            )
+                    );
+                }
+
+                if((gamepad1.x||gamepad1.square)&&!gamepadXpressed&&debugModeIsOn){
+                    runningActions.add(
+                            new ParallelAction(
+                                    wrist.WristDebug(),
+                                    elbow.ElbowDebugDown()
+                            )
+                    );
+                }
+
+                if((gamepad1.a || gamepad1.cross) && !gamepadApressed && debugModeIsOn){
+                    runningActions.add(
+                                    hand.HandIntake()
+                    );
                 }
 
 
+
                 //CLAW AND OUTTAKE OPEN AND CLOSE BUTTON
-                if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed) {
+                if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed && !debugModeIsOn) {
 
                     if(SpecimenMode && !outtakeIsOut) {
 
@@ -292,7 +316,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 }
-                gamepadXpressed  = gamepad2.x || gamepad2.square;
+                gamepadXpressed  = gamepad2.x || gamepad2.square || gamepad1.x || gamepad1.square;
 
 
 
@@ -380,7 +404,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
                 // Intake mode toggle with A button
-                if ((gamepad1.a || gamepad1.cross) && !gamepadApressed) {  // When A button is newly pressed
+                if ((gamepad1.a || gamepad1.cross) && !gamepadApressed &&!debugModeIsOn) {  // When A button is newly pressed
 
                     runningActions.add(
                             hand.HandStop()
@@ -493,7 +517,8 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 50),
+                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 250),
+                                        new SleepAction(1.5),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -503,7 +528,8 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 50),
+                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 250),
+                                        new SleepAction(1.5),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -520,7 +546,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         runningActions.add(
                                 new ParallelAction(
                                         outtake.OuttakeIdle(),
-                                        new SleepAction(0.75),
+                                        new SleepAction(1.25),
                                         vslides.VSlidesTo0()
                                 )
                         );
@@ -541,6 +567,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                                     outtake.OuttakeIdle()
                             )
                         );
+                    vSlidesPos = 0;
 
                 } else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(

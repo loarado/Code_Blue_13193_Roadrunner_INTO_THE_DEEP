@@ -21,6 +21,8 @@ public class SubsystemsVariables {
     public final double FrontIntakeWristPos = 0.55;
 
 
+    public final double DebugWristPos = 0.65;
+
 
     public final double OuttakeElbowPos = 0.38;
     public final double IntakeElbowPos = 0.15;
@@ -28,6 +30,9 @@ public class SubsystemsVariables {
     public final double MiddleElbowPos = 0.4;
     public final double FrontIntakeElbowPos = 0.05;
     public final double EjectElbowPos = 0.3;
+
+    public final double DebugUpElbowPos = 0.6;
+    public final double DebugLowElbowPos = 0.68;
 
 
     public final double rightHandIn = 1;
@@ -57,10 +62,10 @@ public class SubsystemsVariables {
     public final double clawHeight = 9.5;            // Height of the claw from the ground in inches
 
     // Chamber heights (measured from ground)
-    public final double highChamberHeight = 26+1.5;       // Height of high chamber in inches
-    public final double lowChamberHeight = 13+1.5;        // Height of low chamber in inches
+    public final double highChamberHeight = 26+4;       // Height of high chamber in inches
+    public final double lowChamberHeight = 13;        // Height of low chamber in inches
     public final double approachClearance = 1;        // Clearance above the chamber bar for initial clipping
-    public final double dropClearance = 1;            // Drop below the chamber bar for releasing the element
+    public final double dropClearance = 3.70;            // Drop below the chamber bar for releasing the element
 
     // Encoder tick values for high and low chambers, positioning above the bars for clipping
     public final int vSlideHighChamber = (int) ((highChamberHeight - clawHeight + approachClearance) * ticksPerInch);
