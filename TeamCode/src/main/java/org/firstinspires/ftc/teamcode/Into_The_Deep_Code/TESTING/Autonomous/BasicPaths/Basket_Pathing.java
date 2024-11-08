@@ -1,10 +1,5 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.BasicPaths;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -12,7 +7,6 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -29,7 +23,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wris
 
 
 @Autonomous(name = "Auto Basket Path", group = "Autonomous")
-public class BraulioAuto_Basket_Path extends LinearOpMode {
+public class Basket_Pathing extends LinearOpMode {
     public int distance = 0;
 
 

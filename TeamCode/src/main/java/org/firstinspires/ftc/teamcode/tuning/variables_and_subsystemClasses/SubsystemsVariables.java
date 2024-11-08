@@ -49,7 +49,7 @@ public class SubsystemsVariables {
     public final double ticksPerInch = vSlidePhysicalMax / vSlideMaxHeight;
 
     public final double highBucketHeight = 43;     // Height of high bucket in inches
-    public final double lowBucketHeight = 25.75;   // Height of low bucket in inches
+    public final double lowBucketHeight = 25.75-2;   // Height of low bucket in inches
 
     public final int vSlideHighBasket = (int) ((highBucketHeight + bottomOffset + extraClearance) * ticksPerInch);
     public final int vSlideLowBasket = (int) ((lowBucketHeight + bottomOffset + extraClearance) * ticksPerInch);
@@ -57,10 +57,10 @@ public class SubsystemsVariables {
     public final double clawHeight = 9.5;            // Height of the claw from the ground in inches
 
     // Chamber heights (measured from ground)
-    public final double highChamberHeight = 26;       // Height of high chamber in inches
-    public final double lowChamberHeight = 13;        // Height of low chamber in inches
+    public final double highChamberHeight = 26+1.5;       // Height of high chamber in inches
+    public final double lowChamberHeight = 13+1.5;        // Height of low chamber in inches
     public final double approachClearance = 1;        // Clearance above the chamber bar for initial clipping
-    public final double dropClearance = 1.5;            // Drop below the chamber bar for releasing the element
+    public final double dropClearance = 1;            // Drop below the chamber bar for releasing the element
 
     // Encoder tick values for high and low chambers, positioning above the bars for clipping
     public final int vSlideHighChamber = (int) ((highChamberHeight - clawHeight + approachClearance) * ticksPerInch);
@@ -97,7 +97,5 @@ public class SubsystemsVariables {
     public final double specigrabberOpen = 0.55;
     public final double specigrabberClosed = 0.82;
 
-
-    final double servoTolerance = 0.03;
 
 }

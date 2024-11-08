@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.SubsystemsPaths;
 
 import androidx.annotation.NonNull;
 
@@ -12,37 +12,55 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.teamcode.tuning.pidTest.H_Slides_Methods;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 
 @Disabled
 
-@Autonomous(name = "BraulioHSlidesPIDAutoTest", group = "Autonomous")
-public class BraulioHSlidesPIDAutoTest extends LinearOpMode {
-    public double distance = 0;
+@Autonomous(name = "BraulioAutoRunToPosHslideTest", group = "Autonomous")
+public class BraulioAutoRunToPosHslideTest extends LinearOpMode {
+    public int distance = 0;
     public class HorizontalSlides {
         private DcMotor hSlides;
 
         public HorizontalSlides(HardwareMap hardwareMap) {
             hSlides = hardwareMap.get(DcMotor.class, "hSlides");
+            hSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hSlides.setDirection(DcMotor.Direction.FORWARD);
         }
-        public class hSlideTo implements Action  {
+        public class hSlideToMax implements Action  {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                while(!(hSlides.getCurrentPosition()>(distance-10)&&hSlides.getCurrentPosition()<(distance+10))) {
-                    hSlides.setPower(H_Slides_Methods.returnPID(hSlides.getCurrentPosition(), distance));
+                hSlides.setTargetPosition(800);
+                hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                hSlides.setPower(0.5);
+                while(hSlides.isBusy()) {
+                    telemetry.addData("H SLIDES BUSY", 800);
+                    telemetry.update();
                 }
                 return false;
             }
         }
-        public Action HSlideTo(double dist) {
-            distance = dist;
-            return new hSlideTo();
+        public Action HSlideToMax() {
+                return new hSlideToMax();
+        }
+        public class hSlideTo0 implements Action  {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                hSlides.setTargetPosition(0);
+                hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                hSlides.setPower(0.5);
+                while(hSlides.isBusy()) {
+                    telemetry.addData("H SLIDES BUSY", 0);
+                    telemetry.update();
+                }
+                return false;
+            }
+        }
+        public Action HSlideTo0() {
+            return new hSlideTo0();
         }
     }
     @Override
@@ -53,24 +71,21 @@ public class BraulioHSlidesPIDAutoTest extends LinearOpMode {
         waitForStart();
 
         TrajectoryActionBuilder t1 = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(0, -2))
+                .strafeTo(new Vector2d(0, -20))
                 .waitSeconds(1);
         TrajectoryActionBuilder twait = drive.actionBuilder(beginPose)
                 .waitSeconds(1);
 
         Action wait = twait.build();
 
-        if (isStopRequested()) return;
-
+        if (isStopRequested()) {
+            return;
+        }
             Actions.runBlocking(
                     new SequentialAction(
                             t1.build(),
-                            hslide.HSlideTo(300),
-                            hslide.HSlideTo(50),
-                            hslide.HSlideTo(700),
-                            hslide.HSlideTo(200),
-                            hslide.HSlideTo(600)
-
+                            hslide.HSlideToMax(),
+                            hslide.HSlideTo0()
                     )
             );
         }

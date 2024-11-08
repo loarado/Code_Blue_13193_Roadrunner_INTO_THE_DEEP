@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.SubsystemsPaths;
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Elbow;
@@ -23,15 +22,14 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-
-@Autonomous(name = "Auto Basket Test", group = "Autonomous")
-public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
+@Autonomous(name = "Auto Observatory Test", group = "Autonomous")
+public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
     public int distance = 0;
 
     @Override
     public void runOpMode() {
 
-        Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(180));
+        Pose2d beginPose = new Pose2d(-24, 64.25, Math.toRadians(180));
 
         // INSTANTIATE SUBSYSTEMS AND DT
 
@@ -57,10 +55,6 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
         Specigrabber specigrabber = new Specigrabber(hardwareMap);
 
-        int hSlideGrabExtension = 370;
-
-        int VSlideTempVelo = 950;
-
         Actions.runBlocking(
 
                 // MAKE SERVOS STAY IN PLACE AND STUFF
@@ -81,41 +75,55 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
         TrajectoryActionBuilder bucket1 = drive.actionBuilder(beginPose)
                 .setReversed(true)
                 .strafeTo(new Vector2d(40, 60))
-                .splineTo(new Vector2d(56, 56), Math.toRadians(0));
+                .splineTo(new Vector2d(54, 54), Math.toRadians(0));
 
-        Pose2d bucket1end = new Pose2d(56, 56, Math.toRadians(225));
-
-        TrajectoryActionBuilder sample1 = drive.actionBuilder(bucket1end)
+        TrajectoryActionBuilder sample1 = drive.actionBuilder(beginPose)
                 .setReversed(false)
                 .strafeTo(new Vector2d(48, 48))
-                .turn(Math.toRadians(47));
+                .turnTo(Math.toRadians(-85));
 
-        Pose2d sample1end = new Pose2d(48, 48, Math.toRadians(272));
+        TrajectoryActionBuilder bucket2 = drive.actionBuilder(beginPose)
+                .setReversed(true)
+                .turnTo(Math.toRadians(45))
+                .strafeTo(new Vector2d(54, 54));
 
-        TrajectoryActionBuilder bucket2 = drive.actionBuilder(sample1end)
-                .turn(Math.toRadians(-47))
-                .strafeTo(new Vector2d(48, 48));
-
-        Pose2d bucket2end = new Pose2d(48, 48, Math.toRadians(225));
-
-        TrajectoryActionBuilder sample2 = drive.actionBuilder(bucket2end)
+        TrajectoryActionBuilder sample2 = drive.actionBuilder(beginPose)
                 .strafeTo(new Vector2d(54, 48))
-                .turn(Math.toRadians(45))
+                .turnTo(Math.toRadians(-85))
                 .strafeTo(new Vector2d(58.5, 48));
 
-        Pose2d sample2end = new Pose2d(58.5, 48, Math.toRadians(270));
+        TrajectoryActionBuilder bucket3 = drive.actionBuilder(beginPose)
+                .turnTo(135)
+                .strafeTo(new Vector2d(54, 54));
 
-        TrajectoryActionBuilder bucket3 = drive.actionBuilder(sample2end)
-                .turn(Math.toRadians(-45))
-                .strafeTo(new Vector2d(56, 56));
+        TrajectoryActionBuilder park = drive.actionBuilder(beginPose)
+                .setReversed(false)
+                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(180))
+                .lineToXLinearHeading(24, Math.toRadians(0));
 
-        Pose2d bucket3end = new Pose2d(56, 56, Math.toRadians(225));
+        SequentialAction GrabSample = new SequentialAction(
+                new ParallelAction(
+                        hslide.HSlideToDist(340),
+                        wrist.WristIntake(),
+                        elbow.PrepElbowIntake(),
+                        hand.HandIntake()
+                ),
+                new SleepAction(2),
+                elbow.ElbowIntake(),
+                new SleepAction(2),
+                hand.HandStop(),
+                new ParallelAction(
+                        wrist.WristOuttake(),
+                        elbow.ElbowOuttake(),
+                        hslide.HSlideToTransfer()
+                ),
+                new SleepAction(2),
+                hand.HandOuttake(),
+                new SleepAction(2),
+                hand.HandStop()
+        );
 
-        TrajectoryActionBuilder park = drive.actionBuilder(bucket3end)
-                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
-                .strafeTo(new Vector2d(24,12));
-
-        double sleepTime = 1;
+        double sleepTime = 1.5;
 
         if (isStopRequested()) { return; }
 
@@ -124,21 +132,21 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
-                            new SleepAction(3),
+                            new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     sample1.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
+                                    vslides.VSlidesToDist(0, 650),
                                     outtake.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
 
                             new SequentialAction(
                                     new ParallelAction(
-                                            hslide.HSlideToDist(hSlideGrabExtension),
+                                            hslide.HSlideToDist(355),
                                             wrist.WristIntake(),
                                             elbow.PrepElbowIntake(),
                                             hand.HandIntake()
@@ -160,21 +168,21 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
-                            new SleepAction(3),
+                            new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     sample2.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
+                                    vslides.VSlidesToDist(0, 650),
                                     outtake.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
 
                             new SequentialAction(
                                     new ParallelAction(
-                                            hslide.HSlideToDist(hSlideGrabExtension),
+                                            hslide.HSlideToDist(355),
                                             wrist.WristIntake(),
                                             elbow.PrepElbowIntake(),
                                             hand.HandIntake()
@@ -196,14 +204,14 @@ public class BraulioAuto_Subsystems_Basket extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket3.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
                             ),
-                            new SleepAction(3),
+                            new SleepAction(sleepTime),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(650,VSlideTempVelo),
+                                    vslides.VSlidesToDist(1000,650),
                                     outtake.OuttakeIdle()
                             )
 

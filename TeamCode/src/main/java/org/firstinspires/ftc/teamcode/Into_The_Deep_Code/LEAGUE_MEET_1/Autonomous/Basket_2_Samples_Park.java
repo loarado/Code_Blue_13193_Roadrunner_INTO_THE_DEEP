@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_1.Autonomous;
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -22,14 +22,14 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Vert
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 
-@Autonomous(name = "Auto Observatory Test", group = "Autonomous")
-public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
+@Autonomous(name = "Basket 2 Samples Park", group = "Autonomous")
+public class Basket_2_Samples_Park extends LinearOpMode {
     public int distance = 0;
 
     @Override
     public void runOpMode() {
 
-        Pose2d beginPose = new Pose2d(-24, 64.25, Math.toRadians(180));
+        Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(180));
 
         // INSTANTIATE SUBSYSTEMS AND DT
 
@@ -55,6 +55,10 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
 
         Specigrabber specigrabber = new Specigrabber(hardwareMap);
 
+        int hSlideGrabExtension = 370;
+
+        int VSlideTempVelo = 950;
+
         Actions.runBlocking(
 
                 // MAKE SERVOS STAY IN PLACE AND STUFF
@@ -75,53 +79,24 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
         TrajectoryActionBuilder bucket1 = drive.actionBuilder(beginPose)
                 .setReversed(true)
                 .strafeTo(new Vector2d(40, 60))
-                .splineTo(new Vector2d(54, 54), Math.toRadians(0));
+                .splineTo(new Vector2d(56, 56), Math.toRadians(0));
 
-        TrajectoryActionBuilder sample1 = drive.actionBuilder(beginPose)
+        Pose2d bucketEnd = new Pose2d(56, 56, Math.toRadians(225));
+
+        TrajectoryActionBuilder sample1 = drive.actionBuilder(bucketEnd)
                 .setReversed(false)
                 .strafeTo(new Vector2d(48, 48))
-                .turnTo(Math.toRadians(-85));
+                .turn(Math.toRadians(47));
 
-        TrajectoryActionBuilder bucket2 = drive.actionBuilder(beginPose)
-                .setReversed(true)
-                .turnTo(Math.toRadians(45))
-                .strafeTo(new Vector2d(54, 54));
+        Pose2d sampleEnd = new Pose2d(48, 48, Math.toRadians(272));
 
-        TrajectoryActionBuilder sample2 = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(54, 48))
-                .turnTo(Math.toRadians(-85))
-                .strafeTo(new Vector2d(58.5, 48));
+        TrajectoryActionBuilder bucket2 = drive.actionBuilder(sampleEnd)
+                .turn(Math.toRadians(-47))
+                .strafeTo(new Vector2d(56, 56));
 
-        TrajectoryActionBuilder bucket3 = drive.actionBuilder(beginPose)
-                .turnTo(135)
-                .strafeTo(new Vector2d(54, 54));
-
-        TrajectoryActionBuilder park = drive.actionBuilder(beginPose)
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(180))
-                .lineToXLinearHeading(24, Math.toRadians(0));
-
-        SequentialAction GrabSample = new SequentialAction(
-                new ParallelAction(
-                        hslide.HSlideToDist(340),
-                        wrist.WristIntake(),
-                        elbow.PrepElbowIntake(),
-                        hand.HandIntake()
-                ),
-                new SleepAction(2),
-                elbow.ElbowIntake(),
-                new SleepAction(2),
-                hand.HandStop(),
-                new ParallelAction(
-                        wrist.WristOuttake(),
-                        elbow.ElbowOuttake(),
-                        hslide.HSlideToTransfer()
-                ),
-                new SleepAction(2),
-                hand.HandOuttake(),
-                new SleepAction(2),
-                hand.HandStop()
-        );
+        TrajectoryActionBuilder park = drive.actionBuilder(bucketEnd)
+                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
+                .strafeTo(new Vector2d(24,12));
 
         double sleepTime = 1.5;
 
@@ -132,25 +107,25 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
-                            new SleepAction(sleepTime),
+                            new SleepAction(2),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     sample1.build(),
-                                    vslides.VSlidesToDist(0, 650),
+                                    vslides.VSlidesToDist(0, VSlideTempVelo),
                                     outtake.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
 
                             new SequentialAction(
                                     new ParallelAction(
-                                            hslide.HSlideToDist(355),
+                                            hslide.HSlideToDist(hSlideGrabExtension),
                                             wrist.WristIntake(),
-                                            elbow.PrepElbowIntake(),
                                             hand.HandIntake()
                                     ),
+                                    elbow.PrepElbowIntake(),
                                     new SleepAction(sleepTime),
                                     elbow.ElbowIntake(),
                                     new SleepAction(sleepTime),
@@ -168,50 +143,14 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
+                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
-                            new SleepAction(sleepTime),
-                            outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
-                            new ParallelAction(
-                                    sample2.build(),
-                                    vslides.VSlidesToDist(0, 650),
-                                    outtake.OuttakeIdle()
-                            ),
-                            new SleepAction(sleepTime),
-
-                            new SequentialAction(
-                                    new ParallelAction(
-                                            hslide.HSlideToDist(355),
-                                            wrist.WristIntake(),
-                                            elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    elbow.ElbowIntake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop(),
-                                    new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
-                                            hslide.HSlideToTransfer()
-                                    ),
-                                    new SleepAction(sleepTime),
-                                    hand.HandOuttake(),
-                                    new SleepAction(sleepTime),
-                                    hand.HandStop()
-                            ),
-
-                            new ParallelAction(
-                                    bucket3.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,650)
-                            ),
-                            new SleepAction(sleepTime),
+                            new SleepAction(2),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(1000,650),
+                                    vslides.VSlidesToDist(650,VSlideTempVelo),
                                     outtake.OuttakeIdle()
                             )
 

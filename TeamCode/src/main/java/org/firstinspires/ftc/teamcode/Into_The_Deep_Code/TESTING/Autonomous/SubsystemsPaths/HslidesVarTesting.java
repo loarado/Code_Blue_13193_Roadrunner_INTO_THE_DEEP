@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.SubsystemsPaths;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -9,15 +9,14 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.HorizontalSlides;
 
 @Disabled
 
-@Autonomous(name = "BraulioAutoRunToPosHslideVARTest", group = "Autonomous")
-public class BraulioAutoRunToPosHslideVARTest extends LinearOpMode {
+@Autonomous(name = "HslidesVarTesting", group = "Autonomous")
+public class HslidesVarTesting extends LinearOpMode {
     public int distance = 0;
 
     @Override

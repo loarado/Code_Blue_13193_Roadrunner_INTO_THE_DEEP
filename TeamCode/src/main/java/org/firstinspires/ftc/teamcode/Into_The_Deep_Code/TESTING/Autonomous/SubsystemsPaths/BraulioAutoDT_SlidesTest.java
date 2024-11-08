@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Pathing.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.SubsystemsPaths;
 
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -9,17 +8,11 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Hand;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Lights;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Outtake;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Specigrabber;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VerticalSlides;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
 @Disabled
 

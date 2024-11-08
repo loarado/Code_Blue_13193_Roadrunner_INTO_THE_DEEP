@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleops;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_1.TeleOp;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -214,7 +214,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
                 runningActions = newActions;
 
-                if(gamepad2.options && !optionsPressed){
+                if((gamepad2.options||gamepad1.options) && !optionsPressed){
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
 
@@ -225,7 +225,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
                 }
-                optionsPressed = gamepad2.options;
+                optionsPressed = gamepad2.options||gamepad1.options;
 
                 if(gamepad1.share){
                     drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
@@ -349,7 +349,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
                 if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
-                    hSlidesPos += (int) (8 * (gamepad1.left_trigger));
+                    hSlidesPos += (int) (10 * (gamepad1.left_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
@@ -357,7 +357,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos && !debugModeIsOn) {
-                    hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
+                    hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
@@ -435,7 +435,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                                             hslide.HSlideToTransfer(),
                                             vslides.VSlidesTo0()
                                     ),
-                                    new SleepAction(1),
+                                    new SleepAction(0.75),
                                     hand.HandOuttake()
                             )
                     );
@@ -493,7 +493,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 30),
+                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 50),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -503,7 +503,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 30),
+                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 50),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -520,6 +520,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                         runningActions.add(
                                 new ParallelAction(
                                         outtake.OuttakeIdle(),
+                                        new SleepAction(0.75),
                                         vslides.VSlidesTo0()
                                 )
                         );
@@ -582,11 +583,13 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
+                    vSlidesPos = 0;
                 }
 
                 if (gamepad1.right_stick_button&&debugModeIsOn&&!rightStickPressed&&!gamepad1.left_stick_button){
                     hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
+                    hSlidesPos = 0;
                 }
 
 

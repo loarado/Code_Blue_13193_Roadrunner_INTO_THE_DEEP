@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleops;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_1.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
