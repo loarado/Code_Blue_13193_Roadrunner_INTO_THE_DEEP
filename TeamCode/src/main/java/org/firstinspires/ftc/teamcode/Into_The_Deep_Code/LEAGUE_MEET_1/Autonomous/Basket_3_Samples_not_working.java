@@ -58,7 +58,7 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
 
         int hSlideGrabExtension = 370;
 
-        int VSlideTempVelo = 950;
+        int VSlideTempVelo = 1200;
 
         Actions.runBlocking(
 
@@ -66,7 +66,7 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
 
                 new ParallelAction(
                         outtake.OuttakeIdle(),
-                        specigrabber.SpecigrabberClose(),
+                        specigrabber.SpecigrabberOpen(),
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
@@ -126,6 +126,7 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                     bucket1.build(),
                                     vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
+                            specigrabber.SpecigrabberClose(),
                             new SleepAction(3),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),

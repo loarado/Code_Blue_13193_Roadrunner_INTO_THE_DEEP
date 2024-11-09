@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.SubsystemsPaths;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.TESTING.Autonomous.BasicPaths;
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wris
 
 
 @Autonomous(name = "Turn Test", group = "Autonomous")
-public class BraulioAuto_Subsystems_Basket_TEST extends LinearOpMode {
+public class Turn_Test extends LinearOpMode {
     public int distance = 0;
 
     @Override

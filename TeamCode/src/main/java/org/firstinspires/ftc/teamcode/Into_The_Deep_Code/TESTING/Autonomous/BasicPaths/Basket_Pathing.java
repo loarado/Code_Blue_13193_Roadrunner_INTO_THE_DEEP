@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Subs
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.Wrist;
 
-
+@Disabled
 @Autonomous(name = "Auto Basket Path", group = "Autonomous")
 public class Basket_Pathing extends LinearOpMode {
     public int distance = 0;
