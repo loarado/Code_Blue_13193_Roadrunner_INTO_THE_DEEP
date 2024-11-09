@@ -647,7 +647,7 @@ public class CompTeleOp extends LinearOpMode {
 
                 if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&!debugModeIsOn){
                     debugModeSet+=1;
-                    if (debugModeSet >= 70){
+                    if (debugModeSet >= 45){
                         debugModeIsOn = true;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                         debugModeSet = 0;
@@ -655,7 +655,7 @@ public class CompTeleOp extends LinearOpMode {
                 }
                 if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&debugModeIsOn){
                     debugModeSet += 1;
-                    if (debugModeSet >= 70) {
+                    if (debugModeSet >= 45) {
                         debugModeIsOn = false;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                         debugModeSet=0;

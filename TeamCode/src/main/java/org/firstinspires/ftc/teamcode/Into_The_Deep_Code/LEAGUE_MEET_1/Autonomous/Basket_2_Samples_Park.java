@@ -65,7 +65,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
 
                 new ParallelAction(
                         outtake.OuttakeIdle(),
-                        specigrabber.SpecigrabberClose(),
+                        specigrabber.SpecigrabberOpen(),
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
@@ -96,7 +96,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
 
         TrajectoryActionBuilder park = drive.actionBuilder(bucketEnd)
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
-                .strafeTo(new Vector2d(24,12));
+                .strafeTo(new Vector2d(21,12));
 
         double sleepTime = 1.5;
 
@@ -109,6 +109,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
                                     bucket1.build(),
                                     vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
+                            specigrabber.SpecigrabberClose(),
                             new SleepAction(2),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
@@ -125,6 +126,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
                                             wrist.WristIntake(),
                                             hand.HandIntake()
                                     ),
+                                    new SleepAction(1),
                                     elbow.PrepElbowIntake(),
                                     new SleepAction(sleepTime),
                                     elbow.ElbowIntake(),
@@ -150,7 +152,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(650,VSlideTempVelo),
+                                    vslides.VSlidesToDist(1050,VSlideTempVelo),
                                     outtake.OuttakeIdle()
                             )
 

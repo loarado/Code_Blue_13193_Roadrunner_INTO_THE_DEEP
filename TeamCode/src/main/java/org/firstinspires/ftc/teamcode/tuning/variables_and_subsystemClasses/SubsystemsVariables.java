@@ -63,7 +63,7 @@ public class SubsystemsVariables {
 
     // Chamber heights (measured from ground)
     public final double highChamberHeight = 26+4;       // Height of high chamber in inches
-    public final double lowChamberHeight = 13;        // Height of low chamber in inches
+    public final double lowChamberHeight = 13-1;        // Height of low chamber in inches
     public final double approachClearance = 1;        // Clearance above the chamber bar for initial clipping
     public final double dropClearance = 3.70;            // Drop below the chamber bar for releasing the element
 
