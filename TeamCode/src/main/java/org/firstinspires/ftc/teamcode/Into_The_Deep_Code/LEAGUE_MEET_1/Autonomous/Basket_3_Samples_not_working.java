@@ -56,7 +56,7 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
 
         Specigrabber specigrabber = new Specigrabber(hardwareMap);
 
-        int hSlideGrabExtension = 370;
+        int hSlideGrabExtension = 375;
 
         int VSlideTempVelo = 1200;
 
@@ -115,7 +115,7 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
                 .strafeTo(new Vector2d(24,12));
 
-        double sleepTime = 1;
+        double sleepTime = 0.5;
 
         if (isStopRequested()) { return; }
 
@@ -127,9 +127,9 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                     vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
                             specigrabber.SpecigrabberClose(),
-                            new SleepAction(3),
+                            new SleepAction(2.5),
                             outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
+                            new SleepAction(1),
                             new ParallelAction(
                                     sample1.build(),
                                     vslides.VSlidesToDist(0, VSlideTempVelo),
@@ -144,18 +144,18 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                             elbow.PrepElbowIntake(),
                                             hand.HandIntake()
                                     ),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(1),
                                     elbow.ElbowIntake(),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(1),
                                     hand.HandStop(),
                                     new ParallelAction(
                                             wrist.WristOuttake(),
                                             elbow.ElbowOuttake(),
                                             hslide.HSlideToTransfer()
                                     ),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(0.75),
                                     hand.HandOuttake(),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(0.75),
                                     hand.HandStop()
                             ),
 
@@ -163,9 +163,9 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                     bucket2.build(),
                                     vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
-                            new SleepAction(3),
+                            new SleepAction(2.5),
                             outtake.OuttakeOut(),
-                            new SleepAction(sleepTime),
+                            new SleepAction(1),
                             new ParallelAction(
                                     sample2.build(),
                                     vslides.VSlidesToDist(0, VSlideTempVelo),
@@ -180,18 +180,18 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                             elbow.PrepElbowIntake(),
                                             hand.HandIntake()
                                     ),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(1),
                                     elbow.ElbowIntake(),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(1),
                                     hand.HandStop(),
                                     new ParallelAction(
                                             wrist.WristOuttake(),
                                             elbow.ElbowOuttake(),
                                             hslide.HSlideToTransfer()
                                     ),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(0.75),
                                     hand.HandOuttake(),
-                                    new SleepAction(sleepTime),
+                                    new SleepAction(0.75),
                                     hand.HandStop()
                             ),
 
@@ -199,12 +199,12 @@ public class Basket_3_Samples_not_working extends LinearOpMode {
                                     bucket3.build(),
                                     vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
                             ),
-                            new SleepAction(3),
+                            new SleepAction(2.5),
                             outtake.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(650,VSlideTempVelo),
+                                    vslides.VSlidesToDist(1030,VSlideTempVelo),
                                     outtake.OuttakeIdle()
                             )
 

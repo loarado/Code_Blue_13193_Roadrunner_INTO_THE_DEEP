@@ -323,7 +323,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
-                if (gamepad2.left_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
+                if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
                     vSlidesPos += 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -334,7 +334,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
-                if (gamepad2.right_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
+                if (gamepad2.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
                     vSlidesPos -= 25;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -347,7 +347,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //DEBUG VERSIONS
-                if (gamepad1.left_bumper && debugModeIsOn) {
+                if (gamepad2.right_bumper && debugModeIsOn) {
                     vSlidesPos += 15;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -356,7 +356,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
                     ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
-                if (gamepad1.right_bumper && debugModeIsOn) {
+                if (gamepad1.left_bumper && debugModeIsOn) {
                     vSlidesPos -= 15;
                     lArm.setTargetPosition(vSlidesPos);
                     rArm.setTargetPosition(vSlidesPos);
@@ -598,12 +598,18 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     BasketMode = false;
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                    runningActions.add(
+                            outtake.OuttakeIdle()
+                    );
                 }
 
                 if (gamepad2.right_stick_button&&!debugModeIsOn&&!gamepad2.left_stick_button){
                     BasketMode = true;
                     SpecimenMode = false;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    runningActions.add(
+                            specigrabber.SpecigrabberClose()
+                    );
                 }
 
                 if (gamepad1.left_stick_button&&debugModeIsOn&&!leftStickPressed&&!gamepad1.right_stick_button){

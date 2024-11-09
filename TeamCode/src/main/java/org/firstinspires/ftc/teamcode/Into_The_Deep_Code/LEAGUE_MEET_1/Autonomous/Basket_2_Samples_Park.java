@@ -86,12 +86,12 @@ public class Basket_2_Samples_Park extends LinearOpMode {
         TrajectoryActionBuilder sample1 = drive.actionBuilder(bucketEnd)
                 .setReversed(false)
                 .strafeTo(new Vector2d(48, 48))
-                .turn(Math.toRadians(47));
+                .turn(Math.toRadians(48));
 
         Pose2d sampleEnd = new Pose2d(48, 48, Math.toRadians(272));
 
         TrajectoryActionBuilder bucket2 = drive.actionBuilder(sampleEnd)
-                .turn(Math.toRadians(-47))
+                .turn(Math.toRadians(-48))
                 .strafeTo(new Vector2d(56, 56));
 
         TrajectoryActionBuilder park = drive.actionBuilder(bucketEnd)
@@ -152,7 +152,7 @@ public class Basket_2_Samples_Park extends LinearOpMode {
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(1050,VSlideTempVelo),
+                                    vslides.VSlidesToDist(1030,VSlideTempVelo),
                                     outtake.OuttakeIdle()
                             )
 
