@@ -80,18 +80,18 @@ public class Basket_3_Samples_Park extends LinearOpMode {
 
         TrajectoryActionBuilder path = drive.actionBuilder(beginPose)
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
-                .stopAndAdd(
+                .afterTime(.5,
                         new ParallelAction(
                                 vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo),
                                 specigrabber.SpecigrabberClose()
                         )
                 )
-                .strafeToLinearHeading(new Vector2d(59, 53.5), Math.toRadians(247))
-                .stopAndAdd(new ParallelAction(
+                .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
+                .afterTime(1, new ParallelAction(
                         hslide.HSlideToDist(hSlideGrabExtension),
                         wrist.WristIntake()
                 ))
+                .strafeToLinearHeading(new Vector2d(59, 53.5), Math.toRadians(247))
                 .afterTime(1, new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake()))
                 .afterTime(2, outtake.OuttakeOut())
                 .afterTime(1, new ParallelAction(elbow.ElbowIntake(), outtake.OuttakeIdle()))
@@ -103,7 +103,29 @@ public class Basket_3_Samples_Park extends LinearOpMode {
                         hslide.HSlideToTransfer()
                 ))
                 .afterTime(3, new ParallelAction(wrist.WristIntake(), elbow.ElbowIntake(), hand.HandIntake()))
+                .afterTime(1, new ParallelAction(
+                        hand.HandStop(),
+                        hslide.HSlideToDist(hSlideGrabExtension),
+                        wrist.WristIntake(),
+                        elbow.ElbowMiddle(),
+                        vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)))
+                .afterTime(3, outtake.OuttakeOut())
+                .afterTime(1, new ParallelAction(outtake.OuttakeIdle()))
+                .afterTime(1, new ParallelAction(
+                        vslides.VSlidesToDist(0, VSlideTempVelo)
+                ))
                 .turn(Math.toRadians(23))
+                .afterTime(1, new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake()))
+                .afterTime(2, outtake.OuttakeOut())
+                .afterTime(1, new ParallelAction(elbow.ElbowIntake(), outtake.OuttakeIdle()))
+                .afterTime(1, new ParallelAction(
+                        vslides.VSlidesToDist(0, VSlideTempVelo),
+                        hand.HandStop(),
+                        wrist.WristMiddle(),
+                        elbow.ElbowMiddle(),
+                        hslide.HSlideToTransfer()
+                ))
+                .afterTime(3, new ParallelAction(wrist.WristIntake(), elbow.ElbowIntake(), hand.HandIntake()))
                 .waitSeconds(1)
                 .turn(Math.toRadians(-23))
                 .waitSeconds(1)
