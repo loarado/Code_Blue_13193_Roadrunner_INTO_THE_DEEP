@@ -225,7 +225,7 @@ public class CompTeleOp extends LinearOpMode {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
                 }
-                optionsPressed = gamepad1.options;
+                optionsPressed = gamepad1.options||gamepad1.options;
 
                 if(gamepad1.share){
                     drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
@@ -455,8 +455,7 @@ public class CompTeleOp extends LinearOpMode {
                                             wrist.WristOuttake(),
                                             elbow.ElbowOuttake(),
                                             hand.HandStop(),
-                                            hslide.HSlideToTransfer(),
-                                            vslides.VSlidesTo0()
+                                            hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),
                                     hand.HandOuttake()
@@ -600,6 +599,7 @@ public class CompTeleOp extends LinearOpMode {
                     runningActions.add(
                             outtake.OuttakeIdle()
                     );
+                    outtakeIsOut = false;
                 }
 
                 if (gamepad1.right_stick_button&&!debugModeIsOn&&!gamepad1.left_stick_button){
@@ -609,6 +609,7 @@ public class CompTeleOp extends LinearOpMode {
                     runningActions.add(
                             specigrabber.SpecigrabberClose()
                     );
+                    specigrabberIsOpen = false;
                 }
 
                 if (gamepad1.left_stick_button&&debugModeIsOn&&!leftStickPressed&&!gamepad1.right_stick_button){

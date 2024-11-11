@@ -456,8 +456,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                                             wrist.WristOuttake(),
                                             elbow.ElbowOuttake(),
                                             hand.HandStop(),
-                                            hslide.HSlideToTransfer(),
-                                            vslides.VSlidesTo0()
+                                            hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),
                                     hand.HandOuttake()
@@ -601,6 +600,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             outtake.OuttakeIdle()
                     );
+                    outtakeIsOut = false;
                 }
 
                 if (gamepad2.right_stick_button&&!debugModeIsOn&&!gamepad2.left_stick_button){
@@ -610,6 +610,7 @@ public class CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             specigrabber.SpecigrabberClose()
                     );
+                    specigrabberIsOpen = false;
                 }
 
                 if (gamepad1.left_stick_button&&debugModeIsOn&&!leftStickPressed&&!gamepad1.right_stick_button){
