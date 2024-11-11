@@ -91,7 +91,8 @@ public class SubsystemsVariables {
     public final int hSlideOuttakePos = 50;
 
     public final int hSlideRuleMax = (int) (hSlidePhysicalMax*((slidesLength-((slidesLength + robotLength + backExtension) - 42))/slidesLength));
-
+    // currently 573.333...
+    // 21.5 inches
 
 
     public final double outtakeIdle = 1;
