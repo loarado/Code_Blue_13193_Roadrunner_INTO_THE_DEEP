@@ -49,7 +49,7 @@ public class VerticalSlides {
 
             //WAIT FOR SLIDES TO REACH POSITION
 
-            return (lArm.isBusy()&&rArm.isBusy());
+            return (lArm.isBusy()||rArm.isBusy());
         }
     }
     public Action VSlideToMax() {
@@ -104,7 +104,7 @@ public class VerticalSlides {
 
             //WAIT FOR SLIDES TO REACH POSITION
 
-            return (lArm.isBusy()&&rArm.isBusy());
+            return (lArm.isBusy()||rArm.isBusy());
         }
     }
     public Action VSlidesToDist(int dist, double velo) {
@@ -129,7 +129,7 @@ public class VerticalSlides {
 
             //WAIT FOR SLIDES TO REACH POSITION
 
-            return (lArm.isBusy()&&rArm.isBusy());
+            return (lArm.isBusy()||rArm.isBusy());
         }
     }
     public Action VSlidesTo0() {
