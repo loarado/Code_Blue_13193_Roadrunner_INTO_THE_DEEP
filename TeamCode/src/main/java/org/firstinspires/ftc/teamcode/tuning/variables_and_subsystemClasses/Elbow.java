@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -31,7 +30,7 @@ public class Elbow {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            elbow.setPosition(var.OuttakeElbowPos);
+            elbow.setPosition(var.TransferElbowPos);
 
             return false;
 

@@ -15,7 +15,7 @@ public class SubsystemsVariables {
 
 
 
-    public final double OuttakeWristPos = 0.62;
+    public final double TransferWristPos = 0.55;
     public final double IntakeWristPos = 0.38;
     public final double MiddleWristPos = 0.5;
     public final double FrontIntakeWristPos = 0.55;
@@ -24,11 +24,11 @@ public class SubsystemsVariables {
     public final double DebugWristPos = 0.65;
 
 
-    public final double OuttakeElbowPos = 0.38;
+    public final double TransferElbowPos = 0.54;
     public final double IntakeElbowPos = 0.15;
     public final double PrepIntakeElbowPos = 0.22;
-    public final double MiddleElbowPos = 0.4;
-    public final double FrontIntakeElbowPos = 0.05;
+    public final double MiddleElbowPos = 0.42;
+    public final double FrontIntakeElbowPos = 0;
     public final double EjectElbowPos = 0.3;
 
     public final double DebugUpElbowPos = 0.6;
@@ -46,9 +46,9 @@ public class SubsystemsVariables {
 
 
 
-    public final int vSlidePhysicalMax = 3700;     // Max encoder tick value for vertical slides
-    public final double vSlideMaxHeight = 63.5;    // Full extension height of slides in inches
-    public final double bottomOffset = 13;         // Offset for the bottom of the outtake box, in inches
+    public final int vSlidePhysicalMax = 3110;     // Max encoder tick value for vertical slides
+    public final double vSlideMaxHeight = 56.25;    // Full extension height of slides in inches
+    public final double bottomOffset = -2;         // Offset for the bottom of the outtake box, in inches
     public final double extraClearance = 2;        // Additional clearance needed for game element deposit
 
     public final double ticksPerInch = vSlidePhysicalMax / vSlideMaxHeight;

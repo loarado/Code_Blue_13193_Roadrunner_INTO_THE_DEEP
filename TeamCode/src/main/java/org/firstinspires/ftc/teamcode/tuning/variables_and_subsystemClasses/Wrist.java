@@ -30,7 +30,7 @@ public class Wrist {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            wrist.setPosition(var.OuttakeWristPos);
+            wrist.setPosition(var.TransferWristPos);
 
             return false;
         }
