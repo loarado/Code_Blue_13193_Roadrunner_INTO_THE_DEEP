@@ -88,10 +88,10 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 //grabber out of way
                 .afterTime(0, specigrabber.SpecigrabberClose())
 
-                //robot prepares to score
+                //robot prepares the outtake to score faster
                 .afterTime(1, outtakeLM2.OuttakeHalfOut())
 
-                //robot prepares to intake the next sample while scoring
+                //prepare to intake sample TWO while scoring sample ONE
                 .afterTime(2, hslide.HSlideToDist(hSlideGrabExtension))
                 .afterTime(2, wrist.WristIntake())
                 .afterTime(3, elbow.PrepElbowIntake())
@@ -102,86 +102,99 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 comes next so all the actions before this happen "dt" seconds after this movement,
                  */
                 .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
-                .waitSeconds(1)
+                .waitSeconds(sleepTime)
 
                 //score sample number ONE
                 .afterTime(0, outtakeLM2.OuttakeOut())
-                .waitSeconds(1)
+                .waitSeconds(sleepTime)
 
-                //grab sample 2 and bring back the outtake
+                //grab sample TWO and bring back the outtake
                 .afterTime(0, elbow.ElbowIntake())
                 .afterTime(0, outtakeLM2.OuttakeIdle())
-                .waitSeconds(1)
+                .waitSeconds(sleepTime)
 
+                //lower slides back to successfully transfer the next sample
                 .afterTime(0, vslides.VSlidesTo0())
-                .waitSeconds(1)
+                .waitSeconds(sleepTime)
 
-                .afterTime(1, new SequentialAction(
-                        new ParallelAction(hslide.HSlideToDist(hSlideGrabExtension), wrist.WristIntake()),
-                        new SleepAction(sleepTime),
-                        new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake()),
-                        new SleepAction(2),
-                        outtakeLM2.OuttakeOut(),
-                        new SleepAction(sleepTime),
-                        new ParallelAction(elbow.ElbowIntake(), outtakeLM2.OuttakeIdle()),
-                        new SleepAction(sleepTime),
-                        new ParallelAction(
-                                vslides.VSlidesToDist(0, VSlideTempVelo),
-                                hand.HandStop(),
-                                wrist.WristMiddle(),
-                                elbow.ElbowMiddle(),
-                                hslide.HSlideToTransfer()
-                        ),
-                        new SleepAction(3),
-                        new ParallelAction(wrist.WristIntake(), elbow.ElbowIntake(), hand.HandOuttake()),
-                        new SleepAction(sleepTime),
-                        new ParallelAction(
-                                hand.HandStop(),
-                                hslide.HSlideToDist(hSlideGrabExtension),
-                                wrist.WristIntake(),
-                                elbow.ElbowMiddle(),
-                                vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)
-                        ),
-                        new SleepAction(3),
-                        outtakeLM2.OuttakeOut(),
-                        new SleepAction(sleepTime),
-                        outtakeLM2.OuttakeIdle(),
-                        new SleepAction(sleepTime),
-                        vslides.VSlidesToDist(0, VSlideTempVelo)
-                ))
+                //prepare to transfer sample TWO to the outtake
+                .afterTime(0, hand.HandStop())
+                .afterTime(0, wrist.WristMiddle())
+                .afterTime(0, elbow.ElbowMiddle())
+                .afterTime(0, hslide.HSlideToTransfer())
+                .waitSeconds(sleepTime*3)
+
+                //transfer sample TWO
+                .afterTime(0, wrist.WristTransfer())
+                .afterTime(0, elbow.ElbowTransfer())
+                //this is only to be safe, if the wrist and elbow can
+                //be in transfer position while the slides come down
+                //just do that instead
+                .afterTime(0.75, hand.HandOuttake())
+                .waitSeconds(sleepTime)
+
+                //prepare to intake sample THREE while scoring sample TWO
+                .afterTime(0, hand.HandStop())
+                .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension))
+                .afterTime(0, wrist.WristIntake())
+                .afterTime(0, elbow.ElbowMiddle())
+                .afterTime(0, vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo))
+                .waitSeconds(sleepTime*3)
+
+                //score sample TWO
+                .afterTime(0, outtakeLM2.OuttakeOut())
+                .waitSeconds(sleepTime)
+
+                //reset outtake after scoring sample 2
+                .afterTime(0, outtakeLM2.OuttakeIdle())
+                .waitSeconds(sleepTime)
+
+                //lower slides to transfer sample 3
+                .afterTime(0, vslides.VSlidesToDist(0, VSlideTempVelo))
+
+                //move to next scoring position
                 .strafeToLinearHeading(new Vector2d(59, 53.5), Math.toRadians(247))
-                .waitSeconds(10)
-                .afterTime(2, new SequentialAction(
-                        new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake()),
-                        new SleepAction(sleepTime),
-                        elbow.ElbowIntake(),
-                        new SleepAction(sleepTime),
-                        new ParallelAction(
-                                hand.HandStop(),
-                                wrist.WristIntake(),
-                                elbow.ElbowIntake(),
-                                hslide.HSlideToTransfer()
-                        ),
-                        new SleepAction(sleepTime),
-                        hand.HandOuttake()
-                ))
+
+                //prepare to transfer sample 3
+                .afterTime(0, elbow.PrepElbowIntake())
+                .afterTime(0, hand.HandIntake())
+                .waitSeconds(sleepTime)
+
+                //grab sample 3
+                .afterTime(0, elbow.ElbowIntake())
+                .waitSeconds(sleepTime)
+
+                //prepare for transfer to basket
+                .afterTime(0, hand.HandStop())
+                .afterTime(0, wrist.WristTransfer())
+                .afterTime(0, elbow.ElbowTransfer())
+                .afterTime(0, hslide.HSlideToTransfer())
+                .waitSeconds(sleepTime)
+
+                //score sample 3
+                .afterTime(0, hand.HandOuttake())
                 .turn(Math.toRadians(23))
                 .waitSeconds(10)
-                .afterTime(1, new SequentialAction(
-                        new ParallelAction(
-                                hand.HandStop(),
-                                wrist.WristIntake(),
-                                elbow.ElbowMiddle(),
-                                vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)
-                        ),
-                        new SleepAction(3),
-                        outtakeLM2.OuttakeOut(),
-                        new SleepAction(sleepTime),
-                        outtakeLM2.OuttakeIdle(),
-                        new SleepAction(sleepTime),
-                        vslides.VSlidesToDist(1030, VSlideTempVelo)))
+
+                //prepare slides for scoring sample 3
+                .afterTime(0, hand.HandStop())
+                .afterTime(0, wrist.WristIntake())
+                .afterTime(0, elbow.ElbowMiddle())
+                .afterTime(0, vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo))
+                .waitSeconds(3)
+
+                //score sample 3
+                .afterTime(0, outtakeLM2.OuttakeOut())
+                .waitSeconds(sleepTime)
+
+                //reset outtake and lower slides
+                .afterTime(0, outtakeLM2.OuttakeIdle())
+                .waitSeconds(sleepTime)
+                .afterTime(0, vslides.VSlidesToDist(1030, VSlideTempVelo))
                 .turn(Math.toRadians(-23))
                 .waitSeconds(6)
+
+                //park in the designated area
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
                 .strafeTo(new Vector2d(21,12));
 

@@ -28,7 +28,7 @@ public class Wrist {
 
     //Actions are below
     
-    public class wristOuttake implements Action  {
+    public class wristTransfer implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
@@ -37,8 +37,8 @@ public class Wrist {
             return false;
         }
     }
-    public Action WristOuttake() {
-        return new wristOuttake();
+    public Action WristTransfer() {
+        return new wristTransfer();
     }
 
 

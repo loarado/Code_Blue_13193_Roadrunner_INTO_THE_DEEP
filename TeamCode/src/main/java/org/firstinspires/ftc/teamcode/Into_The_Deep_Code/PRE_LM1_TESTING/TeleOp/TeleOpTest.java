@@ -233,8 +233,8 @@ public class TeleOpTest extends LinearOpMode {
                     Actions.runBlocking(
                             new SequentialAction(
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hand.HandStop(),
                                             hslide.HSlideToTransfer(),
                                             vslides.VSlidesTo0()

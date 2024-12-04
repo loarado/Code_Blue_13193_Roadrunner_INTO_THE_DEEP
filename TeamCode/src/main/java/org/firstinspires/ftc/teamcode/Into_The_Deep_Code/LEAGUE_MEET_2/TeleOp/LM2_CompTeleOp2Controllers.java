@@ -478,8 +478,8 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hand.HandStop(),
                                             hslide.HSlideToTransfer()
                                     ),

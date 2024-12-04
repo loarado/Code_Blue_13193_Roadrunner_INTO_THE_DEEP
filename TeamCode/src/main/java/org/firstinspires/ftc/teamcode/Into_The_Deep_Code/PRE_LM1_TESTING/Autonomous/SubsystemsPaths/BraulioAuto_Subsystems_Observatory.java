@@ -114,8 +114,8 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
                 new SleepAction(2),
                 hand.HandStop(),
                 new ParallelAction(
-                        wrist.WristOuttake(),
-                        elbow.ElbowOuttake(),
+                        wrist.WristTransfer(),
+                        elbow.ElbowTransfer(),
                         hslide.HSlideToTransfer()
                 ),
                 new SleepAction(2),
@@ -157,8 +157,8 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
                                     new SleepAction(sleepTime),
                                     hand.HandStop(),
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(sleepTime),
@@ -193,8 +193,8 @@ public class BraulioAuto_Subsystems_Observatory extends LinearOpMode {
                                     new SleepAction(sleepTime),
                                     hand.HandStop(),
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(sleepTime),

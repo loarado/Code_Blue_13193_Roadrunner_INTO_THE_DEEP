@@ -28,7 +28,7 @@ public class Elbow {
 
     // Actions are below
 
-    public class elbowOuttake implements Action  {
+    public class elbowTransfer implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
@@ -38,8 +38,8 @@ public class Elbow {
 
         }
     }
-    public Action ElbowOuttake() {
-        return new elbowOuttake();
+    public Action ElbowTransfer() {
+        return new elbowTransfer();
     }
 
 

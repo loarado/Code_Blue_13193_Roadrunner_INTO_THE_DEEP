@@ -103,8 +103,8 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             ),
                             new ParallelAction(
                                     hslide.HSlideToTransfer(),
-                                    wrist.WristOuttake(),
-                                    elbow.ElbowOuttake(),
+                                    wrist.WristTransfer(),
+                                    elbow.ElbowTransfer(),
                                     lights.LightsBlue()
                             ),
                             hand.HandOuttake(),

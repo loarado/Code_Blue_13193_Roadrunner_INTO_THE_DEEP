@@ -149,8 +149,8 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                                     new SleepAction(1),
                                     hand.HandStop(),
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),
@@ -185,8 +185,8 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                                     new SleepAction(1),
                                     hand.HandStop(),
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),

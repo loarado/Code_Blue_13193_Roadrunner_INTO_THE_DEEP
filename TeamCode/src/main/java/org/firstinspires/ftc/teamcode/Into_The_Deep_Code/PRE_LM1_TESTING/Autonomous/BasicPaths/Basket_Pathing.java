@@ -133,8 +133,8 @@ public class Basket_Pathing extends LinearOpMode {
                 new SleepAction(2),
                 hand.HandStop(),
                 new ParallelAction(
-                        wrist.WristOuttake(),
-                        elbow.ElbowOuttake(),
+                        wrist.WristTransfer(),
+                        elbow.ElbowTransfer(),
                         hslide.HSlideToTransfer()
                 ),
                 new SleepAction(2),

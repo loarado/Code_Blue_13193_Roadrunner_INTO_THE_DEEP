@@ -133,8 +133,8 @@ public class LM1_Basket_2_Samples_Park extends LinearOpMode {
                                     new SleepAction(sleepTime),
                                     hand.HandStop(),
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(sleepTime),

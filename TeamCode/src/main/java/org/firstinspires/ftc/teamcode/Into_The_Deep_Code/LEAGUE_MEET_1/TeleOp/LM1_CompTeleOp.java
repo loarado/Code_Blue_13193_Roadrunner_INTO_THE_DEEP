@@ -452,8 +452,8 @@ public class LM1_CompTeleOp extends LinearOpMode {
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
-                                            wrist.WristOuttake(),
-                                            elbow.ElbowOuttake(),
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
                                             hand.HandStop(),
                                             hslide.HSlideToTransfer()
                                     ),

@@ -104,7 +104,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                                 hslide.HSlideToTransfer()
                         ),
                         new SleepAction(3),
-                        new ParallelAction(wrist.WristIntake(), elbow.ElbowIntake(), hand.HandOuttake()),
+                        new ParallelAction(wrist.WristTransfer(), elbow.ElbowTransfer(), hand.HandOuttake()),
                         new SleepAction(sleepTime),
                         new ParallelAction(
                                 hand.HandStop(),
