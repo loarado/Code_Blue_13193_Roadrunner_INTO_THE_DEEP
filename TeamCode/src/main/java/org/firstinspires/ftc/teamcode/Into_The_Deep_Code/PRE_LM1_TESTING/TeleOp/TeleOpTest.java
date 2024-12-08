@@ -176,7 +176,7 @@ public class TeleOpTest extends LinearOpMode {
                 }
 
                 // Horizontal Slides go in when pressing the right trigger more than 0.1, but not past the physical max
-                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos) {
+                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos) {
 
                     //Slides move faster the harder you press the trigger
                     hSlidesPos -= (int) (8*(gamepad1.right_trigger));
@@ -246,7 +246,7 @@ public class TeleOpTest extends LinearOpMode {
 
                     //set hSlidesPos so the next time you manually move the hSlides they don't go to your last position
                     //and instead move from the transfer position (which is 'OuttakePos')
-                    hSlidesPos = var.hSlideOuttakePos;
+                    hSlidesPos = var.hSlideTransferPos;
                 }
 
 

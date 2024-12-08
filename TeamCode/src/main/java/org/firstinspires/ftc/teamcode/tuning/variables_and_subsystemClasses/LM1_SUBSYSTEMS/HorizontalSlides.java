@@ -72,7 +72,7 @@ public class HorizontalSlides {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            hSlides.setTargetPosition(var.hSlideOuttakePos);
+            hSlides.setTargetPosition(var.hSlideTransferPos);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 

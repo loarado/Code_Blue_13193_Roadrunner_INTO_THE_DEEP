@@ -41,8 +41,10 @@ public class VerticalSlides {
     public int getCurrentPosition(){
         if(vTouchLeft.isPressed()){
             lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }else if(vTouchRight.isPressed()){
             rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         return (lArm.getCurrentPosition() + rArm.getCurrentPosition())/2;
     }
@@ -62,8 +64,10 @@ public class VerticalSlides {
 
             if(vTouchLeft.isPressed()){
                 lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }else if(vTouchRight.isPressed()){
                 rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
             //WAIT FOR SLIDES TO REACH POSITION
@@ -114,12 +118,6 @@ public class VerticalSlides {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            if(vTouchLeft.isPressed()){
-                lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }else if(vTouchRight.isPressed()){
-                rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
-
             rArm.setTargetPosition(distance);
             lArm.setTargetPosition(distance);
             rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -127,9 +125,19 @@ public class VerticalSlides {
             ((DcMotorEx) lArm).setVelocity(velocity);
             ((DcMotorEx) rArm).setVelocity(velocity);
 
+            if(distance<50){
+            if(vTouchLeft.isPressed()){
+                lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }else if(vTouchRight.isPressed()){
+                rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+            }
+
             //WAIT FOR SLIDES TO REACH POSITION
 
-            return (lArm.isBusy()||rArm.isBusy());
+            return (lArm.isBusy()&&rArm.isBusy());
         }
     }
     public Action VSlidesToDist(int dist, double velo) {
@@ -147,8 +155,10 @@ public class VerticalSlides {
 
             if(vTouchLeft.isPressed()){
                 lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }else if(vTouchRight.isPressed()){
                 rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
             rArm.setTargetPosition(0);

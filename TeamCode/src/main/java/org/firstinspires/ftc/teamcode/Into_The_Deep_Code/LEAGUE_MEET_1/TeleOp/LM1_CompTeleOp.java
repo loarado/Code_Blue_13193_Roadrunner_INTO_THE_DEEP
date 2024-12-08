@@ -16,6 +16,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,6 +36,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 
 @TeleOp(name = "LM1 - 1 Driver Comp Tele-Op", group = "TeleOp")
 public class LM1_CompTeleOp extends LinearOpMode {
@@ -379,7 +381,7 @@ public class LM1_CompTeleOp extends LinearOpMode {
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
-                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos && !debugModeIsOn) {
+                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
                     hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -466,7 +468,7 @@ public class LM1_CompTeleOp extends LinearOpMode {
 
                     SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
-                    hSlidesPos = var.hSlideOuttakePos;
+                    hSlidesPos = var.hSlideTransferPos;
 
                 }
 

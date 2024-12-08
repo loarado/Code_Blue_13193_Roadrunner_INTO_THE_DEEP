@@ -15,7 +15,7 @@ public class SubsystemsVariables {
 
 
 
-    public final double TransferWristPos = 0.55;
+    public final double TransferWristPos = 0.65;
     public final double IntakeWristPos = 0.38;
     public final double MiddleWristPos = 0.5;
     public final double FrontIntakeWristPos = 0.55;
@@ -24,7 +24,7 @@ public class SubsystemsVariables {
     public final double DebugWristPos = 0.65;
 
 
-    public final double TransferElbowPos = 0.54;
+    public final double TransferElbowPos = 0.42;
     public final double IntakeElbowPos = 0.15;
     public final double PrepIntakeElbowPos = 0.22;
     public final double MiddleElbowPos = 0.42;
@@ -88,7 +88,7 @@ public class SubsystemsVariables {
     public final int hSlidePhysicalMax = 620;
     public final double hSlideSpeed = 0.5;
     public final double hSlideVelocity = 1300;
-    public final int hSlideOuttakePos = 175;
+    public final int hSlideTransferPos = 10;
 
     public final int hSlideRuleMax = (int) (hSlidePhysicalMax*((slidesLength-((slidesLength + robotLength + backExtension) - 42))/slidesLength));
     // currently 573.333...

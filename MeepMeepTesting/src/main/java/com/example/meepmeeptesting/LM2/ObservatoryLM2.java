@@ -14,9 +14,7 @@ public class ObservatoryLM2 {
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(50, 50, Math.toRadians(180), Math.toRadians(180), 15)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-24, 64.25, Math.toRadians(90)))
-                        .lineToSplineHeading(new Pose2d(0,36,Math.toRadians(90)))
-                        /* code for placing specimen on chamber*/
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-24, 64.25, Math.toRadians(270)))
                         .splineToLinearHeading(new Pose2d(-33,48, Math.toRadians(270)),Math.toRadians(270))
                         .splineTo(new Vector2d(-36,12),Math.toRadians(270))
                         .splineToLinearHeading(new Pose2d(-46,12,Math.toRadians(270)),Math.toRadians(90))

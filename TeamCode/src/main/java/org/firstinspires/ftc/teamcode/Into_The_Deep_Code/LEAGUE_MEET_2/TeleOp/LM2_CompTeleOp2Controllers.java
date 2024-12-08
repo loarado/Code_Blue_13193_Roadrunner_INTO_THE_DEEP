@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
@@ -61,12 +62,15 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
     private DcMotor rightFront;
     private RevBlinkinLedDriver lights;
 
+
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
     @Override
     public void runOpMode() {
 
+        DigitalChannel pin0 = hardwareMap.digitalChannel.get("digital0");
+        DigitalChannel pin1 = hardwareMap.digitalChannel.get("digital1");
 
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -132,8 +136,10 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
         boolean optionsPressed = false;
         boolean leftStickPressed = false;
         boolean rightStickPressed = false;
-        boolean vTouchLeftPressed = false;
-        boolean vTouchRightPressed = false;
+
+        boolean YELLOW_DETECTED = false;
+        boolean BLUE_DETECTED = false;
+        boolean RED_DETECTED = false;
 
         int vSlidesPos = vslides.getCurrentPosition(); // Variable for vertical slides position
         int hSlidesPos = hSlides.getCurrentPosition(); // Variable for horizontal slides position
@@ -199,22 +205,41 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
             while (opModeIsActive()) {
 
 
-                if(vTouchLeft.isPressed()){
-                    vTouchLeftPressed = true;
+                if(pin0.getState()&&pin1.getState()){
+                    YELLOW_DETECTED = true;
+                    RED_DETECTED = false;
+                    BLUE_DETECTED = false;
+                } else if(pin0.getState()&&!pin1.getState()){
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = false;
+                    BLUE_DETECTED = true;
+                }else if(pin1.getState()&&!pin0.getState()){
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = true;
+                    BLUE_DETECTED = false;
                 }else{
-                    vTouchLeftPressed = false;
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = true;
+                    BLUE_DETECTED = false;
                 }
-                if(vTouchRight.isPressed()){
-                    vTouchRightPressed = true;
-                }else{
-                    vTouchRightPressed = false;
+
+
+                if(vslides.getCurrentPosition()>250){
+                    hSlidesPos = 150;
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
+
+
 
                 if(vTouchLeft.isPressed()){
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
                 if(vTouchRight.isPressed()){
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
 
 
@@ -405,7 +430,7 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
-                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideOuttakePos && !debugModeIsOn) {
+                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
                     hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
                     hSlides.setTargetPosition(hSlidesPos);
                     hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -475,16 +500,20 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
+                    hSlidesPos = var.hSlideTransferPos;
+
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
-                                            hand.HandStop(),
-                                            hslide.HSlideToTransfer()
+                                            hand.HandStop()
                                     ),
                                     new SleepAction(0.75),
-                                    hslide.HSlideToDist(var.hSlideOuttakePos-50),
                                     hand.HandOuttake()
                             )
                     );
@@ -493,7 +522,6 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
 
                     SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
-                    hSlidesPos = var.hSlideOuttakePos;
 
                 }
 
@@ -740,13 +768,17 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                 telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
                 telemetry.addData("currentHorizontalSlidesPos = ", hSlides.getCurrentPosition());
                 telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
+                telemetry.addData("BasketMode", BasketMode);
                 telemetry.addData("IntakeMode = ", intakeMode);
                 telemetry.addData("Currently Intaking: = ", currentlyIntaking);
                 telemetry.addData("Transfer: = ", SampleTransferred);
                 telemetry.addData("DebugModeSet: = ", debugModeSet);
                 telemetry.addData("DebugMode: = ", debugModeIsOn);
-                telemetry.addData("vTouchLeft: = ", vTouchLeftPressed);
-                telemetry.addData("vTouchRight: = ", vTouchRightPressed);
+                telemetry.addData("vTouchLeft: = ", vTouchLeft.isPressed());
+                telemetry.addData("vTouchRight: = ", vTouchRight.isPressed());
+                telemetry.addData("YELLOW DETECTED", pin0.getState()&&pin1.getState());
+                telemetry.addData("BLUE DETECTED", pin0.getState()&&!pin1.getState());
+                telemetry.addData("RED DETECTED", pin1.getState()&&!pin0.getState());
                 telemetry.update();
 
                 dash.sendTelemetryPacket(packet);
