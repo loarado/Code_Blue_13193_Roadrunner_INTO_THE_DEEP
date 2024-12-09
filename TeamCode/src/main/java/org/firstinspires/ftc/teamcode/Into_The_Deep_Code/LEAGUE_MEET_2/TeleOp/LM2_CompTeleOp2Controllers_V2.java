@@ -39,7 +39,6 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 import java.util.ArrayList;
 import java.util.List;
 
-@Disabled
 @TeleOp(name = "LM2 - 2 Drivers Comp TeleOp V2", group = "TeleOp")
 public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
@@ -165,7 +164,20 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
         // Set initial LED pattern
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
-        // Initialize servos to default positions using ParallelAction
+
+        //PID STUFF
+        PIDController controller;
+
+        double p = 0.0065, i = 0, d = 0.000001;
+        double f = 0.00007;
+        double relativeP = 0.003;
+
+        double leftPower;
+        double rightPower;
+
+        double motorRelativeError;
+        double power;
+        double denom;
 
 
 
@@ -175,7 +187,9 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-
+            controller = new PIDController(p, i, d);
+            controller.setPIDF(p, i, d, f);
+            
 
             while ((gamepad1.left_stick_x+gamepad1.left_stick_y+gamepad1.right_stick_x+gamepad1.right_stick_y==0)){
                 telemetry.addLine("WAITING FOR START");
@@ -188,9 +202,10 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
             ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             // Set vertical slides initial position
-            lArm.setTargetPosition(vSlidesPos);
-            rArm.setTargetPosition(vSlidesPos);
-            lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+            rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+            lArm.setMode(DcMotor.ZeroPowerBehavior.BRAKE);
+            rArm.setMode(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
             Actions.runBlocking(
@@ -205,6 +220,24 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
 
             while (opModeIsActive()) {
+
+
+
+                //PID CONTROLLER FOR VERTICAL SLIDES
+                motorRelativeError = Math.abs(lArm.getCurrentPosition()-rArm.getCurrentPosition())>1?lArm.getCurrentPosition()-rArm.getCurrentPosition():0;
+                power = controller.calculate((lArm.getCurrentPosition()+rArm.getCurrentPosition())/2, vSlidesPos);
+
+                leftPower = power-relativeP*motorRelativeError;
+                rightPower = power+relativeP*motorRelativeError;
+                denom = Math.max(leftPower, Math.max(rightPower, 1));
+
+                //SET POWER BASED ON VSLIDES POS VARIABLE
+                lArm.setPower(leftPower / denom);
+                rArm.setPower (rightPower / denom);
+
+                hSlides.setTargetPosition(hSlidesPos);
+                hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
 
                 if(pin0.getState()&&pin1.getState()){
@@ -228,20 +261,22 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
                 if(vslides.getCurrentPosition()>250){
                     hSlidesPos = 150;
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
-
 
 
                 if(vTouchLeft.isPressed()){
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+                    vSlidesPos = 0;
                 }
                 if(vTouchRight.isPressed()){
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
+                    vSlidesPos = 0;
                 }
 
 
@@ -302,9 +337,6 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                             )
                     );
                     if(hSlides.getCurrentPosition()<175){
-                        runningActions.add(
-                                 hslide.HSlideToDist(175)
-                        );
                         hSlidesPos=175;
                     }
                     runningActions.add(
@@ -379,23 +411,11 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 // but not past the maximum allowed height
                 if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
                     vSlidesPos += 25;
-                    lArm.setTargetPosition(vSlidesPos);
-                    rArm.setTargetPosition(vSlidesPos);
-                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
                 if (gamepad2.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
                     vSlidesPos -= 25;
-                    lArm.setTargetPosition(vSlidesPos);
-                    rArm.setTargetPosition(vSlidesPos);
-                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
 
@@ -403,21 +423,9 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 //DEBUG VERSIONS
                 if (gamepad2.right_bumper && debugModeIsOn) {
                     vSlidesPos += 15;
-                    lArm.setTargetPosition(vSlidesPos);
-                    rArm.setTargetPosition(vSlidesPos);
-                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
                 if (gamepad1.left_bumper && debugModeIsOn) {
                     vSlidesPos -= 15;
-                    lArm.setTargetPosition(vSlidesPos);
-                    rArm.setTargetPosition(vSlidesPos);
-                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                 }
 
 
@@ -428,32 +436,20 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 // increases speed with harder press, but stops at max position
                 if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
                     hSlidesPos += (int) (10 * (gamepad1.left_trigger));
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
                     hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
                 if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
                     hSlidesPos += (int) (8 * (gamepad1.left_trigger));
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.right_trigger > 0.1 && debugModeIsOn) {
                     hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
                 }
 
 
@@ -506,10 +502,6 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
                     hSlidesPos = var.hSlideTransferPos;
 
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
-
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
@@ -537,26 +529,8 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideHighChamber;
-                        // Cancel all existing slide actions
-                        for (Action action : runningActions) {
-                            if (isSlideAction(action)) {
-                                ((CancelableVSlidesAction) action).cancelAbruptly();
-                            }
-                        }
-
-                        // Add the new slide action
-                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideHighBasket;
-                        // Cancel all existing slide actions
-                        for (Action action : runningActions) {
-                            if (isSlideAction(action)) {
-                                ((CancelableVSlidesAction) action).cancelAbruptly();
-                            }
-                        }
-
-                        // Add the new slide action
-                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     }
                 }
                 dPadUpPressed = gamepad2.dpad_up;
@@ -570,26 +544,8 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideLowChamber;
-                        // Cancel all existing slide actions
-                        for (Action action : runningActions) {
-                            if (isSlideAction(action)) {
-                                ((CancelableVSlidesAction) action).cancelAbruptly();
-                            }
-                        }
-
-                        // Add the new slide action
-                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideLowBasket;
-                        // Cancel all existing slide actions
-                        for (Action action : runningActions) {
-                            if (isSlideAction(action)) {
-                                ((CancelableVSlidesAction) action).cancelAbruptly();
-                            }
-                        }
-
-                        // Add the new slide action
-                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     }
                 }
                 dPadLeftPressed = gamepad2.dpad_left;
@@ -600,25 +556,23 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 if (gamepad2.dpad_right && !dPadRightPressed) {
                     if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideHighChamber + 30 && vslides.getCurrentPosition() > var.vSlideHighChamber - 30)) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                        vSlidesPos=var.vSlideHighChamberDrop;
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideHighChamberDrop, 250),
-                                        new SleepAction(1.5),
+                                        new SleepAction(1),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
-                        vSlidesPos=var.vSlideHighChamberDrop;
                         specigrabberIsOpen = true;
                     } else if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideLowChamber + 30 && vslides.getCurrentPosition() > var.vSlideLowChamber - 30)) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+                        vSlidesPos=var.vSlideLowChamberDrop;
                         runningActions.add(
                                 new SequentialAction(
-                                        vslides.VSlidesToDist(var.vSlideLowChamberDrop, 250),
-                                        new SleepAction(1.5),
+                                        new SleepAction(1),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
-                        vSlidesPos=var.vSlideLowChamberDrop;
                         specigrabberIsOpen = true;
                     } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && SampleTransferred){
                         runningActions.add(
@@ -631,11 +585,10 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                         runningActions.add(
                                 new ParallelAction(
                                         outtakeLM2.OuttakeIdle(),
-                                        new SleepAction(1.25),
-                                        vslides.VSlidesTo0()
+                                        new SleepAction(1.25)
                                 )
                         );
-                        vSlidesPos = 0;
+                        vSlidesPos = 250;
                         outtakeIsOut = false;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
@@ -646,20 +599,6 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
                 if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed) {
                     vSlidesPos = 0;
-                    // Cancel all existing slide actions
-                    for (Action action : runningActions) {
-                        if (isSlideAction(action)) {
-                            ((CancelableVSlidesAction) action).cancelAbruptly();
-                        }
-                    }
-
-                    // Add the new slide action
-                    runningActions.add(
-                            new ParallelAction(
-                                    outtakeLM2.OuttakeIdle(),
-                                    new CancelableVSlidesAction(vslides, vSlidesPos)
-                            )
-                        );
 
                 } else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(

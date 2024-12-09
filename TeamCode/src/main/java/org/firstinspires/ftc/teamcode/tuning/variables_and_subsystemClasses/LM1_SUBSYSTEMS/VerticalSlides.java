@@ -62,13 +62,6 @@ public class VerticalSlides {
 
 
     public int getCurrentPosition(){
-        if(vTouchLeft.isPressed()){
-            lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }else if(vTouchRight.isPressed()){
-            rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
         return (lArm.getCurrentPosition() + rArm.getCurrentPosition())/2;
     }
 
@@ -132,15 +125,6 @@ public class VerticalSlides {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            if(distance<50){
-                if(vTouchLeft.isPressed()){
-                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }else if(vTouchRight.isPressed()){
-                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }
-            }
 
             //SET SLIDE POWERS BASED ON PID CONTROLLER
             rArm.setPower(V_Slides_PID_Class.returnRightVSlidePID(distance, lArm.getCurrentPosition(), rArm.getCurrentPosition()));
