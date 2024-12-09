@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -202,10 +203,10 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
             ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
 
             // Set vertical slides initial position
-            lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-            rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-            lArm.setMode(DcMotor.ZeroPowerBehavior.BRAKE);
-            rArm.setMode(DcMotor.ZeroPowerBehavior.BRAKE);
+            lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
             Actions.runBlocking(
@@ -267,16 +268,16 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 if(vTouchLeft.isPressed()){
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-                    rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-                    vSlidesPos = 0;
+                    lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                 }
                 if(vTouchRight.isPressed()){
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    lArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-                    rArm.setMode(DcMotor.runMode.RUN_WITHOUT_ENCODER);
-                    vSlidesPos = 0;
+                    lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                 }
 
 
@@ -286,7 +287,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 TrajectoryActionBuilder t1 = drive.actionBuilder(drive.pose)
                         .turnTo(Math.toRadians(1))
                         .waitSeconds(0.5)
-                        .strafeTo(new Vector2d(0,0),velSlow, accSlow)
+                        .strafeTo(new Vector2d(0,0),velFast, accFast)
                         .waitSeconds(0.5);
 
                 Action traj = t1.build();
@@ -434,22 +435,22 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
-                if (gamepad1.left_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
-                    hSlidesPos += (int) (10 * (gamepad1.left_trigger));
+                if (gamepad1.right_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
+                    hSlidesPos += (int) (10 * (gamepad1.right_trigger));
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
-                if (gamepad1.right_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
-                    hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
+                if (gamepad1.left_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
+                    hSlidesPos -= (int) (10 * (gamepad1.left_trigger));
                 }
 
-                if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos += (int) (8 * (gamepad1.left_trigger));
-                }
-
-                // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.right_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
+                    hSlidesPos += (int) (8 * (gamepad1.right_trigger));
+                }
+
+                // Moves slides inward with right trigger, but stops at minimum position
+                if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
+                    hSlidesPos -= (int) (8 * (gamepad1.left_trigger));
                 }
 
 
@@ -559,7 +560,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                         vSlidesPos=var.vSlideHighChamberDrop;
                         runningActions.add(
                                 new SequentialAction(
-                                        new SleepAction(1),
+                                        new SleepAction(.4),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -569,7 +570,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                         vSlidesPos=var.vSlideLowChamberDrop;
                         runningActions.add(
                                 new SequentialAction(
-                                        new SleepAction(1),
+                                        new SleepAction(.4),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
@@ -597,10 +598,16 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
 
 
-                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed) {
+                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed && !outtakeIsOut) {
                     vSlidesPos = 0;
 
-                } else if(gamepad1.dpad_down && !dPadDownPressed){
+
+                } else if(gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed && outtakeIsOut){
+                    runningActions.add(
+                            outtakeLM2.OuttakeIdle()
+                    );
+                    outtakeIsOut=false;
+                }else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(
                             hand.HandStop()
                     );

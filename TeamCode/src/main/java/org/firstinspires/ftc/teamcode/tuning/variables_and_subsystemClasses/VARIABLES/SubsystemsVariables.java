@@ -30,7 +30,7 @@ public class SubsystemsVariables {
     public final double IntakeElbowPos = 0.15;
     public final double PrepIntakeElbowPos = 0.22;
     public final double MiddleElbowPos = 0.42;
-    public final double FrontIntakeElbowPos = 0;
+    public final double FrontIntakeElbowPos = 0.03;
     public final double EjectElbowPos = 0.3;
 
     public final double DebugUpElbowPos = 0.6;
@@ -58,7 +58,9 @@ public class SubsystemsVariables {
     public final double highBucketHeight = 43;     // Height of high bucket in inches
     public final double lowBucketHeight = 25.75-2;   // Height of low bucket in inches
 
-    public final int vSlideHighBasket = (int) ((highBucketHeight + bottomOffset + extraClearance) * ticksPerInch);
+    public final int vSlideHighBasket = 1977;
+    //public final int vSlideHighBasket = (int) ((highBucketHeight + bottomOffset + extraClearance) * ticksPerInch);
+    //2377
     public final int vSlideLowBasket = (int) ((lowBucketHeight + bottomOffset + extraClearance) * ticksPerInch);
 
     public final double clawHeight = 9.5;            // Height of the claw from the ground in inches
@@ -70,11 +72,14 @@ public class SubsystemsVariables {
     public final double dropClearance = 3.70;            // Drop below the chamber bar for releasing the element
 
     // Encoder tick values for high and low chambers, positioning above the bars for clipping
-    public final int vSlideHighChamber = (int) ((highChamberHeight - clawHeight + approachClearance) * ticksPerInch);
+
+    //public final int vSlideHighChamber = (int) ((highChamberHeight - clawHeight + approachClearance) * ticksPerInch);
+    public final int vSlideHighChamber = 1363;
     public final int vSlideLowChamber = (int) ((lowChamberHeight - clawHeight + approachClearance) * ticksPerInch);
 
     // Encoder tick values for dropping the element below the bars
-    public final int vSlideHighChamberDrop = (int) ((highChamberHeight - clawHeight - dropClearance) * ticksPerInch);
+    //public final int vSlideHighChamberDrop = (int) ((highChamberHeight - clawHeight - dropClearance) * ticksPerInch);
+    public final int vSlideHighChamberDrop = 1038;
     public final int vSlideLowChamberDrop = (int) ((lowChamberHeight - clawHeight - dropClearance) * ticksPerInch);
 
     public final double vSlideSpeed = 0.5;

@@ -82,7 +82,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                 .setReversed(true)
                 .afterTime(.5,
                         new ParallelAction(
-                                vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo),
+                                vslides.VSlidesToDist(2377, VSlideTempVelo),
                                 specigrabber.SpecigrabberClose()
                         )
                 )
@@ -111,7 +111,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                                 hslide.HSlideToDist(hSlideGrabExtension-15),
                                 wrist.WristIntake(),
                                 elbow.ElbowMiddle(),
-                                vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)
+                                vslides.VSlidesToDist(2377, VSlideTempVelo)
                         ),
                         new SleepAction(1.25),
                         outtakeLM2.OuttakeOut(),
@@ -136,14 +136,14 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         hand.HandOuttake(),
                         new SleepAction(sleepTime)
                 ))
-                .turn(Math.toRadians(14.5))
+                .turn(Math.toRadians(12.5))
                 .waitSeconds(5)
                 .afterTime(0, new SequentialAction(
                         new ParallelAction(
                                 hand.HandStop(),
                                 wrist.WristIntake(),
                                 elbow.ElbowMiddle(),
-                                vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)
+                                vslides.VSlidesToDist(2377, VSlideTempVelo)
                         ),
                         new SleepAction(1.25),
                         outtakeLM2.OuttakeOut(),
@@ -151,9 +151,9 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         outtakeLM2.OuttakeIdle(),
                         new SleepAction(sleepTime)
                         ))
-                .turn(Math.toRadians(-14.5))
+                .turn(Math.toRadians(-12.5))
                 .waitSeconds(5.75)
-                .afterTime(0, vslides.VSlidesToDist(1030, VSlideTempVelo))
+                .afterTime(0, vslides.VSlidesToDist(900, VSlideTempVelo))
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
                 .strafeTo(new Vector2d(21,12));
 
