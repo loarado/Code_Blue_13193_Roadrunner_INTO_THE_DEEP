@@ -127,7 +127,7 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                             ),
                             specigrabber.SpecigrabberClose(),
                             new SleepAction(2.5),
@@ -135,7 +135,7 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                             new SleepAction(1),
                             new ParallelAction(
                                     sample1.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
+                                    vslides.VSlidesToDistPIDF(0),
                                     outtakeLM1.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
@@ -164,14 +164,14 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                             ),
                             new SleepAction(2.5),
                             outtakeLM1.OuttakeOut(),
                             new SleepAction(1),
                             new ParallelAction(
                                     sample2.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
+                                    vslides.VSlidesToDistPIDF(0),
                                     outtakeLM1.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
@@ -200,14 +200,14 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket3.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                             ),
                             new SleepAction(2.5),
                             outtakeLM1.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(1030,VSlideTempVelo),
+                                    vslides.VSlidesToDistPIDF(1030),
                                     outtakeLM1.OuttakeIdle()
                             )
 

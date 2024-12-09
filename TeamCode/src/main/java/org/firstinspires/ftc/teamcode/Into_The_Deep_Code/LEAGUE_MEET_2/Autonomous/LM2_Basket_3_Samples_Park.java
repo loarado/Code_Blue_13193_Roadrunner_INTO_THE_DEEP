@@ -2,12 +2,11 @@ package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_2.Autonomo
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
@@ -21,7 +20,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
 
-
+@Disabled
 @Autonomous(name = "LM2 - Basket 3 Samples Park", group = "Autonomous")
 public class LM2_Basket_3_Samples_Park extends LinearOpMode {
     public int distance = 0;
@@ -83,13 +82,15 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 .setReversed(true)
 
                 //move slides to high basket pos
-                .afterTime(0, vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo))
+                .afterTime(0, vslides.VSlidesToDistPIDF(var.vSlideHighBasket))
+
+                .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
 
                 //grabber out of way
                 .afterTime(0, specigrabber.SpecigrabberClose())
 
                 //robot prepares the outtake to score faster
-                .afterTime(1, outtakeLM2.OuttakeHalfOut())
+                .afterTime(1.5, outtakeLM2.OuttakeOut())
 
                 //prepare to intake sample TWO while scoring sample ONE
                 .afterTime(2, hslide.HSlideToDist(hSlideGrabExtension))
@@ -101,12 +102,11 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 This strafeTo moves to the basket, afterTime() actions happen after whatever trajectory
                 comes next so all the actions before this happen "dt" seconds after this movement,
                  */
-                .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(59, 52.5), Math.toRadians(255.5))
+
                 .waitSeconds(sleepTime)
 
                 //score sample number ONE
-                .afterTime(0, outtakeLM2.OuttakeOut())
-                .waitSeconds(sleepTime)
 
                 //grab sample TWO and bring back the outtake
                 .afterTime(0, elbow.ElbowIntake())
@@ -114,19 +114,18 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 .waitSeconds(sleepTime)
 
                 //lower slides back to successfully transfer the next sample
-                .afterTime(0, vslides.VSlidesTo0())
+                .afterTime(0,vslides.VSlidesToDistPIDF(0))
                 .waitSeconds(sleepTime)
 
                 //prepare to transfer sample TWO to the outtake
                 .afterTime(0, hand.HandStop())
-                .afterTime(0, wrist.WristMiddle())
-                .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, hslide.HSlideToTransfer())
-                .waitSeconds(sleepTime*3)
-
-                //transfer sample TWO
                 .afterTime(0, wrist.WristTransfer())
                 .afterTime(0, elbow.ElbowTransfer())
+                .afterTime(0, hslide.HSlideToTransfer())
+                .waitSeconds(2)
+
+                //transfer sample TWO
+
                 //this is only to be safe, if the wrist and elbow can
                 //be in transfer position while the slides come down
                 //just do that instead
@@ -135,11 +134,11 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
 
                 //prepare to intake sample THREE while scoring sample TWO
                 .afterTime(0, hand.HandStop())
-                .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension))
+                .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-15))
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo))
-                .waitSeconds(sleepTime*3)
+                .afterTime(0, vslides.VSlidesToDistPIDF(var.vSlideHighBasket))
+                .waitSeconds(2)
 
                 //score sample TWO
                 .afterTime(0, outtakeLM2.OuttakeOut())
@@ -150,12 +149,14 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 .waitSeconds(sleepTime)
 
                 //lower slides to transfer sample 3
-                .afterTime(0, vslides.VSlidesToDist(0, VSlideTempVelo))
+                .afterTime(0, vslides.VSlidesToDistPIDF(0))
 
                 //move to next scoring position
-                .strafeToLinearHeading(new Vector2d(59, 53.5), Math.toRadians(247))
 
-                //prepare to transfer sample 3
+                .turn(Math.toRadians(14.5))
+                .waitSeconds(1)
+
+                //prepare to grab sample 3
                 .afterTime(0, elbow.PrepElbowIntake())
                 .afterTime(0, hand.HandIntake())
                 .waitSeconds(sleepTime)
@@ -164,24 +165,26 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 .afterTime(0, elbow.ElbowIntake())
                 .waitSeconds(sleepTime)
 
-                //prepare for transfer to basket
+                //prepare for transfer
                 .afterTime(0, hand.HandStop())
                 .afterTime(0, wrist.WristTransfer())
                 .afterTime(0, elbow.ElbowTransfer())
                 .afterTime(0, hslide.HSlideToTransfer())
-                .waitSeconds(sleepTime)
+                .waitSeconds(2)
 
-                //score sample 3
+                //transfer sample 3
                 .afterTime(0, hand.HandOuttake())
-                .turn(Math.toRadians(23))
-                .waitSeconds(10)
+                .waitSeconds(0.75)
 
-                //prepare slides for scoring sample 3
+
+
+                //prepare to score sample 3
                 .afterTime(0, hand.HandStop())
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo))
-                .waitSeconds(3)
+                .afterTime(0, vslides.VSlidesToDistPIDF(var.vSlideHighBasket))
+                .turn(Math.toRadians(-14.5))
+                .waitSeconds(2)
 
                 //score sample 3
                 .afterTime(0, outtakeLM2.OuttakeOut())
@@ -190,9 +193,7 @@ public class LM2_Basket_3_Samples_Park extends LinearOpMode {
                 //reset outtake and lower slides
                 .afterTime(0, outtakeLM2.OuttakeIdle())
                 .waitSeconds(sleepTime)
-                .afterTime(0, vslides.VSlidesToDist(1030, VSlideTempVelo))
-                .turn(Math.toRadians(-23))
-                .waitSeconds(6)
+                .afterTime(0, vslides.VSlidesToDistPIDF(1030))
 
                 //park in the designated area
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))

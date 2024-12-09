@@ -94,7 +94,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         new SleepAction(1),
                         outtakeLM2.OuttakeOut(),
                         new SleepAction(sleepTime),
-                        new ParallelAction(elbow.ElbowIntake(), outtakeLM2.OuttakeIdle(), vslides.VSlidesToDist(0,  VSlideTempVelo)),
+                        new ParallelAction(elbow.ElbowIntake(), outtakeLM2.OuttakeIdle(), vslides.VSlidesToDist(0, VSlideTempVelo)),
                         new SleepAction(1.25),
                         new ParallelAction(
                                 hand.HandStop(),
@@ -108,7 +108,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         new SleepAction(sleepTime),
                         new ParallelAction(
                                 hand.HandStop(),
-                                hslide.HSlideToDist(hSlideGrabExtension),
+                                hslide.HSlideToDist(hSlideGrabExtension-15),
                                 wrist.WristIntake(),
                                 elbow.ElbowMiddle(),
                                 vslides.VSlidesToDist(var.vSlideHighBasket, VSlideTempVelo)
@@ -119,13 +119,13 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         new ParallelAction(outtakeLM2.OuttakeIdle(),vslides.VSlidesToDist(0, VSlideTempVelo)),
                         new SleepAction(1.25)
                 ))
-                .strafeToLinearHeading(new Vector2d(59, 53.5), Math.toRadians(258.5))
+                .strafeToLinearHeading(new Vector2d(59, 52.5), Math.toRadians(255.5))
                 .waitSeconds(12.5)
                 .afterTime(1, new SequentialAction(
                         new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake(), outtakeLM2.OuttakeIdle()),
                         new SleepAction(0.5),
                         elbow.ElbowIntake(),
-                        new SleepAction(0.5),
+                        new SleepAction(0.75),
                         new ParallelAction(
                                 hand.HandStop(),
                                 wrist.WristTransfer(),
@@ -136,7 +136,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         hand.HandOuttake(),
                         new SleepAction(sleepTime)
                 ))
-                .turn(Math.toRadians(11.5))
+                .turn(Math.toRadians(14.5))
                 .waitSeconds(5)
                 .afterTime(0, new SequentialAction(
                         new ParallelAction(
@@ -151,7 +151,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         outtakeLM2.OuttakeIdle(),
                         new SleepAction(sleepTime)
                         ))
-                .turn(Math.toRadians(-11.5))
+                .turn(Math.toRadians(-14.5))
                 .waitSeconds(5.75)
                 .afterTime(0, vslides.VSlidesToDist(1030, VSlideTempVelo))
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))

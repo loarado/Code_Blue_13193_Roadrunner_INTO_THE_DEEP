@@ -118,7 +118,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             new SleepAction(1),
                             new ParallelAction(
                                     wrist.WristIntake(),
-                                    vslides.VSlidesToDist(1500),
+                                    vslides.VSlidesToDistPIDF(1500),
                                     lights.LightsRed()
                             ),
                             t2.build(),

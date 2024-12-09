@@ -480,12 +480,12 @@ public class LM1_CompTeleOp extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         runningActions.add(
-                                vslides.VSlidesToDist(var.vSlideHighChamber)
+                                vslides.VSlidesToDistPIDF(var.vSlideHighChamber)
                         );
                         vSlidesPos = var.vSlideHighChamber;
                     } else if (BasketMode) {
                         runningActions.add(
-                                vslides.VSlidesToDist(var.vSlideHighBasket)
+                                vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                         );
                         vSlidesPos = var.vSlideHighBasket;
                     }
@@ -499,12 +499,12 @@ public class LM1_CompTeleOp extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         runningActions.add(
-                                vslides.VSlidesToDist(var.vSlideLowChamber)
+                                vslides.VSlidesToDistPIDF(var.vSlideLowChamber)
                         );
                         vSlidesPos = var.vSlideLowChamber;
                     } else if (BasketMode) {
                         runningActions.add(
-                                vslides.VSlidesToDist(var.vSlideLowBasket)
+                                vslides.VSlidesToDistPIDF(var.vSlideLowBasket)
                         );
                         vSlidesPos = var.vSlideLowBasket;
                     }

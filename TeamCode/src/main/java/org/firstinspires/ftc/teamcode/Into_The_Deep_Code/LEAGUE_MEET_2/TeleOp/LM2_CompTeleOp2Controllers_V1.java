@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_1.TeleOp;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_2.TeleOp;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -16,30 +16,30 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.OuttakeLM1;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Disabled
 
-@TeleOp(name = "LM1 - 2 Drivers Comp TeleOp", group = "TeleOp")
-public class LM1_CompTeleOp2Controllers extends LinearOpMode {
+@TeleOp(name = "LM2 - 2 Drivers Comp TeleOp V1", group = "TeleOp")
+public class LM2_CompTeleOp2Controllers_V1 extends LinearOpMode {
 
     /*
 
@@ -62,12 +62,15 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
     private DcMotor rightFront;
     private RevBlinkinLedDriver lights;
 
+
     private FtcDashboard dash = FtcDashboard.getInstance();
     private List<Action> runningActions = new ArrayList<>();
 
     @Override
     public void runOpMode() {
 
+        DigitalChannel pin0 = hardwareMap.digitalChannel.get("digital0");
+        DigitalChannel pin1 = hardwareMap.digitalChannel.get("digital1");
 
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
 
@@ -95,7 +98,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
         Elbow elbow = new Elbow(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
         Hand hand = new Hand(hardwareMap);
-        OuttakeLM1 outtakeLM1 = new OuttakeLM1(hardwareMap);
+        OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
         Specigrabber specigrabber = new Specigrabber(hardwareMap);
 
         // 'var' holds subsystem-specific variables such as physical limits and velocities
@@ -111,6 +114,8 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
+        TouchSensor vTouchLeft = hardwareMap.get(TouchSensor.class, "vTouchLeft");
+        TouchSensor vTouchRight = hardwareMap.get(TouchSensor.class, "vTouchRight");
 
         // Set motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -126,9 +131,16 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
         boolean gamepadXpressed = false; // Tracks Y button state
         boolean dPadDownPressed = false; // Tracks DpadDpwn button state
         boolean dPadRightPressed = false; // Tracks DpadRight button state
+        boolean dPadLeftPressed = false; // Tracks DpadRight button state
+        boolean dPadUpPressed = false; // Tracks DpadRight button state
         boolean optionsPressed = false;
         boolean leftStickPressed = false;
         boolean rightStickPressed = false;
+
+        boolean YELLOW_DETECTED = false;
+        boolean BLUE_DETECTED = false;
+        boolean RED_DETECTED = false;
+
         int vSlidesPos = vslides.getCurrentPosition(); // Variable for vertical slides position
         int hSlidesPos = hSlides.getCurrentPosition(); // Variable for horizontal slides position
 
@@ -184,7 +196,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                             wrist.WristMiddle(),
                             elbow.ElbowMiddle(),
                             specigrabber.SpecigrabberClose(),
-                            outtakeLM1.OuttakeIdle()
+                            outtakeLM2.OuttakeIdle()
                     )
             );
 
@@ -192,6 +204,43 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
 
             while (opModeIsActive()) {
 
+
+                if(pin0.getState()&&pin1.getState()){
+                    YELLOW_DETECTED = true;
+                    RED_DETECTED = false;
+                    BLUE_DETECTED = false;
+                } else if(pin0.getState()&&!pin1.getState()){
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = false;
+                    BLUE_DETECTED = true;
+                }else if(pin1.getState()&&!pin0.getState()){
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = true;
+                    BLUE_DETECTED = false;
+                }else{
+                    YELLOW_DETECTED = false;
+                    RED_DETECTED = true;
+                    BLUE_DETECTED = false;
+                }
+
+
+                if(vslides.getCurrentPosition()>250){
+                    hSlidesPos = 150;
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+                }
+
+
+
+                if(vTouchLeft.isPressed()){
+                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
+                if(vTouchRight.isPressed()){
+                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
 
 
                 //For roadrunner localization during tele-op
@@ -303,12 +352,12 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                     } else if (BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400){
                         if(outtakeIsOut){
                             runningActions.add(
-                                    outtakeLM1.OuttakeIdle()
+                                    outtakeLM2.OuttakeIdle()
                             );
                             outtakeIsOut = false;
                         }else{
                             runningActions.add(
-                                    outtakeLM1.OuttakeOut()
+                                    outtakeLM2.OuttakeOut()
                             );
                             outtakeIsOut = true;
                             SampleTransferred = false;
@@ -451,13 +500,18 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
+                    hSlidesPos = var.hSlideTransferPos;
+
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
-                                            hand.HandStop(),
-                                            hslide.HSlideToTransfer()
+                                            hand.HandStop()
                                     ),
                                     new SleepAction(0.75),
                                     hand.HandOuttake()
@@ -468,47 +522,62 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
 
                     SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
-                    hSlidesPos = var.hSlideTransferPos;
 
                 }
 
 
 
-                if (gamepad2.dpad_up) {
+                if (gamepad2.dpad_up && !dPadUpPressed) {
                     runningActions.add(
                             hand.HandStop()
                     );
                     if (SpecimenMode){
-                        runningActions.add(
-                                vslides.VSlidesToDistPIDF(var.vSlideHighChamber)
-                        );
                         vSlidesPos = var.vSlideHighChamber;
+                        lArm.setTargetPosition(vSlidesPos);
+                        rArm.setTargetPosition(vSlidesPos);
+                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                     } else if (BasketMode) {
-                        runningActions.add(
-                                vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
-                        );
                         vSlidesPos = var.vSlideHighBasket;
+                        lArm.setTargetPosition(vSlidesPos);
+                        rArm.setTargetPosition(vSlidesPos);
+                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                     }
                 }
+                dPadUpPressed = gamepad2.dpad_up;
 
 
 
-                if (gamepad2.dpad_left) {
+
+                if (gamepad2.dpad_left && !dPadLeftPressed) {
                     runningActions.add(
                             hand.HandStop()
                     );
                     if (SpecimenMode){
-                        runningActions.add(
-                                vslides.VSlidesToDistPIDF(var.vSlideLowChamber)
-                        );
                         vSlidesPos = var.vSlideLowChamber;
+                        lArm.setTargetPosition(vSlidesPos);
+                        rArm.setTargetPosition(vSlidesPos);
+                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                     } else if (BasketMode) {
-                        runningActions.add(
-                                vslides.VSlidesToDistPIDF(var.vSlideLowBasket)
-                        );
                         vSlidesPos = var.vSlideLowBasket;
+                        lArm.setTargetPosition(vSlidesPos);
+                        rArm.setTargetPosition(vSlidesPos);
+                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                     }
                 }
+                dPadLeftPressed = gamepad2.dpad_left;
+
 
 
 
@@ -537,7 +606,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                         specigrabberIsOpen = true;
                     } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && SampleTransferred){
                         runningActions.add(
-                                outtakeLM1.OuttakeOut()
+                                outtakeLM2.OuttakeOut()
                         );
                         outtakeIsOut = true;
                         SampleTransferred = false;
@@ -545,7 +614,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                     } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && !SampleTransferred){
                         runningActions.add(
                                 new ParallelAction(
-                                        outtakeLM1.OuttakeIdle(),
+                                        outtakeLM2.OuttakeIdle(),
                                         new SleepAction(1.25),
                                         vslides.VSlidesTo0()
                                 )
@@ -559,15 +628,19 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50) {
-
+                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed) {
+                    vSlidesPos = 0;
+                    lArm.setTargetPosition(vSlidesPos);
+                    rArm.setTargetPosition(vSlidesPos);
+                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
+                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
                     runningActions.add(
                             new ParallelAction(
-                                    vslides.VSlidesTo0(),
-                                    outtakeLM1.OuttakeIdle()
+                                    outtakeLM2.OuttakeIdle()
                             )
                         );
-                    vSlidesPos = 0;
 
                 } else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(
@@ -599,7 +672,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     runningActions.add(
-                            outtakeLM1.OuttakeIdle()
+                            outtakeLM2.OuttakeIdle()
                     );
                     outtakeIsOut = false;
                 }
@@ -640,7 +713,7 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                 //Failsafes
                 if(vslides.getCurrentPosition()<400&& outtakeIsOut && !specigrabberIsOpen){
                     runningActions.add(
-                            outtakeLM1.OuttakeIdle()
+                            outtakeLM2.OuttakeIdle()
                     );
                 }
 
@@ -695,11 +768,17 @@ public class LM1_CompTeleOp2Controllers extends LinearOpMode {
                 telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
                 telemetry.addData("currentHorizontalSlidesPos = ", hSlides.getCurrentPosition());
                 telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
+                telemetry.addData("BasketMode", BasketMode);
                 telemetry.addData("IntakeMode = ", intakeMode);
                 telemetry.addData("Currently Intaking: = ", currentlyIntaking);
                 telemetry.addData("Transfer: = ", SampleTransferred);
                 telemetry.addData("DebugModeSet: = ", debugModeSet);
                 telemetry.addData("DebugMode: = ", debugModeIsOn);
+                telemetry.addData("vTouchLeft: = ", vTouchLeft.isPressed());
+                telemetry.addData("vTouchRight: = ", vTouchRight.isPressed());
+                telemetry.addData("YELLOW DETECTED", pin0.getState()&&pin1.getState());
+                telemetry.addData("BLUE DETECTED", pin0.getState()&&!pin1.getState());
+                telemetry.addData("RED DETECTED", pin1.getState()&&!pin0.getState());
                 telemetry.update();
 
                 dash.sendTelemetryPacket(packet);

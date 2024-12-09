@@ -110,7 +110,7 @@ public class LM1_Basket_2_Samples_Park extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket1.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                             ),
                             specigrabber.SpecigrabberClose(),
                             new SleepAction(2),
@@ -118,7 +118,7 @@ public class LM1_Basket_2_Samples_Park extends LinearOpMode {
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     sample1.build(),
-                                    vslides.VSlidesToDist(0, VSlideTempVelo),
+                                    vslides.VSlidesToDistPIDF(0),
                                     outtakeLM1.OuttakeIdle()
                             ),
                             new SleepAction(sleepTime),
@@ -148,14 +148,14 @@ public class LM1_Basket_2_Samples_Park extends LinearOpMode {
 
                             new ParallelAction(
                                     bucket2.build(),
-                                    vslides.VSlidesToDist(var.vSlideHighBasket,VSlideTempVelo)
+                                    vslides.VSlidesToDistPIDF(var.vSlideHighBasket)
                             ),
                             new SleepAction(2),
                             outtakeLM1.OuttakeOut(),
                             new SleepAction(sleepTime),
                             new ParallelAction(
                                     park.build(),
-                                    vslides.VSlidesToDist(1030,VSlideTempVelo),
+                                    vslides.VSlidesToDistPIDF(1030),
                                     outtakeLM1.OuttakeIdle()
                             )
 

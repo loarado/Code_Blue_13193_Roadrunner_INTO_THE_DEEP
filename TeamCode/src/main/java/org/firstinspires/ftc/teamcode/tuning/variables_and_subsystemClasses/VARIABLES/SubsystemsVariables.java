@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES;
+import com.acmerobotics.dashboard.config.Config;
 
+@Config
 public class SubsystemsVariables {
 
     public SubsystemsVariables() {

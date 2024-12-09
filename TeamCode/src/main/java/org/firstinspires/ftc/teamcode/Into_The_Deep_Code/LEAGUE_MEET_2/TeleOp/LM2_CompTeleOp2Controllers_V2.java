@@ -16,6 +16,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,15 +32,16 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.CancelableVSlidesAction;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-@TeleOp(name = "LM2 - 2 Drivers Comp TeleOp", group = "TeleOp")
-public class LM2_CompTeleOp2Controllers extends LinearOpMode {
+@Disabled
+@TeleOp(name = "LM2 - 2 Drivers Comp TeleOp V2", group = "TeleOp")
+public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
     /*
 
@@ -264,6 +266,8 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                     }
                 }
                 runningActions = newActions;
+
+
 
                 if((gamepad2.options||gamepad1.options) && !optionsPressed){
 
@@ -533,20 +537,26 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideHighChamber;
-                        lArm.setTargetPosition(vSlidesPos);
-                        rArm.setTargetPosition(vSlidesPos);
-                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                        // Cancel all existing slide actions
+                        for (Action action : runningActions) {
+                            if (isSlideAction(action)) {
+                                ((CancelableVSlidesAction) action).cancelAbruptly();
+                            }
+                        }
+
+                        // Add the new slide action
+                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideHighBasket;
-                        lArm.setTargetPosition(vSlidesPos);
-                        rArm.setTargetPosition(vSlidesPos);
-                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                        // Cancel all existing slide actions
+                        for (Action action : runningActions) {
+                            if (isSlideAction(action)) {
+                                ((CancelableVSlidesAction) action).cancelAbruptly();
+                            }
+                        }
+
+                        // Add the new slide action
+                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     }
                 }
                 dPadUpPressed = gamepad2.dpad_up;
@@ -560,20 +570,26 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideLowChamber;
-                        lArm.setTargetPosition(vSlidesPos);
-                        rArm.setTargetPosition(vSlidesPos);
-                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                        // Cancel all existing slide actions
+                        for (Action action : runningActions) {
+                            if (isSlideAction(action)) {
+                                ((CancelableVSlidesAction) action).cancelAbruptly();
+                            }
+                        }
+
+                        // Add the new slide action
+                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideLowBasket;
-                        lArm.setTargetPosition(vSlidesPos);
-                        rArm.setTargetPosition(vSlidesPos);
-                        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                        ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                        // Cancel all existing slide actions
+                        for (Action action : runningActions) {
+                            if (isSlideAction(action)) {
+                                ((CancelableVSlidesAction) action).cancelAbruptly();
+                            }
+                        }
+
+                        // Add the new slide action
+                        runningActions.add(new CancelableVSlidesAction(vslides, vSlidesPos));
                     }
                 }
                 dPadLeftPressed = gamepad2.dpad_left;
@@ -630,15 +646,18 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
 
                 if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed) {
                     vSlidesPos = 0;
-                    lArm.setTargetPosition(vSlidesPos);
-                    rArm.setTargetPosition(vSlidesPos);
-                    lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    rArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    ((DcMotorEx) lArm).setVelocity(var.vSlideVelocity);
-                    ((DcMotorEx) rArm).setVelocity(var.vSlideVelocity);
+                    // Cancel all existing slide actions
+                    for (Action action : runningActions) {
+                        if (isSlideAction(action)) {
+                            ((CancelableVSlidesAction) action).cancelAbruptly();
+                        }
+                    }
+
+                    // Add the new slide action
                     runningActions.add(
                             new ParallelAction(
-                                    outtakeLM2.OuttakeIdle()
+                                    outtakeLM2.OuttakeIdle(),
+                                    new CancelableVSlidesAction(vslides, vSlidesPos)
                             )
                         );
 
@@ -786,4 +805,9 @@ public class LM2_CompTeleOp2Controllers extends LinearOpMode {
             }
         }
     }
+
+    private boolean isSlideAction(Action action) {
+        return action instanceof CancelableVSlidesAction;
+    }
+
 }

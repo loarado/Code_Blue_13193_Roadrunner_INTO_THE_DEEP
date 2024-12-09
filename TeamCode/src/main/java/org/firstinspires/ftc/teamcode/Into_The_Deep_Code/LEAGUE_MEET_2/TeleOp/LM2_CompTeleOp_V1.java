@@ -39,7 +39,7 @@ import java.util.List;
 
 
 @TeleOp(name = "LM2 - 1 Driver Comp Tele-Op", group = "TeleOp")
-public class LM2_CompTeleOp extends LinearOpMode {
+public class LM2_CompTeleOp_V1 extends LinearOpMode {
 
     /*
 
