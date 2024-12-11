@@ -53,10 +53,12 @@ public class PIDF_2Arm extends LinearOpMode {
             while (opModeIsActive()) {
                 controller.setPIDF(p, i, d, f);
                 double motorRelativeError = Math.abs(larm.getCurrentPosition()-rarm.getCurrentPosition())>1?larm.getCurrentPosition()-rarm.getCurrentPosition():0;
+
                 double power = controller.calculate(getCurrentPosition(), target);
 
                 leftPower = power-relativeP*motorRelativeError;
                 rightPower = power+relativeP*motorRelativeError;
+
                 double denom = Math.max(leftPower, Math.max(rightPower, 1));
 
                 larm.setPower(leftPower / denom);

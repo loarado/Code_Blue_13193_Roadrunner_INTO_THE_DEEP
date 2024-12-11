@@ -439,21 +439,21 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
-                    hSlidesPos += (int) (10 * (gamepad1.left_trigger));
+                    hSlidesPos += (int) (17 * (gamepad1.left_trigger));
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.left_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
-                    hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
+                    hSlidesPos -= (int) (17 * (gamepad1.right_trigger));
                 }
 
                 if (gamepad1.right_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos += (int) (8 * (gamepad1.left_trigger));
+                    hSlidesPos += (int) (10 * (gamepad1.left_trigger));
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos -= (int) (8 * (gamepad1.right_trigger));
+                    hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
                 }
 
 
