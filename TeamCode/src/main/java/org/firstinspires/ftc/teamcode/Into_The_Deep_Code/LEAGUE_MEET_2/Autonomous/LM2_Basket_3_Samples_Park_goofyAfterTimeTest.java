@@ -153,7 +153,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         ))
                 .turn(Math.toRadians(-12.5))
                 .waitSeconds(5.75)
-                .afterTime(0, vslides.VSlidesToDist(900, VSlideTempVelo))
+                .afterTime(0, vslides.VSlidesToDist(800, VSlideTempVelo))
                 .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
                 .strafeTo(new Vector2d(21,12));
 

@@ -138,6 +138,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
         boolean optionsPressed = false;
         boolean leftStickPressed = false;
         boolean rightStickPressed = false;
+        boolean hSlideMoved = false;
 
         boolean YELLOW_DETECTED = false;
         boolean BLUE_DETECTED = false;
@@ -260,8 +261,11 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 }
 
 
-                if(vslides.getCurrentPosition()>250){
+                if(vslides.getCurrentPosition()>250&&!hSlideMoved){
                     hSlidesPos = 150;
+                    hSlideMoved = true;
+                } else if (vslides.getCurrentPosition()<=250) {
+                    hSlideMoved = false;
                 }
 
 
