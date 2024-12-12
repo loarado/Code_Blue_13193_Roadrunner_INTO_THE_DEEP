@@ -135,10 +135,16 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
         boolean dPadRightPressed = false; // Tracks DpadRight button state
         boolean dPadLeftPressed = false; // Tracks DpadRight button state
         boolean dPadUpPressed = false; // Tracks DpadRight button state
-        boolean optionsPressed = false;
-        boolean leftStickPressed = false;
-        boolean rightStickPressed = false;
-        boolean hSlideMoved = false;
+        boolean optionsPressed = false; // Tracks options pressed button state
+        boolean leftStickPressed = false; // same as ^^^
+        boolean rightStickPressed = false; // same as ^^^
+        //All the "button state" variables are to make sure when we press
+        //a button it doesn't do the action over and over after each loop, just once
+
+        boolean hSlideMoved = false; //tracks whether the hslide was moved already by
+        //the vslides being extended
+        boolean lightsChanged = false; //tracks whether the sample sensor made the lights change alr
+
 
         boolean YELLOW_DETECTED = false;
         boolean BLUE_DETECTED = false;
