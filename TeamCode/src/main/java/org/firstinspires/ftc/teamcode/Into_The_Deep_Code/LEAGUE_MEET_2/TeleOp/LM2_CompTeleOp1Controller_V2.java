@@ -144,6 +144,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
         //the vslides being extended
         boolean lightsChanged = false; //tracks whether the sample sensor made the lights change alr
 
+
         boolean YELLOW_DETECTED = false;
         boolean BLUE_DETECTED = false;
         boolean RED_DETECTED = false;
@@ -195,7 +196,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
             controller = new PIDController(p, i, d);
             controller.setPIDF(p, i, d, f);
-            
+
 
             while ((gamepad1.left_stick_x+gamepad1.left_stick_y+gamepad1.right_stick_x+gamepad1.right_stick_y==0)){
                 telemetry.addLine("WAITING FOR START");
@@ -247,25 +248,36 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
 
                 if(pin0.getState()&&pin1.getState()){
-                    if(currentlyIntaking){
-                        
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                        lightsChanged = true;
                     }
                     YELLOW_DETECTED = true;
                     RED_DETECTED = false;
                     BLUE_DETECTED = false;
                 } else if(pin0.getState()&&!pin1.getState()){
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                        lightsChanged = true;
+                    }
                     YELLOW_DETECTED = false;
                     RED_DETECTED = false;
                     BLUE_DETECTED = true;
                 }else if(pin1.getState()&&!pin0.getState()){
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        lightsChanged = true;
+                    }
                     YELLOW_DETECTED = false;
                     RED_DETECTED = true;
                     BLUE_DETECTED = false;
                 }else{
+                    lightsChanged = false;
                     YELLOW_DETECTED = false;
                     RED_DETECTED = true;
                     BLUE_DETECTED = false;
                 }
+
 
 
                 if(vslides.getCurrentPosition()>250&&!hSlideMoved){
@@ -320,9 +332,9 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
 
-                Actions.runBlocking(
-                        traj
-                );
+                    Actions.runBlocking(
+                            traj
+                    );
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
@@ -374,7 +386,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                 if((gamepad1.a || gamepad1.cross) && !gamepadApressed && debugModeIsOn){
                     runningActions.add(
-                                    hand.HandIntake()
+                            hand.HandIntake()
                     );
                 }
 
@@ -397,7 +409,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                             specigrabberIsOpen = true;
                         }
 
-                    } else if (BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400){
+                    } else if (BasketMode && vslides.getCurrentPosition() > 400){
                         if(outtakeIsOut){
                             runningActions.add(
                                     outtakeLM2.OuttakeIdle()
@@ -447,21 +459,21 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                 // Horizontal slides control - moves slides outward with left trigger,
                 // increases speed with harder press, but stops at max position
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
-                    hSlidesPos += (int) (17 * (gamepad1.left_trigger));
+                    hSlidesPos += (int) (17 * (gamepad1.right_trigger));
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.left_trigger > 0.1 && hSlidesPos > var.hSlideTransferPos && !debugModeIsOn) {
-                    hSlidesPos -= (int) (17 * (gamepad1.right_trigger));
+                    hSlidesPos -= (int) (17 * (gamepad1.left_trigger));
                 }
 
                 if (gamepad1.right_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos += (int) (10 * (gamepad1.left_trigger));
+                    hSlidesPos += (int) (10 * (gamepad1.right_trigger));
                 }
 
                 // Moves slides inward with right trigger, but stops at minimum position
                 if (gamepad1.left_trigger > 0.1 && debugModeIsOn) {
-                    hSlidesPos -= (int) (10 * (gamepad1.right_trigger));
+                    hSlidesPos -= (int) (10 * (gamepad1.left_trigger));
                 }
 
 
@@ -482,7 +494,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                         // Adjusts wrist and elbow positions based on intakeMode state
                         if (intakeMode) {
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                             runningActions.add(
                                     new ParallelAction(
                                             wrist.WristIntake(),
@@ -491,7 +503,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                     )
                             );
                         } else {
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                             runningActions.add(
                                     new ParallelAction(
                                             wrist.WristIntake(),
@@ -510,7 +522,15 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                 if ((gamepad1.b || gamepad1.circle) && currentlyIntaking) {
                     currentlyIntaking = false;
 
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
+                    }
 
                     hSlidesPos = var.hSlideTransferPos;
 
@@ -526,7 +546,15 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                             )
                     );
 
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_RED);
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    }
 
                     SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
@@ -576,6 +604,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                 )
                         );
                         specigrabberIsOpen = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     } else if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideLowChamber + 30 && vslides.getCurrentPosition() > var.vSlideLowChamber - 30)) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         vSlidesPos=var.vSlideLowChamberDrop;
@@ -586,6 +615,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                 )
                         );
                         specigrabberIsOpen = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && SampleTransferred){
                         runningActions.add(
                                 outtakeLM2.OuttakeOut()
@@ -626,20 +656,20 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                     if(hSlides.getCurrentPosition() > 225) {
 
                         currentlyIntaking = true;
-                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
 
-                            runningActions.add(
-                                    new ParallelAction(
-                                            wrist.WristToDist(var.FrontIntakeWristPos),
-                                            elbow.ElbowToDist(var.FrontIntakeElbowPos),
-                                            hand.HandIntake()
-                                    )
-                            );
+                        runningActions.add(
+                                new ParallelAction(
+                                        wrist.WristToDist(var.FrontIntakeWristPos),
+                                        elbow.ElbowToDist(var.FrontIntakeElbowPos),
+                                        hand.HandIntake()
+                                )
+                        );
 
                     }
 
                 }
-                dPadDownPressed = gamepad1.dpad_down;
+                dPadDownPressed =  gamepad1.dpad_down;
 
 
 
@@ -706,18 +736,18 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                 if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&!debugModeIsOn){
                     debugModeSet+=1;
                     if (debugModeSet >= 45){
-                     debugModeIsOn = true;
-                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
-                     debugModeSet = 0;
+                        debugModeIsOn = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                        debugModeSet = 0;
                     }
                 }
                 if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&debugModeIsOn){
-                        debugModeSet += 1;
-                        if (debugModeSet >= 45) {
-                            debugModeIsOn = false;
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                            debugModeSet=0;
-                        }
+                    debugModeSet += 1;
+                    if (debugModeSet >= 45) {
+                        debugModeIsOn = false;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                        debugModeSet=0;
+                    }
                 }
                 leftStickPressed = gamepad1.left_stick_button;
                 rightStickPressed = gamepad1.right_stick_button;
@@ -761,10 +791,6 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
             }
         }
-    }
-
-    private boolean isSlideAction(Action action) {
-        return action instanceof CancelableVSlidesAction;
     }
 
 }

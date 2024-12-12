@@ -249,22 +249,36 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
 
                 if(pin0.getState()&&pin1.getState()){
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                        lightsChanged = true;
+                    }
                     YELLOW_DETECTED = true;
                     RED_DETECTED = false;
                     BLUE_DETECTED = false;
                 } else if(pin0.getState()&&!pin1.getState()){
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                        lightsChanged = true;
+                    }
                     YELLOW_DETECTED = false;
                     RED_DETECTED = false;
                     BLUE_DETECTED = true;
                 }else if(pin1.getState()&&!pin0.getState()){
+                    if(currentlyIntaking&&!lightsChanged){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        lightsChanged = true;
+                    }
                     YELLOW_DETECTED = false;
                     RED_DETECTED = true;
                     BLUE_DETECTED = false;
                 }else{
+                    lightsChanged = false;
                     YELLOW_DETECTED = false;
                     RED_DETECTED = true;
                     BLUE_DETECTED = false;
                 }
+
 
 
                 if(vslides.getCurrentPosition()>250&&!hSlideMoved){
@@ -396,7 +410,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                             specigrabberIsOpen = true;
                         }
 
-                    } else if (BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400){
+                    } else if (BasketMode && vslides.getCurrentPosition() > 400){
                         if(outtakeIsOut){
                             runningActions.add(
                                     outtakeLM2.OuttakeIdle()
@@ -481,7 +495,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
                         // Adjusts wrist and elbow positions based on intakeMode state
                         if (intakeMode) {
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                             runningActions.add(
                                     new ParallelAction(
                                             wrist.WristIntake(),
@@ -490,7 +504,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                                     )
                             );
                         } else {
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                             runningActions.add(
                                     new ParallelAction(
                                             wrist.WristIntake(),
@@ -509,7 +523,15 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                 if ((gamepad1.b || gamepad1.circle) && currentlyIntaking) {
                     currentlyIntaking = false;
 
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
+                    }
 
                     hSlidesPos = var.hSlideTransferPos;
 
@@ -525,7 +547,15 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                             )
                     );
 
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_RED);
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    }
 
                     SampleTransferred = true;
                     // Resets hSlides position variable to OuttakePos for consistency
@@ -575,6 +605,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                                 )
                         );
                         specigrabberIsOpen = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     } else if (SpecimenMode && !outtakeIsOut && (vslides.getCurrentPosition() < var.vSlideLowChamber + 30 && vslides.getCurrentPosition() > var.vSlideLowChamber - 30)) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         vSlidesPos=var.vSlideLowChamberDrop;
@@ -585,6 +616,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                                 )
                         );
                         specigrabberIsOpen = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     } else if(BasketMode && !specigrabberIsOpen && vslides.getCurrentPosition() > 400 && SampleTransferred){
                         runningActions.add(
                                 outtakeLM2.OuttakeOut()
@@ -625,7 +657,7 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
                     if(hSlides.getCurrentPosition() > 225) {
 
                         currentlyIntaking = true;
-                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
 
                             runningActions.add(
                                     new ParallelAction(
@@ -760,10 +792,6 @@ public class LM2_CompTeleOp2Controllers_V2 extends LinearOpMode {
 
             }
         }
-    }
-
-    private boolean isSlideAction(Action action) {
-        return action instanceof CancelableVSlidesAction;
     }
 
 }
