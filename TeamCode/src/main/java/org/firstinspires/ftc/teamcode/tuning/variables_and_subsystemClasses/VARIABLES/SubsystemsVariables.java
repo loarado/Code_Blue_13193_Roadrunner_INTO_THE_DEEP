@@ -20,7 +20,7 @@ public class SubsystemsVariables {
     public final double TransferWristPos = 0.65;
     public final double IntakeWristPos = 0.38;
     public final double MiddleWristPos = 0.5;
-    public final double FrontIntakeWristPos = 0.55;
+    public final double FrontIntakeWristPos = 0.57;
 
 
     public final double DebugWristPos = 0.65;
@@ -30,7 +30,7 @@ public class SubsystemsVariables {
     public final double IntakeElbowPos = 0.15;
     public final double PrepIntakeElbowPos = 0.22;
     public final double MiddleElbowPos = 0.42;
-    public final double FrontIntakeElbowPos = 0.03;
+    public final double FrontIntakeElbowPos = 0;
     public final double EjectElbowPos = 0.3;
 
     public final double DebugUpElbowPos = 0.6;

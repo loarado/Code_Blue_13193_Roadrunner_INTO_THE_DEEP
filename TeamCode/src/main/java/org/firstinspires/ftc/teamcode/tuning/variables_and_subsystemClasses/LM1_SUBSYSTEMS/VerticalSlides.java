@@ -36,15 +36,18 @@ public class VerticalSlides {
     public DcMotorEx rArm;
     public TouchSensor vTouchLeft;
     public TouchSensor vTouchRight;
+    public int setPosition;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
 
     HardwareMap hardwareMapR;
 
+
     public VerticalSlides(HardwareMap hardwareMap) {
 
         hardwareMapR = hardwareMap;
+        setPosition = 0;
 
         //Constructor
         lArm = hardwareMap.get(DcMotorEx.class, "lArm");
@@ -96,9 +99,35 @@ public class VerticalSlides {
     }
 
 
-    public void stopSlides() {
-        rArm.setPower(0);
-        lArm.setPower(0);
+
+    public class updatePID implements Action  {
+        public updatePID() {
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            //SET SLIDE POWERS BASED ON PID CONTROLLER
+            rArm.setPower(V_Slides_PID_Class.returnRightVSlidePID(setPosition, lArm.getCurrentPosition(), rArm.getCurrentPosition()));
+            lArm.setPower(V_Slides_PID_Class.returnLeftVSlidePID(setPosition, lArm.getCurrentPosition(), rArm.getCurrentPosition()));
+                return true;
+        }
+    }
+    public Action UpdatePID() {
+        return new updatePID();
+    }
+
+    public class setPosition implements Action  {
+        int set;
+        public setPosition(int position) {
+            set = position;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPosition = set;
+            return false;
+        }
+    }
+    public Action SetPosition(int pos) {
+        return new setPosition(pos);
     }
 
 
@@ -119,8 +148,6 @@ public class VerticalSlides {
                 distance = var.vSlidePhysicalMax;
             }
 
-            controller = new PIDController(p, i, d);
-
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -133,8 +160,6 @@ public class VerticalSlides {
 
                 distanceTolerance = 20;
 
-
-            //WHILE SLIDES ARE NOT AT TARGET
             if((lArm.getCurrentPosition()>(distance-distanceTolerance)&&
                 lArm.getCurrentPosition()<(distance+distanceTolerance))&&
                 (rArm.getCurrentPosition()>(distance-distanceTolerance)&&
@@ -145,6 +170,7 @@ public class VerticalSlides {
                 lArm.setPower(V_Slides_PID_Class.returnLeftVSlidePID(distance, distance, distance));
                 return false;
             }else{
+                //WHILE SLIDES ARE NOT AT TARGET
                 return true;
             }
 
