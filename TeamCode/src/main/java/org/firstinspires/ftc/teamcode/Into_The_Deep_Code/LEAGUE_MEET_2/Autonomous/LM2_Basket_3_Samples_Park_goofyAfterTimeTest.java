@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_
 
 @Autonomous(name = "LM2 - Basket 3 Samples Park silly AT TEST", group = "Autonomous")
 public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
-    public int distance = 0;
 
     @Override
     public void runOpMode() {

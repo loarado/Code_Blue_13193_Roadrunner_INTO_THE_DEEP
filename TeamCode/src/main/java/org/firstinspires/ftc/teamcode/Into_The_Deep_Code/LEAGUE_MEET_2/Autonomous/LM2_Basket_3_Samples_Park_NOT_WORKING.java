@@ -21,9 +21,8 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
 
 @Disabled
-@Autonomous(name = "LM2 - Basket 3 Samples Park", group = "Autonomous")
-public class LM2_Basket_3_Samples_Park extends LinearOpMode {
-    public int distance = 0;
+@Autonomous(name = "LM2 - Basket 3 Samples Park Not Working", group = "Autonomous")
+public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
 
     @Override
     public void runOpMode() {

@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -26,8 +25,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 
 
 @Autonomous(name = "LM3 - Observatory 5 Spec", group = "Autonomous")
-public class LM3_Observatory_5_Spec extends LinearOpMode {
-    public int distance = 0;
+public class LM3_Observatory_5_Spec_LONG extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -158,10 +156,10 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
                 .afterTime(0, new ParallelAction(
                         vslides.SetPosition(var.vSlideHighChamber)
                 ))
-                .splineToLinearHeading(new Pose2d(3,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(3,-33, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0, vslides.SetPosition(var.vSlideHighChamberDrop))
                 .afterTime(0.4, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1.5)
+                .waitSeconds(1)
                 .setReversed(false)
 
                 //push samples
@@ -170,10 +168,10 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
                 .afterTime(1.4, wrist.WristToDist(var.FrontIntakeWristPos))
                 .afterTime(1.4, elbow.ElbowToDist(var.FrontIntakeElbowPos))
                 .splineToLinearHeading(new Pose2d(24,-42, Math.toRadians(45)),Math.toRadians(270), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(-45), tempVel, tempAccel)
+                .strafeToLinearHeading(new Vector2d(26.5,-48), Math.toRadians(-45), tempVel, tempAccel)
                 .splineToLinearHeading(new Pose2d(30,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeTo(new Vector2d(36, -42))
-                .strafeToLinearHeading(new Vector2d(37,-48),Math.toRadians(-45), tempVel, tempAccel)
+                .strafeTo(new Vector2d(37.5, -42))
+                .strafeToLinearHeading(new Vector2d(39,-48),Math.toRadians(-45), tempVel, tempAccel)
                 .splineToLinearHeading(new Pose2d(40,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
                 .strafeTo(new Vector2d(45.25, -42))
                 .strafeToLinearHeading(new Vector2d(44,-49), Math.toRadians(-45), tempVel, tempAccel)
@@ -182,10 +180,10 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
                 .afterTime(0, hslide.HSlideTo0())
                 .afterTime(0, wrist.WristMiddle())
                 .afterTime(0, elbow.ElbowMiddle())
-                .splineToLinearHeading(new Pose2d(37.5,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(37.5,-63, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
 
                 //pick spec 2
-                .waitSeconds(1)
+                .waitSeconds(.75)
                 .strafeTo(new Vector2d(37.5, -65.75), tempVel, tempAccel)
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, vslides.SetPosition(var.vSlideHighChamber))
@@ -193,17 +191,17 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
 
                 //place spec 2
                 .strafeTo(new Vector2d(37.5, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(1,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(1,-33, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0, vslides.SetPosition(var.vSlideHighChamberDrop))
                 .afterTime(0.4, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1.5)
+                .waitSeconds(1)
 
                 //go to spec 3
                 .afterTime(0.5, vslides.SetPosition(0))
-                .splineToLinearHeading(new Pose2d(37.5,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(37.5,-63, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
 
                 //pick spec 3
-                .waitSeconds(1.5)
+                .waitSeconds(0.75)
                 .strafeTo(new Vector2d(37.5, -65.75), tempVel, tempAccel)
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, vslides.SetPosition(var.vSlideHighChamber))
@@ -211,17 +209,17 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
 
                 //place spec 3
                 .strafeTo(new Vector2d(37.5, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(-1,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(-2,-33, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0, vslides.SetPosition(var.vSlideHighChamberDrop))
                 .afterTime(0.4, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1.5)
+                .waitSeconds(1)
 
                 //go to spec 4
                 .afterTime(0.5, vslides.SetPosition(0))
-                .splineToLinearHeading(new Pose2d(37.5,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(37.5,-63, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
 
                 //pick spec 4
-                .waitSeconds(1.5)
+                .waitSeconds(0.75)
                 .strafeTo(new Vector2d(37.5, -66), tempVel, tempAccel)
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, vslides.SetPosition(var.vSlideHighChamber))
@@ -229,17 +227,17 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
 
                 //place spec 4
                 .strafeTo(new Vector2d(37.5, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(-3,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(-5,-33, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0, vslides.SetPosition(var.vSlideHighChamberDrop))
                 .afterTime(0.4, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1.5)
+                .waitSeconds(1)
 
                 //go to spec 5
                 .afterTime(0.5, vslides.SetPosition(0))
                 .splineToLinearHeading(new Pose2d(37.5,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
 
                 //pick spec 5
-                .waitSeconds(1.5)
+                .waitSeconds(0.75)
                 .strafeTo(new Vector2d(37.5, -66), tempVel, tempAccel)
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, vslides.SetPosition(var.vSlideHighChamber))
@@ -247,10 +245,10 @@ public class LM3_Observatory_5_Spec extends LinearOpMode {
 
                 //place spec 5
                 .strafeTo(new Vector2d(37.5, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(-5,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(-8,-33, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0, vslides.SetPosition(var.vSlideHighChamberDrop))
                 .afterTime(0.4, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1.5)
+                .waitSeconds(1)
 
                 //park
                 .splineToLinearHeading(new Pose2d(37.5,-62, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel);

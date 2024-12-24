@@ -18,18 +18,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 public class VerticalSlides {
     private PIDController controller;
     
-    public static double p = 0.0065, i = 0, d = 0.000001;
-    public static double f = 0.00007;
-    public static double relativeP = 0.003;
 
-    public static int target = 0;
-
-    public final double ticks_in_degree = 145.1/360;
-
-    
-    
-    double leftPower;
-    double rightPower;
 
     //Instantiate the sensor/servo/motor
     public DcMotorEx lArm;
