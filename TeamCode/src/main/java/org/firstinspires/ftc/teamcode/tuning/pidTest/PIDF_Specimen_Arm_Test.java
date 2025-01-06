@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
@@ -44,6 +45,7 @@ public class PIDF_Specimen_Arm_Test extends LinearOpMode {
 
         if (opModeIsActive()) {
 
+            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
             while (opModeIsActive()) {

@@ -68,5 +68,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <string translatable="false" name="pref_ftc_season_year_of_current_rc">pref_ftc_season_year_of_current_rc_new</string>
 
   <string name="packageName">@string/packageNameRobotController</string>
+    <string name="pref_rc_connected">pref_rc_connected</string>
+    <string name="pref_warn_about_2_4_ghz_band">pref_warn_about_2_4_ghz_band</string>
+    <string name="pref_warn_about_obsolete_software">pref_warn_about_obsolete_software</string>
+    <string name="pref_warn_about_mismatched_app_versions">pref_warn_about_mismatched_app_versions</string>
+    <string name="pref_warn_about_incorrect_clocks">pref_warn_about_incorrect_clocks</string>
+    <string name="pref_wifi_automute">pref_wifi_automute</string>
+    <string name="pref_pairing_kind">pref_pairing_kind</string>
+    <string name="toastRobotSetupComplete">toastRobotSetupComplete</string>
+    <string name="toastRestartRobotComplete">toastRestartRobotComplete</string>
+    <string name="pref_app_theme">pref_app_theme</string>
+    <string name="appThemeChangeRestartNotifyRC">appThemeChangeRestartNotifyRC</string>
+    <string name="permRcWriteExternalStorageExplain">permRcWriteExternalStorageExplain</string>
+    <string name="permRcReadExternalStorageExplain">permRcReadExternalStorageExplain</string>
+    <string name="permRcCameraExplain">permRcCameraExplain</string>
+    <string name="permAccessLocationExplain">permAccessLocationExplain</string>
+    <string name="permReadPhoneState">permReadPhoneState</string>
+    <string name="permGenericExplain">permGenericExplain</string>
 
 </resources>
