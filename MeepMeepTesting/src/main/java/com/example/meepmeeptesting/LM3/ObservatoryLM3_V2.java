@@ -1,14 +1,13 @@
 package com.example.meepmeeptesting.LM3;
 
 
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class ObservatoryLM3 {
+public class ObservatoryLM3_V2 {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(1000);
 

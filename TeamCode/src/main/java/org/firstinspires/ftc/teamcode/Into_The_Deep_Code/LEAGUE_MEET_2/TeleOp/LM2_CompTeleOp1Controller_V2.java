@@ -27,9 +27,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.SpecigrabberOld;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
@@ -97,9 +98,9 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
         VerticalSlides vslides = new VerticalSlides(hardwareMap);
         Elbow elbow = new Elbow(hardwareMap);
         Wrist wrist = new Wrist(hardwareMap);
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberOld specigrabber = new SpecigrabberOld(hardwareMap);
 
         // 'var' holds subsystem-specific variables such as physical limits and velocities
         // for easier access and adjustment across the tele-op program
@@ -363,7 +364,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                         hSlidesPos=175;
                     }
                     runningActions.add(
-                            hand.HandOuttake()
+                            handLM3.HandOuttake()
                     );
                 } else if ((gamepad1.y || gamepad1.triangle)&&debugModeIsOn) {
                     runningActions.add(
@@ -385,7 +386,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                 if((gamepad1.a || gamepad1.cross) && !gamepadApressed && debugModeIsOn){
                     runningActions.add(
-                            hand.HandIntake()
+                            handLM3.HandIntake()
                     );
                 }
 
@@ -480,7 +481,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                 if ((gamepad1.a || gamepad1.cross) && !gamepadApressed &&!debugModeIsOn) {  // When A button is newly pressed
 
                     runningActions.add(
-                            hand.HandStop()
+                            handLM3.HandStop()
                     );
 
                     if(hSlides.getCurrentPosition() > 150) {
@@ -498,7 +499,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                     new ParallelAction(
                                             wrist.WristIntake(),
                                             elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
+                                            handLM3.HandIntake()
                                     )
                             );
                         } else {
@@ -507,7 +508,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                     new ParallelAction(
                                             wrist.WristIntake(),
                                             elbow.ElbowIntake(),
-                                            hand.HandIntake()
+                                            handLM3.HandIntake()
                                     )
                             );
                         }
@@ -538,10 +539,10 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
-                                            hand.HandStop()
+                                            handLM3.HandStop()
                                     ),
                                     new SleepAction(0.75),
-                                    hand.HandOuttake()
+                                    handLM3.HandOuttake()
                             )
                     );
 
@@ -564,7 +565,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                 if (gamepad1.dpad_up && !dPadUpPressed) {
                     runningActions.add(
-                            hand.HandStop()
+                            handLM3.HandStop()
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideHighChamber;
@@ -579,7 +580,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
 
                 if (gamepad1.dpad_left && !dPadLeftPressed) {
                     runningActions.add(
-                            hand.HandStop()
+                            handLM3.HandStop()
                     );
                     if (SpecimenMode){
                         vSlidesPos = var.vSlideLowChamber;
@@ -649,7 +650,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                     outtakeIsOut=false;
                 }else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(
-                            hand.HandStop()
+                            handLM3.HandStop()
                     );
 
                     if(hSlides.getCurrentPosition() > 225) {
@@ -661,7 +662,7 @@ public class LM2_CompTeleOp1Controller_V2 extends LinearOpMode {
                                 new ParallelAction(
                                         wrist.WristToDist(var.FrontIntakeWristPos),
                                         elbow.ElbowToDist(var.FrontIntakeElbowPos),
-                                        hand.HandIntake()
+                                        handLM3.HandIntake()
                                 )
                         );
 

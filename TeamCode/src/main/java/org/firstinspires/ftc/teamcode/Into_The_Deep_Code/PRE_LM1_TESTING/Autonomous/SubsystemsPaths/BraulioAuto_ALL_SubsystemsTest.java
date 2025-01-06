@@ -13,11 +13,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Lights;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
 
@@ -46,13 +46,13 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);
 
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         Actions.runBlocking(
 
@@ -64,7 +64,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsRainbow(),
-                        hand.HandStop()
+                        handLM3.HandStop()
                 )
         );
 
@@ -89,7 +89,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             t1.build(),
                             hslide.HSlideToMax(),
                             new ParallelAction(
-                              hand.HandIntake(),
+                              handLM3.HandIntake(),
                               elbow.ElbowIntake(),
                               lights.LightsYellow()
                             ),
@@ -99,7 +99,7 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                             new ParallelAction(
                                     wrist.WristMiddle(),
                                     elbow.ElbowMiddle(),
-                                    hand.HandStop()
+                                    handLM3.HandStop()
                             ),
                             new ParallelAction(
                                     hslide.HSlideToTransfer(),
@@ -107,13 +107,13 @@ public class BraulioAuto_ALL_SubsystemsTest extends LinearOpMode {
                                     elbow.ElbowTransfer(),
                                     lights.LightsBlue()
                             ),
-                            hand.HandOuttake(),
+                            handLM3.HandOuttake(),
                             new SleepAction(1),
                             new ParallelAction(
                                     wrist.WristMiddle(),
                                     elbow.ElbowMiddle(),
                                     hslide.HSlideToMax(),
-                                    hand.HandStop()
+                                    handLM3.HandStop()
                             ),
                             new SleepAction(1),
                             new ParallelAction(

@@ -113,8 +113,17 @@ public class SubsystemsVariables {
 
 
 
-    public final double specigrabberOpen = 0.55;
-    public final double specigrabberClosed = 0.82;
+    public final double specigrabberOpen = 0.6;
+    public final double specigrabberClosed = 0.4;
 
 
+    public final double speciRotateScore = 0.35;
+    public final double speciRotateGrab = 1;
+
+
+    public final int speciArmDown = 0;
+    public final int speciArmGrab = 100;
+    public final int speciArmPrepScore = 600;
+    public final int speciArmScore = 800;
+    public final int speciArmVelo = 350;
 }

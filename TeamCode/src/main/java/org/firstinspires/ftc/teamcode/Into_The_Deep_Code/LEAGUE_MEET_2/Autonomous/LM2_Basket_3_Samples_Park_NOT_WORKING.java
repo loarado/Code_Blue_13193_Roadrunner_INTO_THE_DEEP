@@ -11,11 +11,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Lights;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
@@ -45,13 +45,13 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);
 
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         Actions.runBlocking(
 
@@ -63,7 +63,7 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
-                        hand.HandStop(),
+                        handLM3.HandStop(),
                         hslide.HSlideTo0()
                 )
         );
@@ -95,7 +95,7 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
                 .afterTime(2, hslide.HSlideToDist(hSlideGrabExtension))
                 .afterTime(2, wrist.WristIntake())
                 .afterTime(3, elbow.PrepElbowIntake())
-                .afterTime(3, hand.HandIntake())
+                .afterTime(3, handLM3.HandIntake())
 
                 /*
                 This strafeTo moves to the basket, afterTime() actions happen after whatever trajectory
@@ -117,7 +117,7 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
                 .waitSeconds(sleepTime)
 
                 //prepare to transfer sample TWO to the outtake
-                .afterTime(0, hand.HandStop())
+                .afterTime(0, handLM3.HandStop())
                 .afterTime(0, wrist.WristTransfer())
                 .afterTime(0, elbow.ElbowTransfer())
                 .afterTime(0, hslide.HSlideToTransfer())
@@ -128,11 +128,11 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
                 //this is only to be safe, if the wrist and elbow can
                 //be in transfer position while the slides come down
                 //just do that instead
-                .afterTime(0.75, hand.HandOuttake())
+                .afterTime(0.75, handLM3.HandOuttake())
                 .waitSeconds(sleepTime)
 
                 //prepare to intake sample THREE while scoring sample TWO
-                .afterTime(0, hand.HandStop())
+                .afterTime(0, handLM3.HandStop())
                 .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-15))
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
@@ -157,7 +157,7 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
 
                 //prepare to grab sample 3
                 .afterTime(0, elbow.PrepElbowIntake())
-                .afterTime(0, hand.HandIntake())
+                .afterTime(0, handLM3.HandIntake())
                 .waitSeconds(sleepTime)
 
                 //grab sample 3
@@ -165,20 +165,20 @@ public class LM2_Basket_3_Samples_Park_NOT_WORKING extends LinearOpMode {
                 .waitSeconds(sleepTime)
 
                 //prepare for transfer
-                .afterTime(0, hand.HandStop())
+                .afterTime(0, handLM3.HandStop())
                 .afterTime(0, wrist.WristTransfer())
                 .afterTime(0, elbow.ElbowTransfer())
                 .afterTime(0, hslide.HSlideToTransfer())
                 .waitSeconds(2)
 
                 //transfer sample 3
-                .afterTime(0, hand.HandOuttake())
+                .afterTime(0, handLM3.HandOuttake())
                 .waitSeconds(0.75)
 
 
 
                 //prepare to score sample 3
-                .afterTime(0, hand.HandStop())
+                .afterTime(0, handLM3.HandStop())
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
                 .afterTime(0, vslides.VSlidesToDistPIDF(var.vSlideHighBasket))

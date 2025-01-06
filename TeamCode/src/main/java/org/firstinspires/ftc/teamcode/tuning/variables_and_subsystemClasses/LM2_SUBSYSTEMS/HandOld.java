@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS;
+package org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
-public class Hand {
+public class HandOld {
 
     //Instantiate the sensor/servo/motor
     public CRServo leftHand;
@@ -19,7 +19,7 @@ public class Hand {
     SubsystemsVariables var = new SubsystemsVariables();
 
 
-    public Hand(HardwareMap hardwareMap) {
+    public HandOld(HardwareMap hardwareMap) {
 
         //Constructor
         leftHand = hardwareMap.get(CRServo.class, "leftHand");

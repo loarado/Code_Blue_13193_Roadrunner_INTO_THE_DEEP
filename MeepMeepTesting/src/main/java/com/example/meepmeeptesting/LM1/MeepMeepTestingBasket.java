@@ -1,11 +1,10 @@
 package com.example.meepmeeptesting.LM1;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-
-import org.rowlandhall.meepmeep.MeepMeep;
-import org.rowlandhall.meepmeep.roadrunner.DefaultBotBuilder;
-import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.noahbres.meepmeep.MeepMeep;
+import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
+import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTestingBasket {
     public static void main(String[] args) {
@@ -14,7 +13,8 @@ public class MeepMeepTestingBasket {
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(50, 50, Math.toRadians(180), Math.toRadians(180), 15)
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(36, 64.25, Math.toRadians(180)))
+                        .build();
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(36, 64.25, Math.toRadians(180)))
                         .setReversed(true)
                         .strafeTo(new Vector2d(40, 60))
                         .splineTo(new Vector2d(56, 56), Math.toRadians(0))
@@ -56,7 +56,7 @@ public class MeepMeepTestingBasket {
                         .waitSeconds(2)
          */
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)

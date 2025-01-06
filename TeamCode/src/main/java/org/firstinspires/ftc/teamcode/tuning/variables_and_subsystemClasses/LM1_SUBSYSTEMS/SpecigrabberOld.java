@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
-public class Specigrabber {
+public class SpecigrabberOld {
 
     //Instantiate the sensor/servo/motor
     public Servo specigrabber;
@@ -18,7 +18,7 @@ public class Specigrabber {
     SubsystemsVariables var = new SubsystemsVariables();
 
 
-    public Specigrabber(HardwareMap hardwareMap) {
+    public SpecigrabberOld(HardwareMap hardwareMap) {
 
         //Constructor
         specigrabber = hardwareMap.get(Servo.class, "specigrabber");

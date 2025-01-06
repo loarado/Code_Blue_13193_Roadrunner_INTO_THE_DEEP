@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_MEET_2.Autonomo
 
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -12,10 +10,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Lights;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
@@ -48,13 +46,13 @@ public class LM2_Observatory_Push_3_Samples extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);
 
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         Actions.runBlocking(
 
@@ -66,7 +64,7 @@ public class LM2_Observatory_Push_3_Samples extends LinearOpMode {
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
-                        hand.HandStop(),
+                        handLM3.HandStop(),
                         hslide.HSlideTo0()
                 )
         );

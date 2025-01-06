@@ -13,10 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
@@ -67,11 +67,11 @@ public class TeleOpTest extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         // Reverse Motors
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -199,7 +199,7 @@ public class TeleOpTest extends LinearOpMode {
 
                     Actions.runBlocking(
                             //Stop hand wheels from spinning when the Hslides position is less than 200 and you press A
-                            hand.HandStop()
+                            handLM3.HandStop()
                     );
 
                     // Run intake actions based on the new intake mode state
@@ -208,7 +208,7 @@ public class TeleOpTest extends LinearOpMode {
                                 new ParallelAction(
                                         wrist.WristIntake(),
                                         elbow.PrepElbowIntake(),
-                                        hand.HandIntake()
+                                        handLM3.HandIntake()
                                 )
                         );
                     } else if (hSlides.getCurrentPosition() > 100){
@@ -216,7 +216,7 @@ public class TeleOpTest extends LinearOpMode {
                                 new ParallelAction(
                                         wrist.WristIntake(),
                                         elbow.ElbowIntake(),
-                                        hand.HandIntake()
+                                        handLM3.HandIntake()
                                 )
                         );
                     }
@@ -235,11 +235,11 @@ public class TeleOpTest extends LinearOpMode {
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
-                                            hand.HandStop(),
+                                            handLM3.HandStop(),
                                             hslide.HSlideToTransfer(),
                                             vslides.VSlidesTo0()
                                     ),
-                                    hand.HandOuttake()
+                                    handLM3.HandOuttake()
 
                             )
                     );

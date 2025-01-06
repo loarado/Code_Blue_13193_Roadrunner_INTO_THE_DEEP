@@ -13,11 +13,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Lights;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.OuttakeLM1;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
@@ -51,13 +51,13 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);
 
         OuttakeLM1 outtakeLM1 = new OuttakeLM1(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         int hSlideGrabExtension = 375;
 
@@ -73,7 +73,7 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
-                        hand.HandStop(),
+                        handLM3.HandStop(),
                         hslide.HSlideTo0()
                 )
         );
@@ -145,21 +145,21 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                                             hslide.HSlideToDist(hSlideGrabExtension),
                                             wrist.WristIntake(),
                                             elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
+                                            handLM3.HandIntake()
                                     ),
                                     new SleepAction(1),
                                     elbow.ElbowIntake(),
                                     new SleepAction(1),
-                                    hand.HandStop(),
+                                    handLM3.HandStop(),
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),
-                                    hand.HandOuttake(),
+                                    handLM3.HandOuttake(),
                                     new SleepAction(0.75),
-                                    hand.HandStop()
+                                    handLM3.HandStop()
                             ),
 
                             new ParallelAction(
@@ -181,21 +181,21 @@ public class LM1_Basket_3_Samples_not_working extends LinearOpMode {
                                             hslide.HSlideToDist(hSlideGrabExtension),
                                             wrist.WristIntake(),
                                             elbow.PrepElbowIntake(),
-                                            hand.HandIntake()
+                                            handLM3.HandIntake()
                                     ),
                                     new SleepAction(1),
                                     elbow.ElbowIntake(),
                                     new SleepAction(1),
-                                    hand.HandStop(),
+                                    handLM3.HandStop(),
                                     new ParallelAction(
                                             wrist.WristTransfer(),
                                             elbow.ElbowTransfer(),
                                             hslide.HSlideToTransfer()
                                     ),
                                     new SleepAction(0.75),
-                                    hand.HandOuttake(),
+                                    handLM3.HandOuttake(),
                                     new SleepAction(0.75),
-                                    hand.HandStop()
+                                    handLM3.HandStop()
                             ),
 
                             new ParallelAction(

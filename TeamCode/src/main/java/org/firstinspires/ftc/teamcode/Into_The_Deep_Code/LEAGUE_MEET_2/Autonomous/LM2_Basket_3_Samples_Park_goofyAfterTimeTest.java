@@ -12,11 +12,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Hand;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Lights;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Specigrabber;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Wrist;
@@ -46,13 +46,13 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
 
         Wrist wrist = new Wrist(hardwareMap);
 
-        Hand hand = new Hand(hardwareMap);
+        HandLM3 handLM3 = new HandLM3(hardwareMap);
 
         Lights lights = new Lights(hardwareMap);
 
         OuttakeLM2 outtakeLM2 = new OuttakeLM2(hardwareMap);
 
-        Specigrabber specigrabber = new Specigrabber(hardwareMap);
+        SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
         Actions.runBlocking(
 
@@ -64,7 +64,7 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
-                        hand.HandStop(),
+                        handLM3.HandStop(),
                         hslide.HSlideTo0()
                 )
         );
@@ -89,24 +89,24 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                 .afterTime(1, new SequentialAction(
                         new ParallelAction(hslide.HSlideToDist(hSlideGrabExtension), wrist.WristIntake()),
                         new SleepAction(sleepTime),
-                        new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake()),
+                        new ParallelAction(elbow.PrepElbowIntake(), handLM3.HandIntake()),
                         new SleepAction(1),
                         outtakeLM2.OuttakeOut(),
                         new SleepAction(sleepTime),
                         new ParallelAction(elbow.ElbowIntake(), outtakeLM2.OuttakeIdle(), vslides.VSlidesToDist(0, VSlideTempVelo)),
                         new SleepAction(1.25),
                         new ParallelAction(
-                                hand.HandStop(),
+                                handLM3.HandStop(),
                                 wrist.WristTransfer(),
                                 elbow.ElbowTransfer()
                         ),
                         new SleepAction(0.25),
                         hslide.HSlideToTransfer(),
                         new SleepAction(0.75),
-                        new ParallelAction(hand.HandOuttake()),
+                        new ParallelAction(handLM3.HandOuttake()),
                         new SleepAction(sleepTime),
                         new ParallelAction(
-                                hand.HandStop(),
+                                handLM3.HandStop(),
                                 hslide.HSlideToDist(hSlideGrabExtension-15),
                                 wrist.WristIntake(),
                                 elbow.ElbowMiddle(),
@@ -121,25 +121,25 @@ public class LM2_Basket_3_Samples_Park_goofyAfterTimeTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(59, 52.5), Math.toRadians(255.5))
                 .waitSeconds(12.5)
                 .afterTime(1, new SequentialAction(
-                        new ParallelAction(elbow.PrepElbowIntake(), hand.HandIntake(), outtakeLM2.OuttakeIdle()),
+                        new ParallelAction(elbow.PrepElbowIntake(), handLM3.HandIntake(), outtakeLM2.OuttakeIdle()),
                         new SleepAction(0.5),
                         elbow.ElbowIntake(),
                         new SleepAction(0.75),
                         new ParallelAction(
-                                hand.HandStop(),
+                                handLM3.HandStop(),
                                 wrist.WristTransfer(),
                                 elbow.ElbowTransfer(),
                                 hslide.HSlideToTransfer()
                         ),
                         new SleepAction(sleepTime),
-                        hand.HandOuttake(),
+                        handLM3.HandOuttake(),
                         new SleepAction(sleepTime)
                 ))
                 .turn(Math.toRadians(12.5))
                 .waitSeconds(5)
                 .afterTime(0, new SequentialAction(
                         new ParallelAction(
-                                hand.HandStop(),
+                                handLM3.HandStop(),
                                 wrist.WristIntake(),
                                 elbow.ElbowMiddle(),
                                 vslides.VSlidesToDist(2377, VSlideTempVelo)

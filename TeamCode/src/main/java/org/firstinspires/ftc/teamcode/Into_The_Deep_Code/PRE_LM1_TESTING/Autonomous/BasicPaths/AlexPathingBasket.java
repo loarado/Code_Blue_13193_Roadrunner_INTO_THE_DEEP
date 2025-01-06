@@ -15,6 +15,7 @@ public class AlexPathingBasket extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(-90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -48,7 +49,7 @@ public class AlexPathingBasket extends LinearOpMode {
                             .splineTo(new Vector2d(40,12), Math.toRadians(180))
                             .strafeTo(new Vector2d(24,12))
                             .waitSeconds(2)
-                            .build());
-
+                            .build()
+            );
     }
 }
