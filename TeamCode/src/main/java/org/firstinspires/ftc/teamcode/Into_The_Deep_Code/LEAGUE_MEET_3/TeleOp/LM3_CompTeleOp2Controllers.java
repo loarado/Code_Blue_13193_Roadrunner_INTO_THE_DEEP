@@ -23,6 +23,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
@@ -38,7 +40,10 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "LM3 - 2 Drivers Comp TeleOp V3", group = "TeleOp")
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotor;
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
+
+@TeleOp(name = "LM3 - 2 Drivers Comp TeleOp V1", group = "TeleOp")
 public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
     /*
@@ -97,14 +102,17 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
         // Hardware initialization
         // Motor declarations
-        DcMotor leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        DcMotor leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        DcMotor lArm = hardwareMap.get(DcMotor.class, "lArm");
-        DcMotor hSlides = hardwareMap.get(DcMotor.class, "hSlides");
-        DcMotor rArm = hardwareMap.get(DcMotor.class, "rArm");
-        DcMotor rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        DcMotor rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        DcMotor specimenArm = hardwareMap.get(DcMotor.class, "specimenArm");
+        CachingDcMotorEx leftFront = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "leftFront"));
+        CachingDcMotorEx leftBack = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "leftBack"));
+        CachingDcMotorEx lArm = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "lArm"));
+        CachingDcMotorEx hSlides = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "hSlides"));
+        CachingDcMotorEx rArm = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "rArm"));
+        CachingDcMotorEx rightBack = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "rightBack"));
+        CachingDcMotorEx rightFront = new CachingDcMotorEx(hardwareMap.get(DcMotorEx.class, "rightFront"));
+        DcMotorEx specimenArm = hardwareMap.get(DcMotorEx.class, "specimenArm");
+
+        lArm.setCachingTolerance(0.001);
+        rArm.setCachingTolerance(0.001);
 
         RevBlinkinLedDriver lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
         TouchSensor vTouchLeft = hardwareMap.get(TouchSensor.class, "vTouchLeft");
@@ -155,6 +163,11 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
         int debugModeSet = 0;
         boolean debugModeIsOn = false;
 
+        int lArmCurrentPos;
+        int rArmCurrentPos;
+        int vSlidesCurrentPos = vslides.getCurrentPosition(); // Variable for vertical slides position
+        int hSlidesCurrentPos = hSlides.getCurrentPosition(); // Variable for horizontal slides position
+
         VelConstraint velSlow = new TranslationalVelConstraint(30);
         VelConstraint velFast = new TranslationalVelConstraint(45);
 
@@ -180,27 +193,39 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
         double power;
         double denom;
 
+        PIDController controllerSpec;
 
+        double pidSPEC;
+        double ffSPEC;
 
+        ElapsedTime elapsedTime;
 
         // Wait for start button to be pressed
         waitForStart();
 
         if (opModeIsActive()) {
 
+            elapsedTime = new ElapsedTime();
+            elapsedTime.reset();
+
             controller = new PIDController(p, i, d);
             controller.setPIDF(p, i, d, f);
+
+            controllerSpec = new PIDController(.005, .075, .0002);
+
             
 
             while ((gamepad1.left_stick_x+gamepad1.left_stick_y+gamepad1.right_stick_x+gamepad1.right_stick_y==0)){
                 telemetry.addLine("WAITING FOR START");
+                telemetry.addData("Loop Times", elapsedTime.milliseconds());
+                elapsedTime.reset();
                 telemetry.update();
             }
 
             // Set horizontal slides initial position
             hSlides.setTargetPosition(hSlidesPos);
             hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
+            hSlides.setVelocity(var.hSlideVelocity);
 
             // Set vertical slides initial position
             lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -208,9 +233,12 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
             lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            specimenArm.setTargetPosition(specArmPos);
-            specimenArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ((DcMotorEx) specimenArm).setVelocity(var.speciArmVelo);
+            lArmCurrentPos = lArm.getCurrentPosition();
+            rArmCurrentPos = rArm.getCurrentPosition();
+
+            specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            specimenArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
             Actions.runBlocking(
@@ -226,11 +254,19 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
             while (opModeIsActive()) {
 
+                lArmCurrentPos = lArm.getCurrentPosition();
+                rArmCurrentPos = rArm.getCurrentPosition();
+                vSlidesCurrentPos = vslides.getCurrentPosition();
+                hSlidesCurrentPos = hSlides.getCurrentPosition();
+
+
+                telemetry.addData("Loop Times", elapsedTime.milliseconds());
+                elapsedTime.reset();
 
 
                 //PID CONTROLLER FOR VERTICAL SLIDES
-                motorRelativeError = Math.abs(lArm.getCurrentPosition()- rArm.getCurrentPosition())>1? lArm.getCurrentPosition()- rArm.getCurrentPosition():0;
-                power = controller.calculate((lArm.getCurrentPosition()+ rArm.getCurrentPosition())/2, vSlidesPos);
+                motorRelativeError = Math.abs(lArmCurrentPos- rArmCurrentPos)>1? lArmCurrentPos- rArmCurrentPos:0;
+                power = controller.calculate((lArmCurrentPos+ rArmCurrentPos)/2, vSlidesPos);
 
                 leftPower = power-relativeP*motorRelativeError;
                 rightPower = power+relativeP*motorRelativeError;
@@ -240,13 +276,19 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 lArm.setPower(leftPower / denom);
                 rArm.setPower (rightPower / denom);
 
+
+
+                //PID FOR SPEC ARM
+                controllerSpec.setPID(.005, .075, .0002);
+
+                pidSPEC = controllerSpec.calculate(specimenArm.getCurrentPosition(), specArmPos);
+                ffSPEC = Math.cos(Math.toRadians(specArmPos / ((2786.2/360)/2))) * .05;
+
+                specimenArm.setPower(pidSPEC + ffSPEC);
+
                 hSlides.setTargetPosition(hSlidesPos);
                 hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                ((DcMotorEx) hSlides).setVelocity(var.hSlideVelocity);
-
-                specimenArm.setTargetPosition(specArmPos);
-                specimenArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                ((DcMotorEx) specimenArm).setVelocity(var.speciArmVelo);
+                hSlides.setVelocity(var.hSlideVelocity);
 
 
                 if(pin0.getState()&&pin1.getState()){
@@ -286,10 +328,10 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if(vslides.getCurrentPosition()>250&&!hSlideMoved){
+                if(vSlidesCurrentPos>250&&!hSlideMoved){
                     hSlidesPos = 150;
                     hSlideMoved = true;
-                } else if (vslides.getCurrentPosition()<=250) {
+                } else if (vSlidesCurrentPos<=250) {
                     hSlideMoved = false;
                 }
 
@@ -370,7 +412,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                                     wrist.WristMiddle()
                             )
                     );
-                    if(hSlides.getCurrentPosition()<175){
+                    if(hSlidesCurrentPos<175){
                         hSlidesPos=175;
                     }
                     runningActions.add(
@@ -419,7 +461,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             specigrabberIsOpen = true;
                         }
 
-                    } else if (BasketMode && vslides.getCurrentPosition() > 400){
+                    } else if (BasketMode && vSlidesCurrentPos > 400){
                         if(outtakeIsOut){
                             runningActions.add(
                                     outtakeLM2.OuttakeIdle()
@@ -494,7 +536,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             handLM3.HandStop()
                     );
 
-                    if(hSlides.getCurrentPosition() > 150) {
+                    if(hSlidesCurrentPos > 150) {
 
                         if (!currentlyIntaking) {  // Ensures prep mode is first if idle
                             intakeMode = false;
@@ -613,12 +655,9 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             handLM3.HandStop()
                     );
                     if (SpecimenMode){
+                        specArmPos = var.speciArmPrepScore;
                         runningActions.add(
                                 new SequentialAction(
-                                        specigrabber.SpecigrabberClose(),
-                                        new SleepAction(0.4),
-                                        specigrabber.SpeciArmPrepScore(),
-                                        new SleepAction(0.4),
                                         specigrabber.SpeciRotateScore()
                                 )
                         );
@@ -636,7 +675,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             handLM3.HandStop()
                     );
                     if (SpecimenMode){
-                        vSlidesPos = var.vSlideLowChamber;
+                        specArmPos = var.speciArmGrab+200;
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideLowBasket;
                     }
@@ -649,23 +688,24 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 if (gamepad2.dpad_right && !dPadRightPressed) {
                     if (SpecimenMode) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
-                        vSlidesPos=var.vSlideHighChamberDrop;
+                        specArmPos=var.speciArmScore;
                         runningActions.add(
                                 new SequentialAction(
-                                        new SleepAction(.4),
+                                        specigrabber.SpeciRotateScore(),
+                                        new SleepAction(0.6),
                                         specigrabber.SpecigrabberOpen()
                                 )
                         );
                         specigrabberIsOpen = true;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
-                    } else if(BasketMode && vslides.getCurrentPosition() > 400 && SampleTransferred){
+                    } else if(BasketMode && vSlidesCurrentPos > 400 && SampleTransferred){
                         runningActions.add(
                                 outtakeLM2.OuttakeOut()
                         );
                         outtakeIsOut = true;
                         SampleTransferred = false;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                    } else if(BasketMode && vslides.getCurrentPosition() > 400 && !SampleTransferred){
+                    } else if(BasketMode && vSlidesCurrentPos > 400 && !SampleTransferred){
                         runningActions.add(
                                 new ParallelAction(
                                         outtakeLM2.OuttakeIdle(),
@@ -681,11 +721,11 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
+                if (gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
                     vSlidesPos = 0;
 
 
-                } else if(gamepad2.dpad_down && vslides.getCurrentPosition() > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
+                } else if(gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
@@ -694,7 +734,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             handLM3.HandStop()
                     );
-                    if(hSlides.getCurrentPosition() > 225) {
+                    if(hSlidesCurrentPos > 225) {
 
                         currentlyIntaking = true;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
@@ -710,11 +750,10 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 } else if(gamepad2.dpad_down && !dPadDownPressed && SpecimenMode){
+                    specArmPos = var.speciArmGrab;
                     runningActions.add(
                             new ParallelAction(
-                                    specigrabber.SpecigrabberOpen(),
-                                    specigrabber.SpeciArmGrab(),
-                                    specigrabber.SpeciRotateScore()
+                                    specigrabber.SpeciRotateGrab()
                             )
                     );
                     specigrabberIsOpen = true;
@@ -758,7 +797,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //Slower when intaking or when stuff is extended
-                if(hSlides.getCurrentPosition()>250|| lArm.getCurrentPosition()>1400|| rArm.getCurrentPosition()>1400||currentlyIntaking){
+                if(hSlidesCurrentPos>250|| lArmCurrentPos>1400|| rArmCurrentPos>1400||currentlyIntaking){
                     driveSpeed = 2.5;
                 } else{
                     driveSpeed = 1.5;
@@ -767,7 +806,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //Failsafes
-                if(vslides.getCurrentPosition()<400&& outtakeIsOut && !specigrabberIsOpen){
+                if(vSlidesCurrentPos<400&& outtakeIsOut && !specigrabberIsOpen){
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
@@ -819,19 +858,19 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 telemetry.addData("x = ", x);
                 telemetry.addData("y = ", y);
                 telemetry.addData("rx = ", rx);
-                telemetry.addData("currentRightArmPos = ", rArm.getCurrentPosition());
-                telemetry.addData("currentLeftArmPos = ", lArm.getCurrentPosition());
+                telemetry.addData("currentRightArmPos = ", rArmCurrentPos);
+                telemetry.addData("currentLeftArmPos = ", lArmCurrentPos);
+                telemetry.addData("SpecArmPosVar: = ", specArmPos);
+                telemetry.addData("SpecArmPos: = ", specimenArm.getCurrentPosition());
+                telemetry.addData("SpecArmPower: = ", (ffSPEC+pidSPEC));
                 telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
-                telemetry.addData("currentHorizontalSlidesPos = ", hSlides.getCurrentPosition());
+                telemetry.addData("currentHorizontalSlidesPos = ", hSlidesCurrentPos);
                 telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
                 telemetry.addData("BasketMode", BasketMode);
-                telemetry.addData("IntakeMode = ", intakeMode);
                 telemetry.addData("Currently Intaking: = ", currentlyIntaking);
                 telemetry.addData("Transfer: = ", SampleTransferred);
                 telemetry.addData("DebugModeSet: = ", debugModeSet);
                 telemetry.addData("DebugMode: = ", debugModeIsOn);
-                telemetry.addData("vTouchLeft: = ", vTouchLeft.isPressed());
-                telemetry.addData("vTouchRight: = ", vTouchRight.isPressed());
                 telemetry.addData("YELLOW DETECTED", pin0.getState()&&pin1.getState());
                 telemetry.addData("BLUE DETECTED", pin0.getState()&&!pin1.getState());
                 telemetry.addData("RED DETECTED", pin1.getState()&&!pin0.getState());

@@ -12,11 +12,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
+
 public class SpecigrabberLM3 {
 
     //Instantiate the sensor/servo/motor
-    public Servo specClawOpen;
-    public Servo specClawRotate;
+    public CachingServo specClawOpen;
+    public CachingServo specClawRotate;
     public DcMotorEx specimenArm;
 
     // Import final variables
@@ -26,9 +28,9 @@ public class SpecigrabberLM3 {
     public SpecigrabberLM3(HardwareMap hardwareMap) {
 
         //Constructor
-        specClawOpen = hardwareMap.get(Servo.class, "specClawOpen");
+        specClawOpen = new CachingServo(hardwareMap.get(Servo.class, "specClawOpen"));
         specClawOpen.setDirection(Servo.Direction.FORWARD);
-        specClawRotate = hardwareMap.get(Servo.class, "specClawRotate");
+        specClawRotate = new CachingServo(hardwareMap.get(Servo.class, "specClawRotate"));
         specClawRotate.setDirection(Servo.Direction.FORWARD);
         specimenArm = hardwareMap.get(DcMotorEx.class, "specimenArm");
         specimenArm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -83,6 +85,19 @@ public class SpecigrabberLM3 {
     }
     public Action SpeciRotateScore() {
         return new speciRotateScore();
+    }
+
+    public class speciRotateGrab implements Action  {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            specClawRotate.setPosition(var.speciRotateGrab);
+
+            return false;
+
+        }
+    }
+    public Action SpeciRotateGrab() {
+        return new speciRotateGrab();
     }
 
 

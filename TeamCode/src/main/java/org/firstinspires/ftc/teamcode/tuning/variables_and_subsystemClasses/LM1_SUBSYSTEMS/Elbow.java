@@ -9,10 +9,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
+
 public class Elbow {
 
     //Instantiate the sensor/servo/motor
-    public Servo elbow;
+    public CachingServo elbow;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
@@ -21,7 +23,7 @@ public class Elbow {
     public Elbow(HardwareMap hardwareMap) {
 
         //Constructor
-        elbow = hardwareMap.get(Servo.class, "elbow");
+        elbow = new CachingServo(hardwareMap.get(Servo.class, "elbow"));
         elbow.setDirection(Servo.Direction.FORWARD);
 
     }

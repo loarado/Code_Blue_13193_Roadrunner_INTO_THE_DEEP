@@ -9,11 +9,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
+
 public class OuttakeLM2 {
 
     //Instantiate the sensor/servo/motor
-    public Servo outtakeLeft;
-    public Servo outtakeRight;
+    public CachingServo outtakeLeft;
+    public CachingServo outtakeRight;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
@@ -22,9 +24,9 @@ public class OuttakeLM2 {
     public OuttakeLM2(HardwareMap hardwareMap) {
 
         //Constructor
-        outtakeLeft = hardwareMap.get(Servo.class, "outtakeLeft");
+        outtakeLeft = new CachingServo(hardwareMap.get(Servo.class, "outtakeLeft"));
         outtakeLeft.setDirection(Servo.Direction.FORWARD);
-        outtakeRight = hardwareMap.get(Servo.class, "outtakeRight");
+        outtakeRight = new CachingServo(hardwareMap.get(Servo.class, "outtakeRight"));
         outtakeRight.setDirection(Servo.Direction.FORWARD);
 
     }

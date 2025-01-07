@@ -9,11 +9,12 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingCRServo;
+
 public class HandLM3 {
 
     //Instantiate the sensor/servo/motor
-    public CRServo leftHand;
-    public CRServo rightHand;
+    public CachingCRServo hand;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
@@ -22,11 +23,8 @@ public class HandLM3 {
     public HandLM3(HardwareMap hardwareMap) {
 
         //Constructor
-        leftHand = hardwareMap.get(CRServo.class, "leftHand");
-        leftHand.setDirection(CRServo.Direction.FORWARD);
-        rightHand = hardwareMap.get(CRServo.class, "rightHand");
-        rightHand.setDirection(CRServo.Direction.FORWARD);
-
+        hand = new CachingCRServo(hardwareMap.get(CRServo.class, "hand"));
+        hand.setDirection(CRServo.Direction.FORWARD);
     }
 
     // Actions are below
@@ -35,8 +33,7 @@ public class HandLM3 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            leftHand.setPower(var.leftHandOut);
-            rightHand.setPower(var.rightHandOut);
+            hand.setPower(var.handOut);
 
             return false;
         }
@@ -51,8 +48,7 @@ public class HandLM3 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            leftHand.setPower(var.leftHandStop);
-            rightHand.setPower(var.rightHandStop);
+            hand.setPower(var.handStop);
 
             return false;
         }
@@ -67,8 +63,7 @@ public class HandLM3 {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            leftHand.setPower(var.leftHandIn);
-            rightHand.setPower(var.rightHandIn);
+            hand.setPower(var.handIn);
 
             return false;
         }

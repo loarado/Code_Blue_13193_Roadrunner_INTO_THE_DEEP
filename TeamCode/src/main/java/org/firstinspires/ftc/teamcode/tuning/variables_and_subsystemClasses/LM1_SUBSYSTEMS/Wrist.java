@@ -9,10 +9,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
+
 public class Wrist {
 
     //Instantiate the sensor/servo/motor
-    public Servo wrist;
+    public CachingServo wrist;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
@@ -21,7 +23,7 @@ public class Wrist {
     public Wrist(HardwareMap hardwareMap) {
 
         //Constructor
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        wrist = new CachingServo(hardwareMap.get(Servo.class, "wrist"));
         wrist.setDirection(Servo.Direction.FORWARD);
 
     }

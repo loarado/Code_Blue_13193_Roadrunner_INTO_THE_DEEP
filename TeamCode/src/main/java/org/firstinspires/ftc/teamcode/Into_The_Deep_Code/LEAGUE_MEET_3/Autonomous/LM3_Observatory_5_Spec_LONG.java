@@ -78,73 +78,68 @@ public class LM3_Observatory_5_Spec_LONG extends LinearOpMode {
 
 /*
         TrajectoryActionBuilder path = drive.actionBuilder(beginPose)
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(4,-31, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+               .setReversed(true)
+
                 //place spec 1
-                .waitSeconds(1.5)
+                .splineToLinearHeading(new Pose2d(3,-33, Math.toRadians(270)),Math.toRadians(90))
+                .waitSeconds(1)
                 .setReversed(false)
+
                 //push samples
-                .splineToLinearHeading(new Pose2d(24,-42, Math.toRadians(45)),Math.toRadians(270), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(26,-45), Math.toRadians(-45), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(33,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(35,-45),Math.toRadians(-45), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(42,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(44,-45), Math.toRadians(-45), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(24,-42, Math.toRadians(45)),Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(26.5,-48, Math.toRadians(-45)), Math.toRadians(-45))
+                .splineToLinearHeading(new Pose2d(30,-42, Math.toRadians(45)),Math.toRadians(235))
+                .strafeTo(new Vector2d(35, -42))
+                .strafeToLinearHeading(new Vector2d(39,-48),Math.toRadians(-45))
+                .splineToLinearHeading(new Pose2d(40,-42, Math.toRadians(45)),Math.toRadians(235))
+                .strafeTo(new Vector2d(45.25, -42))
+                .strafeToLinearHeading(new Vector2d(44,-49), Math.toRadians(-45))
 
                 //go to spec 2
-                .splineToLinearHeading(new Pose2d(36,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
 
                 //pick spec 2
-                .waitSeconds(1.5)
-                .strafeTo(new Vector2d(36, -65), tempVel, tempAccel)
+                .waitSeconds(.75)
+                .strafeTo(new Vector2d(35, -65.75))
                 .waitSeconds(1)
 
                 //place spec 2
-                .strafeTo(new Vector2d(36, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(2,-31, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
-                .waitSeconds(1.5)
-
+                .strafeTo(new Vector2d(35, -60))
+                .splineToLinearHeading(new Pose2d(1,-33, Math.toRadians(270)),Math.toRadians(90))
+                .waitSeconds(1)
                 //go to spec 3
-                .splineToLinearHeading(new Pose2d(36,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
-
+                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
                 //pick spec 3
-                .waitSeconds(1.5)
-                .strafeTo(new Vector2d(36, -65), tempVel, tempAccel)
+                .waitSeconds(0.75)
+                .strafeTo(new Vector2d(35, -65.75))
                 .waitSeconds(1)
-
                 //place spec 3
-                .strafeTo(new Vector2d(36, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(0,-31, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
-                .waitSeconds(1.5)
-
+                .strafeTo(new Vector2d(35, -60))
+                .splineToLinearHeading(new Pose2d(-2,-33, Math.toRadians(270)),Math.toRadians(90))
+                .waitSeconds(1)
                 //go to spec 4
-                .splineToLinearHeading(new Pose2d(36,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
-
+                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
                 //pick spec 4
-                .waitSeconds(1.5)
-                .strafeTo(new Vector2d(36, -65), tempVel, tempAccel)
+                .waitSeconds(0.75)
+                .strafeTo(new Vector2d(35, -66))
                 .waitSeconds(1)
-
                 //place spec 4
-                .strafeTo(new Vector2d(36, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(-2,-31, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
-                .waitSeconds(1.5)
-
-                //go to spec 5
-                .splineToLinearHeading(new Pose2d(36,-61, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel)
-
-                //pick spec 5
-                .waitSeconds(1.5)
-                .strafeTo(new Vector2d(36, -65), tempVel, tempAccel)
+                .strafeTo(new Vector2d(35, -60))
+                .splineToLinearHeading(new Pose2d(-5,-33, Math.toRadians(270)),Math.toRadians(90))
                 .waitSeconds(1)
-
+                //go to spec 5
+                .splineToLinearHeading(new Pose2d(35,-61, Math.toRadians(270)),Math.toRadians(270))
+                //pick spec 5
+                .waitSeconds(0.75)
+                .strafeTo(new Vector2d(35, -66))
+                .waitSeconds(1)
                 //place spec 5
-                .strafeTo(new Vector2d(36, -60), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(-4,-31, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
-                .waitSeconds(1.5)
-
+                .strafeTo(new Vector2d(35, -60))
+                .splineToLinearHeading(new Pose2d(-8,-33, Math.toRadians(270)),Math.toRadians(90))
+                .waitSeconds(1)
                 //park
-                .splineToLinearHeading(new Pose2d(36,-60, Math.toRadians(90)),Math.toRadians(235), tempVel, tempAccel);
+                .splineToLinearHeading(new Pose2d(25,-50, Math.toRadians(335)),Math.toRadians(270))
+
 */
 
 

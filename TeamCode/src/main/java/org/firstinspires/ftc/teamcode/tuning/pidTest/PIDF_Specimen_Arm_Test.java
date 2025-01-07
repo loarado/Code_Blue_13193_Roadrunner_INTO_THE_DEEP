@@ -17,17 +17,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class PIDF_Specimen_Arm_Test extends LinearOpMode {
     private PIDController controller;
 
-    public static double p = 0.01, i = 0, d = 0;
-    public static double f = 1.746;
+    public static double p = 0.005, i = 0.075, d = 0.0002;
+    public static double f = 0.05;
     // make f mass*g*L then tune it
 
 
 
 
-    public static final double ticks_in_degree = 2786.2/360;
+    public static final double ticks_in_degree = (2786.2/360)/2;
 
 
-    public static int target = 90 * 8;
+    public static int target = 125;
 
     private DcMotorEx arm;
 
@@ -46,6 +46,7 @@ public class PIDF_Specimen_Arm_Test extends LinearOpMode {
         if (opModeIsActive()) {
 
             arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             while (opModeIsActive()) {

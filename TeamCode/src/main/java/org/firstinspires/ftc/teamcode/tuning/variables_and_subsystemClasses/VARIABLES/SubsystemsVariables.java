@@ -17,18 +17,18 @@ public class SubsystemsVariables {
 
 
 
-    public final double TransferWristPos = 0.65;
-    public final double IntakeWristPos = 0.38;
+    public final double TransferWristPos = 0.75;
+    public final double IntakeWristPos = 0.23;
     public final double MiddleWristPos = 0.5;
     public final double FrontIntakeWristPos = 0.57;
 
 
-    public final double DebugWristPos = 0.65;
+    public final double DebugWristPos = 0.68;
 
 
-    public final double TransferElbowPos = 0.42;
-    public final double IntakeElbowPos = 0.15;
-    public final double PrepIntakeElbowPos = 0.22;
+    public final double TransferElbowPos = 0.47;
+    public final double IntakeElbowPos = 0.1;
+    public final double PrepIntakeElbowPos = 0.18;
     public final double MiddleElbowPos = 0.42;
     public final double FrontIntakeElbowPos = 0;
     public final double EjectElbowPos = 0.3;
@@ -41,10 +41,14 @@ public class SubsystemsVariables {
     public final double rightHandOut = -1;
     public final double rightHandStop = 0;
 
+
     public final double leftHandIn = -1;
     public final double leftHandOut = 1;
     public final double leftHandStop = 0;
 
+    public final double handIn = -1;
+    public final double handOut = 1;
+    public final double handStop = 0;
 
 
 
@@ -95,7 +99,7 @@ public class SubsystemsVariables {
     public final int hSlidePhysicalMax = 620;
     public final double hSlideSpeed = 0.5;
     public final double hSlideVelocity = 1300;
-    public final int hSlideTransferPos = 10;
+    public final int hSlideTransferPos = 100;
 
     public final int hSlideRuleMax = (int) (hSlidePhysicalMax*((slidesLength-((slidesLength + robotLength + backExtension) - 42))/slidesLength));
     // currently 573.333...
@@ -113,8 +117,8 @@ public class SubsystemsVariables {
 
 
 
-    public final double specigrabberOpen = 0.6;
-    public final double specigrabberClosed = 0.4;
+    public final double specigrabberOpen = 0.4;
+    public final double specigrabberClosed = 0.64;
 
 
     public final double speciRotateScore = 0.35;
@@ -122,8 +126,8 @@ public class SubsystemsVariables {
 
 
     public final int speciArmDown = 0;
-    public final int speciArmGrab = 100;
-    public final int speciArmPrepScore = 600;
-    public final int speciArmScore = 800;
-    public final int speciArmVelo = 350;
+    public final int speciArmGrab = 125*2;
+    public final int speciArmPrepScore = 820*2;
+    public final int speciArmScore = 1020*2;
+
 }
