@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.tuning.pidTest.SpecimenArm_PID_Class;
+import org.firstinspires.ftc.teamcode.tuning.pidTest.V_Slides_PID_Class;
+import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.VerticalSlides;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
@@ -20,6 +23,7 @@ public class SpecigrabberLM3 {
     public CachingServo specClawOpen;
     public CachingServo specClawRotate;
     public DcMotorEx specimenArm;
+    public int setPosition;
 
     // Import final variables
     SubsystemsVariables var = new SubsystemsVariables();
@@ -44,9 +48,6 @@ public class SpecigrabberLM3 {
     public class speciArmGrab implements Action  {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            specimenArm.setTargetPosition(var.speciArmGrab);
-            specimenArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            specimenArm.setVelocity(var.hSlideVelocity);
 
             specClawOpen.setPosition(var.specigrabberOpen);
             specClawRotate.setPosition(var.speciRotateGrab);
@@ -59,20 +60,38 @@ public class SpecigrabberLM3 {
         return new speciArmGrab();
     }
 
-    public class speciArmPrepScore implements Action  {
+
+
+    public class updatePID implements Action  {
+        public updatePID() {
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            specimenArm.setTargetPosition(var.speciArmPrepScore);
-            specimenArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            specimenArm.setVelocity(var.hSlideVelocity);
-
-            return specimenArm.isBusy();
-
+            //SET SLIDE POWERS BASED ON PID CONTROLLER
+            specimenArm.setPower(SpecimenArm_PID_Class.returnSpecimenArmPID(setPosition, specimenArm.getCurrentPosition()));
+            return true;
         }
     }
-    public Action SpeciArmPrepScore() {
-        return new speciArmPrepScore();
+    public Action UpdatePID() {
+        return new updatePID();
     }
+
+    public class setPosition implements Action  {
+        int set;
+        public setPosition(int position) {
+            set = position;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPosition = set;
+            return false;
+        }
+    }
+    public Action SetPosition(int pos) {
+        return new setPosition(pos);
+    }
+
+
 
     public class speciRotateScore implements Action  {
         @Override

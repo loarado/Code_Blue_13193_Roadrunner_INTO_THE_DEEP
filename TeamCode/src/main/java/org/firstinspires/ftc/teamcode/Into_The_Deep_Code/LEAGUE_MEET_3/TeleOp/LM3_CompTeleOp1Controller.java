@@ -25,7 +25,6 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
@@ -40,11 +39,10 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARI
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.frozenmilk.dairy.cachinghardware.CachingDcMotor;
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 
-@TeleOp(name = "LM3 - 2 Drivers Comp TeleOp V1", group = "TeleOp")
-public class LM3_CompTeleOp2Controllers extends LinearOpMode {
+@TeleOp(name = "LM3 - 1 Driver Comp TeleOp V1", group = "TeleOp")
+public class LM3_CompTeleOp1Controller extends LinearOpMode {
 
     /*
 
@@ -376,7 +374,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if((gamepad2.options||gamepad1.options) && !optionsPressed){
+                if((gamepad1.options) && !optionsPressed){
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
 
@@ -391,7 +389,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 }
-                optionsPressed = gamepad2.options||gamepad1.options;
+                optionsPressed = gamepad1.options;
 
                 if(gamepad1.share){
                     drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
@@ -445,7 +443,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //CLAW AND OUTTAKE OPEN AND CLOSE BUTTON
-                if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed && !debugModeIsOn) {
+                if ((gamepad1.x || gamepad1.square)&&!gamepadXpressed && !debugModeIsOn) {
 
                     if(SpecimenMode) {
 
@@ -478,26 +476,26 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 }
-                gamepadXpressed  = gamepad2.x || gamepad2.square || gamepad1.x || gamepad1.square;
+                gamepadXpressed  = gamepad1.x || gamepad1.square;
 
 
 
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
-                if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
+                if (gamepad1.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
                     vSlidesPos += 25;
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
-                if (gamepad2.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
+                if (gamepad1.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
                     vSlidesPos -= 25;
                 }
 
 
 
                 //DEBUG VERSIONS
-                if (gamepad2.right_bumper && debugModeIsOn) {
+                if (gamepad1.right_bumper && debugModeIsOn) {
                     vSlidesPos += 15;
                 }
                 if (gamepad1.left_bumper && debugModeIsOn) {
@@ -650,7 +648,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
 
-                if (gamepad2.dpad_up && !dPadUpPressed) {
+                if (gamepad1.dpad_up && !dPadUpPressed) {
                     runningActions.add(
                             handLM3.HandStop()
                     );
@@ -665,12 +663,12 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                         vSlidesPos = var.vSlideHighBasket;
                     }
                 }
-                dPadUpPressed = gamepad2.dpad_up;
+                dPadUpPressed = gamepad1.dpad_up;
 
 
 
 
-                if (gamepad2.dpad_left && !dPadLeftPressed) {
+                if (gamepad1.dpad_left && !dPadLeftPressed) {
                     runningActions.add(
                             handLM3.HandStop()
                     );
@@ -680,12 +678,12 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                         vSlidesPos = var.vSlideLowBasket;
                     }
                 }
-                dPadLeftPressed = gamepad2.dpad_left;
+                dPadLeftPressed = gamepad1.dpad_left;
 
 
 
 
-                if (gamepad2.dpad_right && !dPadRightPressed) {
+                if (gamepad1.dpad_right && !dPadRightPressed) {
                     if (SpecimenMode) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         specArmPos=var.speciArmScore;
@@ -717,15 +715,15 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
                 }
-                dPadRightPressed = gamepad2.dpad_right;
+                dPadRightPressed = gamepad1.dpad_right;
 
 
 
-                if (gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
+                if (gamepad1.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
                     vSlidesPos = 0;
 
 
-                } else if(gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
+                } else if(gamepad1.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
@@ -749,7 +747,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                     }
 
-                } else if(gamepad2.dpad_down && !dPadDownPressed && SpecimenMode){
+                } else if(gamepad1.dpad_down && !dPadDownPressed && SpecimenMode){
                     specArmPos = var.speciArmGrab;
                     runningActions.add(
                             new ParallelAction(
@@ -758,11 +756,11 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     );
                     specigrabberIsOpen = true;
                 }
-                dPadDownPressed = gamepad1.dpad_down || gamepad2.dpad_down;
+                dPadDownPressed = gamepad1.dpad_down;
 
 
 
-                if (gamepad2.left_stick_button&&!debugModeIsOn&&!gamepad2.right_stick_button){
+                if (gamepad1.left_stick_button&&!debugModeIsOn&&!gamepad1.right_stick_button){
                     BasketMode = false;
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -772,7 +770,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     outtakeIsOut = false;
                 }
 
-                if (gamepad2.right_stick_button&&!debugModeIsOn&&!gamepad2.left_stick_button){
+                if (gamepad1.right_stick_button&&!debugModeIsOn&&!gamepad1.left_stick_button){
                     BasketMode = true;
                     SpecimenMode = false;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);

@@ -99,15 +99,15 @@ public class SubsystemsVariables {
     public final int hSlidePhysicalMax = 620;
     public final double hSlideSpeed = 0.5;
     public final double hSlideVelocity = 1300;
-    public final int hSlideTransferPos = 100;
+    public final int hSlideTransferPos = 40;
 
     public final int hSlideRuleMax = (int) (hSlidePhysicalMax*((slidesLength-((slidesLength + robotLength + backExtension) - 42))/slidesLength));
     // currently 573.333...
     // 21.5 inches
 
 
-    public final double outtakeLeftIdle = 0.07;
-    public final double outtakeLeftOut = 0.65;
+    public final double outtakeLeftIdle = 0.65;
+    public final double outtakeLeftOut = 0.07;
 
     public final double outtakeRightIdle = 1-outtakeLeftIdle;
     public final double outtakeRightOut = 1-outtakeLeftOut;
@@ -126,7 +126,7 @@ public class SubsystemsVariables {
 
 
     public final int speciArmDown = 0;
-    public final int speciArmGrab = 125*2;
+    public final int speciArmGrab = 150*2;
     public final int speciArmPrepScore = 820*2;
     public final int speciArmScore = 1020*2;
 

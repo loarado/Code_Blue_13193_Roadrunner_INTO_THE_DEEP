@@ -14,6 +14,7 @@ public class RESET_ENCODERS extends LinearOpMode {
     private DcMotorEx hSlides;
     private DcMotorEx rArm;
     private DcMotorEx lArm;
+    private DcMotorEx specimenArm;
     @Override
     public void runOpMode() {
 
@@ -25,6 +26,8 @@ public class RESET_ENCODERS extends LinearOpMode {
         rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lArm = hardwareMap.get(DcMotorEx.class, "lArm");
         lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        specimenArm = hardwareMap.get(DcMotorEx.class, "specimenArm");
+        specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         waitForStart();
