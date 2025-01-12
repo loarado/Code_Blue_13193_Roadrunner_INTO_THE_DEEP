@@ -20,21 +20,21 @@ public class SubsystemsVariables {
     public final double TransferWristPos = 0.75;
     public final double IntakeWristPos = 0.23;
     public final double MiddleWristPos = 0.5;
-    public final double FrontIntakeWristPos = 0.57;
+    public final double FrontIntakeWristPos = 0.71;
 
 
     public final double DebugWristPos = 0.68;
 
 
-    public final double TransferElbowPos = 0.47;
-    public final double IntakeElbowPos = 0.1;
-    public final double PrepIntakeElbowPos = 0.18;
-    public final double MiddleElbowPos = 0.42;
-    public final double FrontIntakeElbowPos = 0;
-    public final double EjectElbowPos = 0.3;
+    public final double TransferElbowPos = 0.57;
+    public final double IntakeElbowPos = 0.2;
+    public final double PrepIntakeElbowPos = 0.31;
+    public final double MiddleElbowPos = 0.52;
+    public final double FrontIntakeElbowPos = 0.02;
+    public final double EjectElbowPos = 0.36;
 
-    public final double DebugUpElbowPos = 0.6;
-    public final double DebugLowElbowPos = 0.68;
+    public final double DebugUpElbowPos = 0.7;
+    public final double DebugLowElbowPos = 0.78;
 
 
     public final double rightHandIn = 1;
@@ -106,7 +106,7 @@ public class SubsystemsVariables {
     // 21.5 inches
 
 
-    public final double outtakeLeftIdle = 0.65;
+    public final double outtakeLeftIdle = 0.64;
     public final double outtakeLeftOut = 0.07;
 
     public final double outtakeRightIdle = 1-outtakeLeftIdle;

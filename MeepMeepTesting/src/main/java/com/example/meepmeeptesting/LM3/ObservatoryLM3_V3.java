@@ -18,7 +18,7 @@ public class ObservatoryLM3_V3 {
                 .setConstraints(75, 200, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(24, -64, Math.toRadians(275)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(8, -64, Math.toRadians(275)))
                 .setReversed(true)
 
                 //place spec 1

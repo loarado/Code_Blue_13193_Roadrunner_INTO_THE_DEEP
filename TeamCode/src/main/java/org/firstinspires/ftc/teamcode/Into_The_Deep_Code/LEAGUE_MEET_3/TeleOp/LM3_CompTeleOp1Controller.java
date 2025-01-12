@@ -234,7 +234,7 @@ public class LM3_CompTeleOp1Controller extends LinearOpMode {
             lArmCurrentPos = lArm.getCurrentPosition();
             rArmCurrentPos = rArm.getCurrentPosition();
 
-            specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             specimenArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

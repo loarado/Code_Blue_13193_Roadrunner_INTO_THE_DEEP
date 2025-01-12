@@ -113,7 +113,7 @@ public class HorizontalSlides {
 
             //WAIT FOR SLIDE TO REACH POSITION
 
-            return hSlides.isBusy();
+            return false;
         }
     }
     public Action HSlideToDist(int dist) {

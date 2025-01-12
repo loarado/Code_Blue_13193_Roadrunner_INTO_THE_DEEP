@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.InstantFunction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
@@ -126,10 +128,20 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
         // Initialize control variables
         driveSpeed = 0.5; // Initial drive speed factor
         boolean intakeMode = false; // Tracks intake mode state (on/off)
+
         boolean currentlyIntaking = false; // Indicates if intake is active
+
         boolean SampleTransferred = false; // Indicates if a transfer has occurred and if we have a sample in our outtake
+
+        boolean frontIntakeActive = false;
+        boolean hSlideTransferCheck = false;
+
+        boolean ejectStage = false;
+
         boolean gamepadApressed = false; // Tracks A button state
-        boolean gamepadXpressed = false; // Tracks Y button state
+        boolean gamepadXpressed = false; // Tracks X button state
+        boolean gamepadBPressed = false; // Tracks B button state
+        boolean gamepadYpressed = false; // Tracks Y button state
         boolean dPadDownPressed = false; // Tracks DpadDpwn button state
         boolean dPadRightPressed = false; // Tracks DpadRight button state
         boolean dPadLeftPressed = false; // Tracks DpadRight button state
@@ -236,7 +248,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
             lArmCurrentPos = lArm.getCurrentPosition();
             rArmCurrentPos = rArm.getCurrentPosition();
 
-            specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             specimenArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -286,9 +298,10 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                 specimenArm.setPower(pidSPEC + ffSPEC);
 
-                hSlides.setTargetPosition(hSlidesPos);
-                hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                hSlides.setVelocity(var.hSlideVelocity);
+                    hSlides.setTargetPosition(hSlidesPos);
+                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    hSlides.setVelocity(var.hSlideVelocity);
+
 
 
                 if(pin0.getState()&&pin1.getState()){
@@ -404,21 +417,26 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //EJECT BUTTON
-                if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn) {
+                if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn &&!gamepadYpressed && !ejectStage) {
+                    intakeMode = false;
+                    ejectStage = true;
 
                     runningActions.add(
                             new ParallelAction(
                                     elbow.ElbowEject(),
-                                    wrist.WristMiddle()
+                                    wrist.WristMiddle(),
+                                    handLM3.HandStop()
                             )
                     );
-                    if(hSlidesCurrentPos<175){
-                        hSlidesPos=175;
+                    if(hSlidesCurrentPos<135){
+                        hSlidesPos=135;
                     }
+                } else if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn &&!gamepadYpressed && ejectStage) {
                     runningActions.add(
                             handLM3.HandOuttake()
                     );
-                } else if ((gamepad1.y || gamepad1.triangle)&&debugModeIsOn) {
+                    ejectStage= false;
+                } else if ((gamepad1.y || gamepad1.triangle)&&debugModeIsOn &&!gamepadYpressed) {
                     runningActions.add(
                             new ParallelAction(
                                     wrist.WristDebug(),
@@ -426,6 +444,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             )
                     );
                 }
+                gamepadYpressed = gamepad1.y || gamepad1.triangle;
 
                 if((gamepad1.x||gamepad1.square)&&!gamepadXpressed&&debugModeIsOn){
                     runningActions.add(
@@ -541,7 +560,9 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                         if (!currentlyIntaking) {  // Ensures prep mode is first if idle
                             intakeMode = false;
                         }
+                        frontIntakeActive = false;
                         currentlyIntaking = true;
+                        ejectStage = false;
                         intakeMode = !intakeMode;  // Toggle intake mode
 
                         // Adjusts wrist and elbow positions based on intakeMode state
@@ -571,8 +592,9 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 // Transfer action with B button if intake is active
-                if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && BasketMode) {
+                if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && BasketMode && !frontIntakeActive && !gamepadBPressed) {
                     currentlyIntaking = false;
+                    frontIntakeActive = false;
 
                     if(YELLOW_DETECTED){
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
@@ -586,6 +608,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                     hSlidesPos = var.hSlideTransferPos;
 
+
                     runningActions.add(
                             new SequentialAction(
                                     new ParallelAction(
@@ -597,6 +620,8 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                                     handLM3.HandOuttake()
                             )
                     );
+
+
 
                     if(YELLOW_DETECTED){
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
@@ -610,11 +635,67 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                     SampleTransferred = true;
 
-                } else if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && SpecimenMode) {
+                } else if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && BasketMode && frontIntakeActive && !hSlideTransferCheck && !gamepadBPressed) {
+                    currentlyIntaking = false;
+                    hSlideTransferCheck = true;
+                    frontIntakeActive = false;
+
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
+                    }
+
+                    hSlidesPos = var.hSlideTransferPos+120;
+
+                    runningActions.add(
+                            new SequentialAction(
+                                    new ParallelAction(
+                                            wrist.WristTransfer(),
+                                            elbow.ElbowTransfer(),
+                                            handLM3.HandStop()
+                                    )
+                            )
+                    );
+
+
+                    if(YELLOW_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+                    }else if(RED_DETECTED){
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                    } else if (BLUE_DETECTED) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    }else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    }
+
+
+                } else if ((gamepad1.b || gamepad1.circle) && BasketMode && hSlideTransferCheck && !gamepadBPressed) {
+                    currentlyIntaking = false;
+
+                    hSlideTransferCheck = false;
+
+                    hSlidesPos = var.hSlideTransferPos;
+
+                    runningActions.add(
+                            new SequentialAction(
+                                    new SleepAction(0.25),
+                                    handLM3.HandOuttake()
+                            )
+                    );
+
+                    SampleTransferred = true;
+
+                } else if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && SpecimenMode && !gamepadBPressed) {
 
                     //SPECIMEN GRAB EJECT
 
                     currentlyIntaking = false;
+                    frontIntakeActive = false;
 
                     if(YELLOW_DETECTED){
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
@@ -648,6 +729,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                     SampleTransferred = true;
                 }
+                gamepadBPressed = gamepad1.b || gamepad1.circle;
 
 
                 if (gamepad2.dpad_up && !dPadUpPressed) {
@@ -734,9 +816,11 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             handLM3.HandStop()
                     );
-                    if(hSlidesCurrentPos > 225) {
+                    if(hSlidesCurrentPos > 180) {
 
+                        frontIntakeActive = true;
                         currentlyIntaking = true;
+                        ejectStage = false;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
 
                             runningActions.add(
@@ -798,9 +882,9 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
                 //Slower when intaking or when stuff is extended
                 if(hSlidesCurrentPos>250|| lArmCurrentPos>1400|| rArmCurrentPos>1400||currentlyIntaking){
-                    driveSpeed = 2.5;
+                    driveSpeed = 2.2;
                 } else{
-                    driveSpeed = 1.5;
+                    driveSpeed = 1.2;
                 }
 
 
@@ -860,6 +944,8 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                 telemetry.addData("rx = ", rx);
                 telemetry.addData("currentRightArmPos = ", rArmCurrentPos);
                 telemetry.addData("currentLeftArmPos = ", lArmCurrentPos);
+                telemetry.addData("HSlideTransferVar: = ", hSlideTransferCheck);
+                telemetry.addData("FrontIntakeVar: = ", frontIntakeActive);
                 telemetry.addData("SpecArmPosVar: = ", specArmPos);
                 telemetry.addData("SpecArmPos: = ", specimenArm.getCurrentPosition());
                 telemetry.addData("SpecArmPower: = ", (ffSPEC+pidSPEC));
