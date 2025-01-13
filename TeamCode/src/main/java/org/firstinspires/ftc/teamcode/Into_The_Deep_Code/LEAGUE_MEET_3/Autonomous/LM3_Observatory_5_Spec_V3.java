@@ -58,8 +58,8 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
 
         int grabChange = 25;
 
-        VelConstraint tempVel = new TranslationalVelConstraint(55);
-        AccelConstraint tempAccel = new ProfileAccelConstraint(-55, 55);
+        VelConstraint tempVel = new TranslationalVelConstraint(52);
+        AccelConstraint tempAccel = new ProfileAccelConstraint(-52, 52);
 
         Actions.runBlocking(
 
@@ -193,7 +193,7 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 2
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(0.5,-32.5), tempVel, tempAccel)
+                .strafeTo(new Vector2d(0.5,-31.5), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
@@ -214,7 +214,7 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 3
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(-2,-32), tempVel, tempAccel)
+                .strafeTo(new Vector2d(-2,-31), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
@@ -235,7 +235,7 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 4
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(-5,-32), tempVel, tempAccel)
+                .strafeTo(new Vector2d(-5,-30.5), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
