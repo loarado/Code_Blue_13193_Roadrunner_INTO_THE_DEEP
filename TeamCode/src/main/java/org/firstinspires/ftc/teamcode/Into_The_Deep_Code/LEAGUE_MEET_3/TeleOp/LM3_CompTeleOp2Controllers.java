@@ -138,6 +138,8 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
 
         boolean ejectStage = false;
 
+        int specimenGrabOffset = var.speciArmGrab;
+
         boolean gamepadApressed = false; // Tracks A button state
         boolean gamepadXpressed = false; // Tracks X button state
         boolean gamepadBPressed = false; // Tracks B button state
@@ -757,9 +759,19 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                             handLM3.HandStop()
                     );
                     if (SpecimenMode){
-                        specArmPos = var.speciArmGrab+200;
+                        if(specimenGrabOffset == var.speciArmGrab || specimenGrabOffset == var.speciArmGrab+55){
+                            specimenGrabOffset = var.speciArmGrab-25;
+                        } else if (specimenGrabOffset == var.speciArmGrab-25) {
+                            specimenGrabOffset = var.speciArmGrab+25;
+                        } else if (specimenGrabOffset == var.speciArmGrab+25) {
+                            specimenGrabOffset = var.speciArmGrab-55;
+                        } else if (specimenGrabOffset == var.speciArmGrab-55) {
+                            specimenGrabOffset = var.speciArmGrab+55;
+                        }
+                        specArmPos = specimenGrabOffset;
+
                     } else if (BasketMode) {
-                        vSlidesPos = var.vSlideLowBasket;
+                        vSlidesPos = var.vSlideLowBasket-200;
                     }
                 }
                 dPadLeftPressed = gamepad2.dpad_left;
@@ -834,7 +846,7 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 } else if(gamepad2.dpad_down && !dPadDownPressed && SpecimenMode){
-                    specArmPos = var.speciArmGrab;
+                    specArmPos = specimenGrabOffset;
                     runningActions.add(
                             new ParallelAction(
                                     specigrabber.SpeciRotateGrab()

@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ObservatoryLM3_V3 {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(1000);
+        MeepMeep meepMeep = new MeepMeep(600);
 
 
 

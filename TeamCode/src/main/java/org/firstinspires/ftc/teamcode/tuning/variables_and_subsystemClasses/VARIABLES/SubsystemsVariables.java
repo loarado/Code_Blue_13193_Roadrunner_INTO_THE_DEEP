@@ -30,7 +30,7 @@ public class SubsystemsVariables {
     public final double IntakeElbowPos = 0.2;
     public final double PrepIntakeElbowPos = 0.31;
     public final double MiddleElbowPos = 0.52;
-    public final double FrontIntakeElbowPos = 0.02;
+    public final double FrontIntakeElbowPos = 0.03;
     public final double EjectElbowPos = 0.36;
 
     public final double DebugUpElbowPos = 0.7;

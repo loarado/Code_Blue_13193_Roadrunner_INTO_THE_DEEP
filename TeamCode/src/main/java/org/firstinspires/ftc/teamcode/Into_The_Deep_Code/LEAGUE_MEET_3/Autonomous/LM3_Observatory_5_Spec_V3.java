@@ -56,10 +56,10 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
 
         SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
-        int grabChange = 25;
+        int grabChange = 10;
 
-        VelConstraint tempVel = new TranslationalVelConstraint(52);
-        AccelConstraint tempAccel = new ProfileAccelConstraint(-52, 52);
+        VelConstraint tempVel = new TranslationalVelConstraint(38);
+        AccelConstraint tempAccel = new ProfileAccelConstraint(-38, 38);
 
         Actions.runBlocking(
 
@@ -152,16 +152,17 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 1
                 .afterTime(0.5, new ParallelAction(
                         specigrabber.SetPosition(var.speciArmPrepScore),
-                        specigrabber.SpeciRotateScore()
+                        specigrabber.SpeciRotateScore(),
+                        vslides.VSlidesToDist(100)
                 ))
-                .splineToLinearHeading(new Pose2d(3,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(-3,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
                 .afterTime(0.2, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
                 .setReversed(false)
 
                 //push samples
-                .afterTime(0.5, new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime(1.3, new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
 
                 .afterTime(1, hslide.HSlideToMax())
                 .afterTime(1.3, wrist.WristToDist(var.FrontIntakeWristPos))
@@ -173,18 +174,18 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 .strafeTo(new Vector2d(38.5, -42), tempVel, tempAccel)
                 .strafeToLinearHeading(new Vector2d(42,-50),Math.toRadians(-45), tempVel, tempAccel)
                 .splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeTo(new Vector2d(46, -41), tempVel, tempAccel)
+                .strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
                 .strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
 
                 //go to spec 2
                 .afterTime(0, hslide.HSlideTo0())
                 .afterTime(0, wrist.WristMiddle())
                 .afterTime(0, elbow.ElbowMiddle())
-                .splineToLinearHeading(new Pose2d(33,-59, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(28,-59, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 2
                 .waitSeconds(.50)
-                .strafeTo(new Vector2d(33, -62.5), tempVel, tempAccel)
+                .strafeTo(new Vector2d(28, -63.5), tempVel, tempAccel)
                 .afterTime(0.4, specigrabber.SpecigrabberClose())
                 .afterTime(0.7, specigrabber.SetPosition(var.speciArmPrepScore))
                 .afterTime(0.7, specigrabber.SpeciRotateScore())
@@ -193,19 +194,22 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 2
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(0.5,-31.5), tempVel, tempAccel)
+                .strafeTo(new Vector2d(-1.5,-32), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
                 .setReversed(false)
 
                 //go to spec 3
-                .afterTime(0.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(33,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .afterTime(0,  specigrabber.SpeciRotateGrab())
+                .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 3
-                .waitSeconds(0.50)
-                .strafeTo(new Vector2d(33, -63.5), tempVel, tempAccel)
+
+                .waitSeconds(0.20)
+                .strafeTo(new Vector2d(28.5, -64), tempVel, tempAccel)
+
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, specigrabber.SetPosition(var.speciArmPrepScore))
                 .afterTime(0.8, specigrabber.SpeciRotateScore())
@@ -214,19 +218,23 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 3
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(-2,-31), tempVel, tempAccel)
+                .strafeTo(new Vector2d(0,-31), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
                 .setReversed(false)
 
+
                 //go to spec 4
-                .afterTime(0.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(33,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .afterTime(0,  specigrabber.SpeciRotateGrab())
+                .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 4
-                .waitSeconds(0.50)
-                .strafeTo(new Vector2d(33, -63.5), tempVel, tempAccel)
+
+                .waitSeconds(0.20)
+                .strafeTo(new Vector2d(28.5, -64.5), tempVel, tempAccel)
+
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, specigrabber.SetPosition(var.speciArmPrepScore))
                 .afterTime(0.8, specigrabber.SpeciRotateScore())
@@ -235,7 +243,7 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 //place spec 4
                 //.strafeTo(new Vector2d(35, -60), tempVel, tempAccel)
                 .setReversed(true)
-                .strafeTo(new Vector2d(-5,-30.5), tempVel, tempAccel)
+                .strafeTo(new Vector2d(2,-30), tempVel, tempAccel)
                 .afterTime(0.3, specigrabber.SetPosition(var.speciArmScore))
                 .afterTime(0.7, specigrabber.SpecigrabberOpen())
                 .waitSeconds(0.7)
@@ -265,11 +273,11 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 */
 
                 //park
-                .afterTime(0.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime(1.25,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
                 .afterTime(1, hslide.HSlideToMax())
-                .afterTime(1, wrist.WristToDist(var.FrontIntakeWristPos))
-                .afterTime(1, elbow.ElbowToDist(var.FrontIntakeElbowPos))
-                .splineToLinearHeading(new Pose2d(25,-50, Math.toRadians(325)),Math.toRadians(270), tempVel, tempAccel);
+                .afterTime(1, wrist.WristToDist(var.MiddleWristPos))
+                .afterTime(1, elbow.ElbowToDist(var.MiddleElbowPos))
+                .splineToLinearHeading(new Pose2d(28,-53, Math.toRadians(325)),Math.toRadians(270), tempVel, tempAccel);
 
 
         if (isStopRequested()) { return; }
