@@ -29,6 +29,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.Elbow;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_SUBSYSTEMS.HorizontalSlides;
@@ -137,6 +139,10 @@ public class LM3_CompTeleOp2Controllers extends LinearOpMode {
         boolean hSlideTransferCheck = false;
 
         boolean ejectStage = false;
+
+        boolean hangActivate = false;
+        int dPadPressedCounter = 0;
+        specimenArm.setCurrentAlert(20, CurrentUnit.AMPS);
 
         int specimenGrabOffset = var.speciArmGrab;
 
