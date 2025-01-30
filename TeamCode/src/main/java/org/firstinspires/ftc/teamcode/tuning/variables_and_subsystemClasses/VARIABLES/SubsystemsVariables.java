@@ -128,6 +128,6 @@ public class SubsystemsVariables {
     public final int speciArmDown = 0;
     public final int speciArmGrab = 150*2;
     public final int speciArmPrepScore = 820*2;
-    public final int speciArmScore = 1020*2;
+    public final int speciArmScore = 1045*2;
 
 }

@@ -141,9 +141,9 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
         boolean specimenArmHasPid = true;
         boolean vSlidesHavePid = true;
 
-        specimenArm.setCurrentAlert(9, CurrentUnit.AMPS);
+        //specimenArm.setCurrentAlert(3.5, CurrentUnit.AMPS);
 
-        int specimenGrabOffset = var.speciArmGrab;
+        int specimenGrabOffset = var.speciArmGrab+30;
 
         boolean gamepadApressed = false; // Tracks A button state
         boolean gamepadXpressed = false; // Tracks X button state
@@ -784,13 +784,16 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 dPadLeftPressed = gamepad2.dpad_left;
 
 
-                if(!specimenArmHasPid){
-                    if(specimenArm.isOverCurrent()){
+                if(specimenArmHasPid == false){
+                    if(specimenArm.getCurrent(CurrentUnit.AMPS)>3.5){
                         specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         specimenArmHasPid = true;
+                        specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    }else{
+                        specimenArm.setPower(-0.4);
                     }
-                }
 
+                }
 
                 if (gamepad2.dpad_right && !dPadRightPressed) {
                     if (SpecimenMode) {
@@ -798,9 +801,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                         specArmPos=var.speciArmScore;
                         runningActions.add(
                                 new SequentialAction(
-                                        specigrabber.SpeciRotateScore(),
-                                        new SleepAction(0.6),
-                                        specigrabber.SpecigrabberOpen()
+                                        specigrabber.SpeciRotateScore()
                                 )
                         );
                         specigrabberIsOpen = true;
@@ -967,6 +968,8 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 telemetry.addData("x = ", x);
                 telemetry.addData("y = ", y);
                 telemetry.addData("rx = ", rx);
+                telemetry.addData("specCURRENT = ", specimenArm.getCurrent(CurrentUnit.AMPS));
+                telemetry.addData("specHasPid = ", specimenArmHasPid);
                 telemetry.addData("currentRightArmPos = ", rArmCurrentPos);
                 telemetry.addData("currentLeftArmPos = ", lArmCurrentPos);
                 telemetry.addData("HSlideTransferVar: = ", hSlideTransferCheck);
