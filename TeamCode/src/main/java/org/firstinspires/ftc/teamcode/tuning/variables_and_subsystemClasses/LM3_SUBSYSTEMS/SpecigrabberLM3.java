@@ -76,6 +76,8 @@ public class SpecigrabberLM3 {
         return new updatePID();
     }
 
+
+
     public class setPosition implements Action  {
         int set;
         public setPosition(int position) {
