@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
-
+@Disabled
 @Config
 @Autonomous(name = "PIDF Specimen Arm Test")
 public class PIDF_Specimen_Arm_Test extends LinearOpMode {

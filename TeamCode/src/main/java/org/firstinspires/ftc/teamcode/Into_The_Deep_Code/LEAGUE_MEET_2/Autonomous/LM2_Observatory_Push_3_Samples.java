@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 
-@Autonomous(name = "LM2 - Observatory Push 3 " +
+@Autonomous(name = "Observatory Push 3 " +
         "Samples", group = "Autonomous")
 public class LM2_Observatory_Push_3_Samples extends LinearOpMode {
     public int distance = 0;

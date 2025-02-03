@@ -58,8 +58,8 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
         int grabChange = 10;
 
-        VelConstraint tempVel = new TranslationalVelConstraint(42);
-        AccelConstraint tempAccel = new ProfileAccelConstraint(-50, 90);
+        VelConstraint tempVel = new TranslationalVelConstraint(38);
+        AccelConstraint tempAccel = new ProfileAccelConstraint(-38, 38);
 
         Actions.runBlocking(
 
@@ -78,72 +78,6 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
         );
 
         waitForStart();
-
-/*
-        TrajectoryActionBuilder path = drive.actionBuilder(beginPose)
-               .setReversed(true)
-
-                //place spec 1
-                .splineToLinearHeading(new Pose2d(3,-33, Math.toRadians(270)),Math.toRadians(90))
-                .waitSeconds(1)
-                .setReversed(false)
-
-                //push samples
-                .splineToLinearHeading(new Pose2d(24,-42, Math.toRadians(45)),Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(26.5,-48, Math.toRadians(-45)), Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(30,-42, Math.toRadians(45)),Math.toRadians(235))
-                .strafeTo(new Vector2d(35, -42))
-                .strafeToLinearHeading(new Vector2d(41,-48),Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(40,-42, Math.toRadians(45)),Math.toRadians(235))
-                .strafeTo(new Vector2d(45.25, -42))
-                .strafeToLinearHeading(new Vector2d(44,-49), Math.toRadians(-45))
-
-                //go to spec 2
-                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
-
-                //pick spec 2
-                .waitSeconds(.75)
-                .strafeTo(new Vector2d(35, -65.75))
-                .waitSeconds(1)
-
-                //place spec 2
-                .strafeTo(new Vector2d(35, -60))
-                .splineToLinearHeading(new Pose2d(1,-33, Math.toRadians(270)),Math.toRadians(90))
-                .waitSeconds(1)
-                //go to spec 3
-                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
-                //pick spec 3
-                .waitSeconds(0.75)
-                .strafeTo(new Vector2d(35, -65.75))
-                .waitSeconds(1)
-                //place spec 3
-                .strafeTo(new Vector2d(35, -60))
-                .splineToLinearHeading(new Pose2d(-2,-33, Math.toRadians(270)),Math.toRadians(90))
-                .waitSeconds(1)
-                //go to spec 4
-                .splineToLinearHeading(new Pose2d(35,-63, Math.toRadians(270)),Math.toRadians(270))
-                //pick spec 4
-                .waitSeconds(0.75)
-                .strafeTo(new Vector2d(35, -66))
-                .waitSeconds(1)
-                //place spec 4
-                .strafeTo(new Vector2d(35, -60))
-                .splineToLinearHeading(new Pose2d(-5,-33, Math.toRadians(270)),Math.toRadians(90))
-                .waitSeconds(1)
-                //go to spec 5
-                .splineToLinearHeading(new Pose2d(35,-61, Math.toRadians(270)),Math.toRadians(270))
-                //pick spec 5
-                .waitSeconds(0.75)
-                .strafeTo(new Vector2d(35, -66))
-                .waitSeconds(1)
-                //place spec 5
-                .strafeTo(new Vector2d(35, -60))
-                .splineToLinearHeading(new Pose2d(-8,-33, Math.toRadians(270)),Math.toRadians(90))
-                .waitSeconds(1)
-                //park
-                .splineToLinearHeading(new Pose2d(25,-50, Math.toRadians(335)),Math.toRadians(270))
-*/
-
 
 
         TrajectoryActionBuilder pathActions = drive.actionBuilder(beginPose)
@@ -167,15 +101,16 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
                 .afterTime(1, hslide.HSlideToMax())
                 .afterTime(1.3, wrist.WristToDist(var.FrontIntakeWristPos))
                 .afterTime(1.3, elbow.ElbowToDist(var.FrontIntakeElbowPos))
-                .splineToLinearHeading(new Pose2d(26,-41, Math.toRadians(45)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(26,-41, Math.toRadians(45)),Math.toRadians(270))
                 .waitSeconds(0.2)
                 .strafeToLinearHeading(new Vector2d(30,-50), Math.toRadians(-45), tempVel, tempAccel)
                 .splineToLinearHeading(new Pose2d(31,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
                 .strafeTo(new Vector2d(38.5, -42), tempVel, tempAccel)
                 .strafeToLinearHeading(new Vector2d(42,-50),Math.toRadians(-45), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
+                //.splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
+                //.strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
+                //.strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
+
 
                 //go to spec 2
                 .afterTime(0, hslide.HSlideTo0())
@@ -203,11 +138,12 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
                 //go to spec 3
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
                 .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(28.5,-45, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 3
 
-                .strafeTo(new Vector2d(28.5, -64), tempVel, tempAccel)
+                .waitSeconds(0.20)
+                .strafeTo(new Vector2d(28.5, -64.25), tempVel, tempAccel)
 
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
                 .afterTime(0.8, specigrabber.SetPosition(var.speciArmPrepScore))
@@ -227,10 +163,11 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
                 //go to spec 4
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
                 .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(28.5,-45, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 4
 
+                .waitSeconds(0.20)
                 .strafeTo(new Vector2d(28.5, -64.5), tempVel, tempAccel)
 
                 .afterTime(0.5, specigrabber.SpecigrabberClose())

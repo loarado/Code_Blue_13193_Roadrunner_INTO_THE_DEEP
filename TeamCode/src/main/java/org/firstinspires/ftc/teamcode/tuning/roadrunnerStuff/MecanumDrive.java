@@ -119,6 +119,8 @@ public final class MecanumDrive {
         public double headingVelGain = 0.0; // shared with turn
     }
 
+
+
     public static Params PARAMS = new Params();
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
@@ -141,7 +143,7 @@ public final class MecanumDrive {
     public final LazyImu lazyImu;
 
     public final Localizer localizer;
-    public Pose2d pose;
+    public static Pose2d pose;
 
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 

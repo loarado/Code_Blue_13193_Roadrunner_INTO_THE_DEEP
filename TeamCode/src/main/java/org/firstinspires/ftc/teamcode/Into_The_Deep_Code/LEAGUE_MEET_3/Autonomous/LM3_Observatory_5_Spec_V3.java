@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
@@ -173,9 +174,9 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(31,-42, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
                 .strafeTo(new Vector2d(38.5, -42), tempVel, tempAccel)
                 .strafeToLinearHeading(new Vector2d(42,-50),Math.toRadians(-45), tempVel, tempAccel)
-                .splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
-                .strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
-                .strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
+                //.splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235), tempVel, tempAccel)
+                //.strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
+                //.strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
 
                 //go to spec 2
                 .afterTime(0, hslide.HSlideTo0())
@@ -282,11 +283,11 @@ public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
 
         if (isStopRequested()) { return; }
 
-            Actions.runBlocking(
-                    new ParallelAction(
-                            specigrabber.UpdatePID(),
-                            pathActions.build()
-                    )
-            );
-        }
+        Actions.runBlocking(
+                new ParallelAction(
+                        specigrabber.UpdatePID(),
+                        pathActions.build()
+                )
+        );
     }
+}

@@ -36,9 +36,9 @@ public class Observatory4Spec_V4 {
                 .splineToLinearHeading(new Pose2d(31,-42, Math.toRadians(45)),Math.toRadians(235))
                 .strafeTo(new Vector2d(38.5, -42))
                 .strafeToLinearHeading(new Vector2d(42,-50),Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235))
-                .strafeTo(new Vector2d(47, -41))
-                .strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45))
+                //.splineToLinearHeading(new Pose2d(40,-41, Math.toRadians(45)),Math.toRadians(235))
+                //.strafeTo(new Vector2d(47, -41))
+                //.strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45))
 
                 //go to spec 2
                 .splineToLinearHeading(new Pose2d(28,-59, Math.toRadians(270)),Math.toRadians(270))
