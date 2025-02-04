@@ -111,7 +111,6 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
                 //.strafeTo(new Vector2d(47, -41), tempVel, tempAccel)
                 //.strafeToLinearHeading(new Vector2d(46,-50), Math.toRadians(-45), tempVel,tempAccel)
 
-
                 //go to spec 2
                 .afterTime(0, hslide.HSlideTo0())
                 .afterTime(0, wrist.WristMiddle())
@@ -142,7 +141,7 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
                 //pick spec 3
 
-                .waitSeconds(0.20)
+                .waitSeconds(0.70)
                 .strafeTo(new Vector2d(28.5, -64.25), tempVel, tempAccel)
 
                 .afterTime(0.5, specigrabber.SpecigrabberClose())
@@ -167,7 +166,7 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
                 //pick spec 4
 
-                .waitSeconds(0.20)
+                .waitSeconds(0.70)
                 .strafeTo(new Vector2d(28.5, -64.5), tempVel, tempAccel)
 
                 .afterTime(0.5, specigrabber.SpecigrabberClose())

@@ -142,9 +142,6 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
 
         boolean ejectStage = false;
 
-        boolean hangActivate = false;
-        int dPadPressedCounter = 0;
-
 
         boolean specimenArmHasPid = true;
         boolean vSlidesHavePid = true;
@@ -300,17 +297,9 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 denom = Math.max(leftPower, Math.max(rightPower, 1));
 
                 //SET POWER BASED ON VSLIDES POS VARIABLE
-                if(vSlidesHavePid) {
+
                     lArm.setPower(leftPower / denom);
                     rArm.setPower(rightPower / denom);
-                }
-
-                if(dPadPressedCounter>5){
-                    vSlidesHavePid = false;
-                    PTOleft.setPosition(.46);
-                    PTOright.setPosition(.42);
-                    hangActivate = true;
-                }
 
 
                 //PID FOR SPEC ARM
@@ -491,7 +480,6 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 //CLAW AND OUTTAKE OPEN AND CLOSE BUTTON
                 if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed && !debugModeIsOn) {
 
-                    dPadPressedCounter=0;
                     if(SpecimenMode) {
 
                         if (specigrabberIsOpen) {
@@ -532,13 +520,13 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 // but not past the maximum allowed height
                 if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
                     vSlidesPos += 25;
-                    dPadPressedCounter=0;
+
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
                 if (gamepad2.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
                     vSlidesPos -= 25;
-                    dPadPressedCounter=0;
+
                 }
 
 
@@ -546,7 +534,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 //DEBUG VERSIONS
                 if (gamepad2.right_bumper && debugModeIsOn) {
                     vSlidesPos += 15;
-                    dPadPressedCounter=0;
+
                 }
                 if (gamepad1.left_bumper && debugModeIsOn) {
                     vSlidesPos -= 15;
@@ -762,7 +750,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 if (gamepad2.dpad_up && !dPadUpPressed) {
-                    dPadPressedCounter=0;
+
                     runningActions.add(
                             handLM3.HandStop()
                     );
@@ -783,7 +771,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 if (gamepad2.dpad_left && !dPadLeftPressed) {
-                    dPadPressedCounter=0;
+
                     runningActions.add(
                             handLM3.HandStop()
                     );
@@ -815,34 +803,17 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 if (gamepad2.dpad_right && !dPadRightPressed) {
-                    dPadPressedCounter=0;
+
                     if (SpecimenMode) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                         specArmPos=var.speciArmScore;
                         runningActions.add(
-                                new SequentialAction(
+
                                         specigrabber.SpeciRotateScore()
-                                )
+
                         );
                         specigrabberIsOpen = true;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
-                    } else if(BasketMode && vSlidesCurrentPos > 400 && SampleTransferred){
-                        runningActions.add(
-                                outtakeLM2.OuttakeOut()
-                        );
-                        outtakeIsOut = true;
-                        SampleTransferred = false;
-                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                    } else if(BasketMode && vSlidesCurrentPos > 400 && !SampleTransferred){
-                        runningActions.add(
-                                new ParallelAction(
-                                        outtakeLM2.OuttakeIdle(),
-                                        new SleepAction(1.25)
-                                )
-                        );
-                        vSlidesPos = 250;
-                        outtakeIsOut = false;
-                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
                 }
                 dPadRightPressed = gamepad2.dpad_right;
@@ -851,14 +822,14 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
 
                 if (gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
                     vSlidesPos = 0;
-                    dPadPressedCounter++;
+
 
                 } else if(gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
                     outtakeIsOut=false;
-                    dPadPressedCounter++;
+
                 }else if(gamepad1.dpad_down && !dPadDownPressed && BasketMode){
                     runningActions.add(
                             handLM3.HandStop()
@@ -888,14 +859,14 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                             )
                     );
                     specigrabberIsOpen = true;
-                    dPadPressedCounter++;
+
                 }
                 dPadDownPressed = gamepad1.dpad_down || gamepad2.dpad_down;
 
 
 
                 if (gamepad2.left_stick_button&&!debugModeIsOn&&!gamepad2.right_stick_button){
-                    dPadPressedCounter=0;
+
                     BasketMode = false;
                     SpecimenMode = true;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
@@ -906,7 +877,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
                 if (gamepad2.right_stick_button&&!debugModeIsOn&&!gamepad2.left_stick_button){
-                    dPadPressedCounter=0;
+
                     BasketMode = true;
                     SpecimenMode = false;
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
