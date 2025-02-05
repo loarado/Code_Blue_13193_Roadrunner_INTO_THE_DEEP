@@ -52,7 +52,7 @@ public class SpecigrabberLM3 {
             specClawOpen.setPosition(var.specigrabberOpen);
             specClawRotate.setPosition(var.speciRotateGrab);
 
-            return specimenArm.isBusy();
+            return false;
 
         }
     }
