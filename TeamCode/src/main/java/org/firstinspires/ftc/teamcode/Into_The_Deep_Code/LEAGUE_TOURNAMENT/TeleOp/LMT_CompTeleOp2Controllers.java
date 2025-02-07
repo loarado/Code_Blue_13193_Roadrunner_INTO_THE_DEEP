@@ -707,7 +707,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
 
                     SampleTransferred = true;
 
-                } else if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && SpecimenMode && !gamepadBPressed) {
+                } else if ((gamepad1.b || gamepad1.circle) && SpecimenMode && !gamepadBPressed) {
 
                     //SPECIMEN GRAB EJECT
 
@@ -724,7 +724,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                     }
 
-                    hSlidesPos = 140;
+                    hSlidesPos = 60;
 
                     runningActions.add(
                                     new ParallelAction(
