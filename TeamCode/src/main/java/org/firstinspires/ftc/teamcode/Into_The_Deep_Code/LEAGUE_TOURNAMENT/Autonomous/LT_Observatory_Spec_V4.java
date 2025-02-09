@@ -136,7 +136,7 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
                 //go to spec 3
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
-                .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime(0.6,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
                 .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 3
@@ -161,7 +161,7 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
                 //go to spec 4
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
-                .afterTime(0.4,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime(0.6,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
                 .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 4
