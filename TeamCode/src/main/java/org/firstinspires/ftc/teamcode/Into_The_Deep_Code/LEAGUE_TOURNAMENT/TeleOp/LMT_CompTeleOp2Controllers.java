@@ -830,7 +830,7 @@ public class LMT_CompTeleOp2Controllers extends LinearOpMode {
                     );
                     outtakeIsOut=false;
 
-                }else if(gamepad1.dpad_down && !dPadDownPressed && BasketMode){
+                }else if(gamepad1.dpad_down && !dPadDownPressed){
                     runningActions.add(
                             handLM3.HandStop()
                     );
