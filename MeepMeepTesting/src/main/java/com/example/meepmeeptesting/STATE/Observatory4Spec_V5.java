@@ -32,9 +32,11 @@ public class Observatory4Spec_V5 {
                 .splineToLinearHeading(new Pose2d(26,-41, Math.toRadians(45)),Math.toRadians(270))
                 .waitSeconds(0.2)
                 .strafeToLinearHeading(new Vector2d(30,-50), Math.toRadians(-45) )
-                .splineToLinearHeading(new Pose2d(48,-12,Math.toRadians(-90)),Math.toRadians(0))
-                                .strafeToLinearHeading(new Vector2d(60,-12),Math.toRadians(-90))
-                                .strafeToLinearHeading(new Vector2d(60,-48),Math.toRadians(-90))
+
+                .splineToLinearHeading(new Pose2d(57,-12,Math.toRadians(-90)),Math.toRadians(0))
+
+                                //.strafeToLinearHeading(new Vector2d(57,-12),Math.toRadians(-90))
+                                .strafeToLinearHeading(new Vector2d(57,-48),Math.toRadians(-90))
                 //.splineToLinearHeading(new Pose2d(31,-42, Math.toRadians(45)),Math.toRadians(235))
                 //.strafeTo(new Vector2d(38.5, -42))
                 //.strafeToLinearHeading(new Vector2d(42,-50),Math.toRadians(-45))
