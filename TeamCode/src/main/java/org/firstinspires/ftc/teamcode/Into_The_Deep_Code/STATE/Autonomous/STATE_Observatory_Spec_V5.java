@@ -104,14 +104,15 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(26,-41, Math.toRadians(45)),Math.toRadians(270), tempVel, tempAccel)
                 .waitSeconds(0.2)
                 .strafeToLinearHeading(new Vector2d(30,-50), Math.toRadians(-45), tempVel, tempAccel)
+                .waitSeconds(0.2)
                 //push second sample with bot for more consistency
                 .afterTime(0, hslide.HSlideTo0())
                 .afterTime(0, wrist.WristMiddle())
                 .afterTime(0, elbow.ElbowMiddle())
                 //move to sample 2
-                .splineToLinearHeading(new Pose2d(57,-12,Math.toRadians(-90)),Math.toRadians(0), tempVel, tempAccel)
+                .splineToSplineHeading(new Pose2d(55,-12,Math.toRadians(-90)),Math.toRadians(0), tempVel, tempAccel)
                 //push sample 2
-                .strafeToLinearHeading(new Vector2d(57,-48),Math.toRadians(-90), tempVel, tempAccel)
+                .strafeToLinearHeading(new Vector2d(55,-38),Math.toRadians(-90), tempVel, tempAccel)
 
 
                 //go to spec 2
@@ -136,7 +137,7 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
                 //go to spec 3
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
                 .afterTime(0.6,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(28.5,-59, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 3
 
@@ -160,7 +161,7 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
                 //go to spec 4
                 .afterTime(0,  specigrabber.SpeciRotateGrab())
                 .afterTime(0.6,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .splineToLinearHeading(new Pose2d(28.5,-60, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
+                .splineToLinearHeading(new Pose2d(28.5,-59, Math.toRadians(270)),Math.toRadians(270), tempVel, tempAccel)
 
                 //pick spec 4
 
@@ -182,9 +183,9 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
 
                 //park
                 .afterTime(.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .afterTime(.5, hslide.HSlideToMax())
-                .afterTime(.5, wrist.WristToDist(var.MiddleWristPos))
-                .afterTime(.5, elbow.ElbowToDist(var.MiddleElbowPos))
+                .afterTime(.1, hslide.HSlideToMax())
+                .afterTime(.1, wrist.WristToDist(var.MiddleWristPos))
+                .afterTime(.1, elbow.ElbowToDist(var.MiddleElbowPos))
                 .splineToLinearHeading(new Pose2d(28,-53, Math.toRadians(325)),Math.toRadians(270), tempVel, tempAccel);
 
 
