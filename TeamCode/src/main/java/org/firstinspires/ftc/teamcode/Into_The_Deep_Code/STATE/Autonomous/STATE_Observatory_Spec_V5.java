@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 
-@Autonomous(name = "LT - Observatory Spec V4", group = "Autonomous")
-public class LT_Observatory_Spec_V5 extends LinearOpMode {
+@Autonomous(name = "STATE - Observatory Spec V5", group = "Autonomous")
+public class STATE_Observatory_Spec_V5 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
