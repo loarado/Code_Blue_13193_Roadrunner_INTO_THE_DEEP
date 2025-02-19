@@ -389,8 +389,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 drive.updatePoseEstimate();
 
                 TrajectoryActionBuilder t1 = drive.actionBuilder(drive.pose)
-                        .turnTo(Math.toRadians(1))
-                        .strafeTo(new Vector2d(0,0),velFast, accFast);
+                        .strafeToLinearHeading(new Vector2d(0,0), 0, velFast, accFast);
 
                 Action traj = t1.build();
 
@@ -402,14 +401,14 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                                 specigrabber.SpecigrabberClose()
 
                         ))
-                        .strafeTo(new Vector2d(-29.5,-27),velFast, accFast);
+                        .strafeToLinearHeading(new Vector2d(-27,-29.5), 0, velFast, accFast);
 
                 Action toChamber1 = toChamber.build();
 
                 TrajectoryActionBuilder toSpec = drive.actionBuilder(drive.pose)
                         .afterTime(0,  new ParallelAction(specigrabber.SpecigrabberOpen(), specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition())))
                         .afterTime(0.7,  new ParallelAction(specigrabber.SpeciRotateGrab(), specigrabber.SetPosition(specimenGrabOffset)))
-                        .splineToLinearHeading(new Pose2d(0,-3, Math.toRadians(0)),Math.toRadians(0));
+                        .splineToLinearHeading(new Pose2d(-2,0, Math.toRadians(0)),Math.toRadians(0));
                 Action toSpec1 = toSpec.build();
 
                 TelemetryPacket packet = new TelemetryPacket();
