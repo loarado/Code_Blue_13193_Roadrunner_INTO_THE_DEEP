@@ -388,10 +388,14 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 //For roadrunner localization during tele-op
                 drive.updatePoseEstimate();
 
-                TrajectoryActionBuilder t1 = drive.actionBuilder(drive.pose)
+                TrajectoryActionBuilder basicDriveTo = drive.actionBuilder(drive.pose)
                         .strafeToLinearHeading(new Vector2d(0,0), 0, velFast, accFast);
+                Action BasicDriveTo = basicDriveTo.build();
 
-                Action traj = t1.build();
+                TrajectoryActionBuilder basketDriveTo = drive.actionBuilder(drive.pose)
+                        .afterTime(0.4, vslides.SetPosition(var.vSlideHighBasket))
+                        .strafeToLinearHeading(new Vector2d(0,0), 0, velFast, accFast);
+                Action BasketDriveTo = basketDriveTo.build();
 
                 TrajectoryActionBuilder toChamber = drive.actionBuilder(drive.pose)
                         .afterTime(0, specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition()))
@@ -429,7 +433,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
 
                 Actions.runBlocking(
-                        traj
+                        BasicDriveTo
                 );
 
                 if(BasketMode) {
@@ -462,6 +466,21 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                             new ParallelAction(
                                     toSpec1,  // The main trajectory
                                     new RunUntilAction(specigrabber.UpdatePID(), toSpec1)  // Runs UpdatePID only while trajectory is active
+                            )
+                    );
+
+                    if (BasketMode) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    } else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                    }
+                }else if ((gamepad1.left_stick_button) && BasketMode && !leftStickPressed) {
+                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
+                    vSlidesPos = var.vSlideHighBasket;
+                    Actions.runBlocking(
+                            new ParallelAction(
+                                    BasketDriveTo,  // The main trajectory
+                                    new RunUntilAction(vslides.UpdatePID(), BasketDriveTo)  // Runs UpdatePID only while trajectory is active
                             )
                     );
 
