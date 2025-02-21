@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 
-@Autonomous(name = "STATE - Observatory Spec V5", group = "Autonomous")
+@Autonomous(name = "| Observatory Spec V5 (Robot Push)", group = "Autonomous")
 public class STATE_Observatory_Spec_V5 extends LinearOpMode {
 
     @Override
@@ -110,9 +110,9 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
                 .afterTime(0, wrist.WristMiddle())
                 .afterTime(0, elbow.ElbowMiddle())
                 //move to sample 2
-                .splineToSplineHeading(new Pose2d(55,-12,Math.toRadians(-90)),Math.toRadians(0), tempVel, tempAccel)
+                .strafeToLinearHeading(new Vector2d(55,-12),Math.toRadians(-115), tempVel, tempAccel)
                 //push sample 2
-                .strafeToLinearHeading(new Vector2d(55,-38),Math.toRadians(-90), tempVel, tempAccel)
+                .strafeToLinearHeading(new Vector2d(55,-40),Math.toRadians(-90), tempVel, tempAccel)
 
 
                 //go to spec 2
@@ -182,7 +182,7 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
                 .setReversed(false)
 
                 //park
-                .afterTime(.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime( 1.5,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
                 .afterTime(.1, hslide.HSlideToMax())
                 .afterTime(.1, wrist.WristToDist(var.MiddleWristPos))
                 .afterTime(.1, elbow.ElbowToDist(var.MiddleElbowPos))

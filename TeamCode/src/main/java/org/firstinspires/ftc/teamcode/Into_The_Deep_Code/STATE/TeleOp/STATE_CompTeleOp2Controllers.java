@@ -193,10 +193,10 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
         int hSlidesCurrentPos = hSlides.getCurrentPosition(); // Variable for horizontal slides position
 
         VelConstraint velSlow = new TranslationalVelConstraint(30);
-        VelConstraint velFast = new TranslationalVelConstraint(42);
+        VelConstraint velFast = new TranslationalVelConstraint(40);
 
         AccelConstraint accSlow = new ProfileAccelConstraint(-30, 30);
-        AccelConstraint accFast = new ProfileAccelConstraint(-47, 47);
+        AccelConstraint accFast = new ProfileAccelConstraint(-45, 45);
 
 
         // Set initial LED pattern
@@ -405,7 +405,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                                 specigrabber.SpecigrabberClose()
 
                         ))
-                        .strafeToLinearHeading(new Vector2d(-27,-29.5), 0, velFast, accFast);
+                        .strafeToLinearHeading(new Vector2d(-28,-29.5), 0, velFast, accFast);
 
                 Action toChamber1 = toChamber.build();
 

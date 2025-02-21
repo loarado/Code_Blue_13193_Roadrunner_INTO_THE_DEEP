@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 
-@Autonomous(name = "LT - Observatory Spec V4", group = "Autonomous")
+@Autonomous(name = "| Observatory Spec V4 (Slide Push)", group = "Autonomous")
 public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
     @Override
@@ -184,7 +184,7 @@ public class LT_Observatory_Spec_V4 extends LinearOpMode {
                 .setReversed(false)
 
                 //park
-                .afterTime(.75,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
+                .afterTime(1.5,  new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
                 .afterTime(.1, hslide.HSlideToMax())
                 .afterTime(.1, wrist.WristToDist(var.MiddleWristPos))
                 .afterTime(.1, elbow.ElbowToDist(var.MiddleElbowPos))
