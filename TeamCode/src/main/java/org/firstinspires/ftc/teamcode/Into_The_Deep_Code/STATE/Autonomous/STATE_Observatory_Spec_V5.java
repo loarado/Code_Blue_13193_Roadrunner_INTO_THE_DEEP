@@ -120,7 +120,7 @@ public class STATE_Observatory_Spec_V5 extends LinearOpMode {
 
                 //pick spec 2
                 .waitSeconds(.40)
-                .strafeTo(new Vector2d(28, -63.5), tempVel, tempAccel)
+                .strafeTo(new Vector2d(28, -64), tempVel, tempAccel)
                 .afterTime(0.25, specigrabber.SpecigrabberClose())
                 .afterTime(0.55, specigrabber.SetPosition(var.speciArmPrepScore))
                 .afterTime(0.55, specigrabber.SpeciRotateScore())

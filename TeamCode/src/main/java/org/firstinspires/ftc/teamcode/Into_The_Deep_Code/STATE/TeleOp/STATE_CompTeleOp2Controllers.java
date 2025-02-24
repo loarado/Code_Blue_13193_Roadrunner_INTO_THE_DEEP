@@ -406,8 +406,9 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 //For roadrunner localization during tele-op
                 drive.updatePoseEstimate();
                 if (BasketMode) {
+                    hSlidesPos = 150;
                     basketDriveTo = drive.actionBuilder(drive.pose)
-                            .afterTime(0.4, vslides.SetPosition(var.vSlideHighBasket))
+                            .afterTime(0.4, new ParallelAction(vslides.SetPosition(var.vSlideHighBasket), hslide.HSlideToDist(150), wrist.WristMiddle(), elbow.ElbowEject()))
                             .strafeToLinearHeading(new Vector2d(0, 0), 0, velFast, accFast);
                     BasketDriveTo = basketDriveTo.build();
                 }
@@ -887,7 +888,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 if (specimenArmHasPid == false && specCurrentCheck) {
-                    if (specimenArm.getCurrent(CurrentUnit.AMPS) > 3.5) {
+                    if (specimenArm.getCurrent(CurrentUnit.AMPS) > 3.2) {
                         specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         specimenArmHasPid = true;
                         specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
