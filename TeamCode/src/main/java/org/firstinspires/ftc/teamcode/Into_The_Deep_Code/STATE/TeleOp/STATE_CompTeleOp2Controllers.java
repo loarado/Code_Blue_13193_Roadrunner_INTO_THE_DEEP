@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -145,11 +146,13 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
         boolean specimenArmHasPid = true;
         boolean vSlidesHavePid = true;
+        boolean specCurrentCheck = false;
 
         //specimenArm.setCurrentAlert(3.5, CurrentUnit.AMPS);
 
-        int specimenGrabOffset = var.speciArmGrab+30;
+        int specimenGrabOffset = var.speciArmGrab+45;
 
+        boolean leftBumperPressed = false; // Tracks button state
         boolean gamepadApressed = false; // Tracks A button state
         boolean gamepadXpressed = false; // Tracks X button state
         boolean gamepadBPressed = false; // Tracks B button state
@@ -166,6 +169,8 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
         boolean hSlideMoved = false; //tracks whether the hslide was moved already by
         //the vslides being extended
+        boolean debugSlidesResetCheck = false;
+
         boolean lightsChanged = false; //tracks whether the sample sensor made the lights change alr
 
 
@@ -201,6 +206,14 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
         // Set initial LED pattern
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+
+
+        TrajectoryActionBuilder basketDriveTo;
+        Action BasketDriveTo = null;
+        TrajectoryActionBuilder toChamber;
+        TrajectoryActionBuilder toSpec;
+        Action toChamber1 = null;
+        Action toSpec1 = null;
 
 
         //PID STUFF
@@ -289,38 +302,44 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //PID CONTROLLER FOR VERTICAL SLIDES
-                motorRelativeError = Math.abs(lArmCurrentPos- rArmCurrentPos)>1? lArmCurrentPos- rArmCurrentPos:0;
-                power = controller.calculate((lArmCurrentPos+ rArmCurrentPos)/2, vSlidesPos);
+                motorRelativeError = Math.abs(lArmCurrentPos - rArmCurrentPos) > 1 ? lArmCurrentPos - rArmCurrentPos : 0;
+                power = controller.calculate((lArmCurrentPos + rArmCurrentPos) / 2, vSlidesPos);
 
-                leftPower = power-relativeP*motorRelativeError;
-                rightPower = power+relativeP*motorRelativeError;
+                leftPower = power - relativeP * motorRelativeError;
+                rightPower = power + relativeP * motorRelativeError;
                 denom = Math.max(leftPower, Math.max(rightPower, 1));
 
                 //SET POWER BASED ON VSLIDES POS VARIABLE
 
-                    lArm.setPower(leftPower / denom);
-                    rArm.setPower(rightPower / denom);
+                lArm.setPower(leftPower / denom);
+                rArm.setPower(rightPower / denom);
 
 
                 //PID FOR SPEC ARM
 
                 controllerSpec.setPID(.005, .075, .0002);
                 pidSPEC = controllerSpec.calculate(specimenArm.getCurrentPosition(), specArmPos);
-                ffSPEC = Math.cos(Math.toRadians(specArmPos / ((2786.2/360)/2))) * .05;
+                ffSPEC = Math.cos(Math.toRadians(specArmPos / ((2786.2 / 360) / 2))) * .05;
 
-                if(specimenArmHasPid) {
+                if (BasketMode) {
+                    specimenArmHasPid = false;
+                    specimenArm.setPower(0);
+                } else if (SpecimenMode && !specCurrentCheck) {
+                    specimenArmHasPid = true;
+                }
+
+                if (specimenArmHasPid) {
                     specimenArm.setPower(pidSPEC + ffSPEC);
                 }
 
-                    hSlides.setTargetPosition(hSlidesPos);
-                    hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    hSlides.setVelocity(var.hSlideVelocity);
+                hSlides.setTargetPosition(hSlidesPos);
+                hSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                hSlides.setVelocity(var.hSlideVelocity);
 
 
-
-                if(pin0.getState()&&pin1.getState()){
+                if (pin0.getState() && pin1.getState()) {
                     colorDetectionThreshold++;
-                    if(currentlyIntaking&&!lightsChanged&&colorDetectionThreshold>15){
+                    if (currentlyIntaking && !lightsChanged && colorDetectionThreshold > 15) {
                         gamepad1.rumble(600);
                         gamepad2.rumble(600);
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
@@ -329,9 +348,9 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     YELLOW_DETECTED = true;
                     RED_DETECTED = false;
                     BLUE_DETECTED = false;
-                } else if(pin0.getState()&&!pin1.getState()){
+                } else if (pin0.getState() && !pin1.getState()) {
                     colorDetectionThreshold++;
-                    if(currentlyIntaking&&!lightsChanged&&colorDetectionThreshold>15){
+                    if (currentlyIntaking && !lightsChanged && colorDetectionThreshold > 15) {
                         gamepad1.rumble(600);
                         gamepad2.rumble(600);
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
@@ -340,9 +359,9 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     YELLOW_DETECTED = false;
                     RED_DETECTED = false;
                     BLUE_DETECTED = true;
-                }else if(pin1.getState()&&!pin0.getState()){
+                } else if (pin1.getState() && !pin0.getState()) {
                     colorDetectionThreshold++;
-                    if(currentlyIntaking&&!lightsChanged&&colorDetectionThreshold>15){
+                    if (currentlyIntaking && !lightsChanged && colorDetectionThreshold > 15) {
                         gamepad1.rumble(600);
                         gamepad2.rumble(600);
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
@@ -351,7 +370,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     YELLOW_DETECTED = false;
                     RED_DETECTED = true;
                     BLUE_DETECTED = false;
-                }else{
+                } else {
                     colorDetectionThreshold = 0;
                     lightsChanged = false;
                     YELLOW_DETECTED = false;
@@ -360,23 +379,22 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 }
 
 
-
-                if(vSlidesCurrentPos>250&&!hSlideMoved){
+                if (vSlidesCurrentPos > 250 && !hSlideMoved) {
                     hSlidesPos = 150;
                     hSlideMoved = true;
-                } else if (vSlidesCurrentPos<=250) {
+                } else if (vSlidesCurrentPos <= 250) {
                     hSlideMoved = false;
                 }
 
 
-                if(vTouchLeft.isPressed()){
+                if (vTouchLeft.isPressed()) {
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 }
-                if(vTouchRight.isPressed()){
+                if (vTouchRight.isPressed()) {
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -387,33 +405,32 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
                 //For roadrunner localization during tele-op
                 drive.updatePoseEstimate();
+                if (BasketMode) {
+                    basketDriveTo = drive.actionBuilder(drive.pose)
+                            .afterTime(0.4, vslides.SetPosition(var.vSlideHighBasket))
+                            .strafeToLinearHeading(new Vector2d(0, 0), 0, velFast, accFast);
+                    BasketDriveTo = basketDriveTo.build();
+                }
 
-                TrajectoryActionBuilder basicDriveTo = drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(new Vector2d(0,0), 0, velFast, accFast);
-                Action BasicDriveTo = basicDriveTo.build();
+                if (SpecimenMode) {
+                    toChamber = drive.actionBuilder(drive.pose)
+                            .afterTime(0, specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition()))
+                            .afterTime(0.4, new ParallelAction(
+                                    specigrabber.SetPosition(var.speciArmPrepScore),
+                                    specigrabber.SpeciRotateScore(),
+                                    specigrabber.SpecigrabberClose()
 
-                TrajectoryActionBuilder basketDriveTo = drive.actionBuilder(drive.pose)
-                        .afterTime(0.4, vslides.SetPosition(var.vSlideHighBasket))
-                        .strafeToLinearHeading(new Vector2d(0,0), 0, velFast, accFast);
-                Action BasketDriveTo = basketDriveTo.build();
+                            ))
+                            .strafeToLinearHeading(new Vector2d(-29.5, -28.5), 0, velFast, accFast);
 
-                TrajectoryActionBuilder toChamber = drive.actionBuilder(drive.pose)
-                        .afterTime(0, specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition()))
-                        .afterTime(0.4, new ParallelAction(
-                                specigrabber.SetPosition(var.speciArmPrepScore),
-                                specigrabber.SpeciRotateScore(),
-                                specigrabber.SpecigrabberClose()
+                    toChamber1 = toChamber.build();
 
-                        ))
-                        .strafeToLinearHeading(new Vector2d(-28,-29.5), 0, velFast, accFast);
-
-                Action toChamber1 = toChamber.build();
-
-                TrajectoryActionBuilder toSpec = drive.actionBuilder(drive.pose)
-                        .afterTime(0,  new ParallelAction(specigrabber.SpecigrabberOpen(), specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition())))
-                        .afterTime(0.7,  new ParallelAction(specigrabber.SpeciRotateGrab(), specigrabber.SetPosition(specimenGrabOffset)))
-                        .splineToLinearHeading(new Pose2d(-2,0, Math.toRadians(0)),Math.toRadians(0));
-                Action toSpec1 = toSpec.build();
+                    toSpec = drive.actionBuilder(drive.pose)
+                            .afterTime(0, new ParallelAction(specigrabber.SpecigrabberOpen(), specigrabber.SetPosition(specigrabber.specimenArm.getCurrentPosition())))
+                            .afterTime(0.7, new ParallelAction(specigrabber.SpeciRotateGrab(), specigrabber.SetPosition(specimenGrabOffset)))
+                            .splineToLinearHeading(new Pose2d(-2, 0, Math.toRadians(0)), Math.toRadians(0));
+                    toSpec1 = toSpec.build();
+                }
 
                 TelemetryPacket packet = new TelemetryPacket();
 
@@ -427,20 +444,15 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 runningActions = newActions;
 
 
-
-                if((gamepad2.options||gamepad1.options) && !optionsPressed){
+                if ((gamepad2.options || gamepad1.options) && !optionsPressed) {
 
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
 
-                Actions.runBlocking(
-                        BasicDriveTo
-                );
-
-                if(BasketMode) {
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                }else{
-                    lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
-                }
+                    if (BasketMode) {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                    } else {
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+                    }
 
                 } else if ((gamepad1.left_stick_button) && SpecimenMode && !leftStickPressed) {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
@@ -453,13 +465,13 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                             )
                     );
 
-                    if(BasketMode) {
+                    if (BasketMode) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                    }else{
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     }
 
-                }else if ((gamepad1.right_stick_button) && SpecimenMode && !rightStickPressed) {
+                } else if ((gamepad1.right_stick_button) && SpecimenMode && !rightStickPressed) {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
                     specArmPos = specimenGrabOffset;
                     Actions.runBlocking(
@@ -474,7 +486,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     }
-                }else if ((gamepad1.left_stick_button) && BasketMode && !leftStickPressed) {
+                } else if ((gamepad1.left_stick_button) && BasketMode && !leftStickPressed) {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
                     vSlidesPos = var.vSlideHighBasket;
                     Actions.runBlocking(
@@ -490,11 +502,11 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     }
                 }
-                optionsPressed = gamepad2.options||gamepad1.options;
+                optionsPressed = gamepad2.options || gamepad1.options;
 
 
-                if(gamepad1.share){
-                    drive.pose=new Pose2d(0,0, Math.toRadians(0.5));
+                if (gamepad1.share) {
+                    drive.pose = new Pose2d(0, 0, Math.toRadians(0.5));
                     drive.updatePoseEstimate();
                 }
 
@@ -502,9 +514,8 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 //Above is for making the robot move to a position automatically
 
 
-
                 //EJECT BUTTON
-                if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn &&!gamepadYpressed && !ejectStage) {
+                if ((gamepad1.y || gamepad1.triangle) && !debugModeIsOn && !gamepadYpressed && !ejectStage) {
                     intakeMode = false;
                     ejectStage = true;
 
@@ -515,15 +526,15 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                                     handLM3.HandStop()
                             )
                     );
-                    if(hSlidesCurrentPos<135){
-                        hSlidesPos=135;
+                    if (hSlidesCurrentPos < 135) {
+                        hSlidesPos = 135;
                     }
-                } else if ((gamepad1.y || gamepad1.triangle)&&!debugModeIsOn &&!gamepadYpressed && ejectStage) {
+                } else if ((gamepad1.y || gamepad1.triangle) && !debugModeIsOn && !gamepadYpressed && ejectStage) {
                     runningActions.add(
                             handLM3.HandOuttake()
                     );
-                    ejectStage= false;
-                } else if ((gamepad1.y || gamepad1.triangle)&&debugModeIsOn &&!gamepadYpressed) {
+                    ejectStage = false;
+                } else if ((gamepad1.y || gamepad1.triangle) && debugModeIsOn && !gamepadYpressed) {
                     runningActions.add(
                             new ParallelAction(
                                     wrist.WristDebug(),
@@ -533,7 +544,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 }
                 gamepadYpressed = gamepad1.y || gamepad1.triangle;
 
-                if((gamepad1.x||gamepad1.square)&&!gamepadXpressed&&debugModeIsOn){
+                if ((gamepad1.x || gamepad1.square) && !gamepadXpressed && debugModeIsOn) {
                     runningActions.add(
                             new ParallelAction(
                                     wrist.WristDebug(),
@@ -542,38 +553,37 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     );
                 }
 
-                if((gamepad1.a || gamepad1.cross) && !gamepadApressed && debugModeIsOn){
+                if ((gamepad1.a || gamepad1.cross) && !gamepadApressed && debugModeIsOn) {
                     runningActions.add(
-                                    handLM3.HandIntake()
+                            handLM3.HandIntake()
                     );
                 }
 
 
-
                 //CLAW AND OUTTAKE OPEN AND CLOSE BUTTON
-                if ((gamepad2.x || gamepad2.square)&&!gamepadXpressed && !debugModeIsOn) {
+                if ((gamepad2.x || gamepad2.square) && !gamepadXpressed && !debugModeIsOn) {
 
-                    if(SpecimenMode) {
+                    if (SpecimenMode) {
 
                         if (specigrabberIsOpen) {
                             runningActions.add(
                                     specigrabber.SpecigrabberClose()
                             );
                             specigrabberIsOpen = false;
-                        }else{
+                        } else {
                             runningActions.add(
                                     specigrabber.SpecigrabberOpen()
                             );
                             specigrabberIsOpen = true;
                         }
 
-                    } else if (BasketMode && vSlidesCurrentPos > 400){
-                        if(outtakeIsOut){
+                    } else if (BasketMode && vSlidesCurrentPos > 400) {
+                        if (outtakeIsOut) {
                             runningActions.add(
                                     outtakeLM2.OuttakeIdle()
                             );
                             outtakeIsOut = false;
-                        }else{
+                        } else {
                             runningActions.add(
                                     outtakeLM2.OuttakeOut()
                             );
@@ -584,24 +594,21 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     }
 
                 }
-                gamepadXpressed  = gamepad2.x || gamepad2.square || gamepad1.x || gamepad1.square;
-
-
+                gamepadXpressed = gamepad2.x || gamepad2.square || gamepad1.x || gamepad1.square;
 
 
                 // Vertical slide control - moves slides up when left bumper is pressed,
                 // but not past the maximum allowed height
-                if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax &&!debugModeIsOn) {
+                if (gamepad2.right_bumper && vSlidesPos < var.vSlidePhysicalMax && !debugModeIsOn) {
                     vSlidesPos += 25;
 
                 }
 
                 // Moves slides down when right bumper is pressed, but stops at minimum height
-                if (gamepad2.left_bumper && vSlidesPos > 0 &&!debugModeIsOn) {
+                if (gamepad2.left_bumper && vSlidesPos > 0 && !debugModeIsOn) {
                     vSlidesPos -= 25;
 
                 }
-
 
 
                 //DEBUG VERSIONS
@@ -609,19 +616,28 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     vSlidesPos += 15;
 
                 }
-                if (gamepad1.left_bumper && debugModeIsOn) {
-                    vSlidesPos -= 15;
+                if (gamepad1.left_bumper && debugModeIsOn && !leftBumperPressed && !debugSlidesResetCheck) {
+                    vSlidesPos = -3000;
+                    hSlidesPos = -3000;
+                    debugSlidesResetCheck = true;
+                } else if (gamepad1.left_bumper && debugModeIsOn && !leftBumperPressed && debugSlidesResetCheck) {
+                    vSlidesPos = 0;
+                    hSlidesPos = 0;
+                    lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    debugSlidesResetCheck = false;
                 }
-
-
-
+                leftBumperPressed = gamepad1.left_bumper;
 
 
                 double dt = timer.seconds(); // Get time elapsed since last loop
                 timer.reset(); // Reset timer for next loop
 
                 // Define speed constant (tuned for your bot)
-                double slideSpeed = 600; // Max speed in units per second (adjust as needed)
+                double slideSpeed = 650; // Max speed in units per second (adjust as needed)
 
                 // Horizontal slides control - moves slides outward with right trigger
                 if (gamepad1.right_trigger > 0.1 && hSlidesPos < var.hSlideRuleMax && !debugModeIsOn) {
@@ -645,13 +661,13 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 // Intake mode toggle with A button
-                if ((gamepad1.a || gamepad1.cross) && !gamepadApressed &&!debugModeIsOn) {  // When A button is newly pressed
+                if ((gamepad1.a || gamepad1.cross) && !gamepadApressed && !debugModeIsOn) {  // When A button is newly pressed
 
                     runningActions.add(
                             handLM3.HandStop()
                     );
 
-                    if(hSlidesCurrentPos > 150) {
+                    if (hSlidesCurrentPos > 150) {
 
                         if (!currentlyIntaking) {  // Ensures prep mode is first if idle
                             intakeMode = false;
@@ -686,19 +702,18 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 gamepadApressed = gamepad1.a || gamepad1.cross;
 
 
-
                 // Transfer action with B button if intake is active
                 if ((gamepad1.b || gamepad1.circle) && currentlyIntaking && BasketMode && !frontIntakeActive && !gamepadBPressed) {
                     currentlyIntaking = false;
                     frontIntakeActive = false;
 
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                     }
 
@@ -718,14 +733,13 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     );
 
 
-
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
 
@@ -736,17 +750,17 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     hSlideTransferCheck = true;
                     frontIntakeActive = false;
 
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                     }
 
-                    hSlidesPos = var.hSlideTransferPos+120;
+                    hSlidesPos = var.hSlideTransferPos + 120;
 
                     runningActions.add(
                             new SequentialAction(
@@ -759,13 +773,13 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     );
 
 
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     }
 
@@ -793,35 +807,35 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     currentlyIntaking = false;
                     frontIntakeActive = false;
 
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
                     }
 
                     hSlidesPos = 0;
 
                     runningActions.add(
-                                    new ParallelAction(
-                                            wrist.WristMiddle(),
-                                            elbow.ElbowEject(),
-                                            handLM3.HandStop()
-                                    )
+                            new ParallelAction(
+                                    wrist.WristMiddle(),
+                                    elbow.ElbowEject(),
+                                    handLM3.HandStop()
+                            )
                     );
 
                     ejectStage = true;
 
-                    if(YELLOW_DETECTED){
+                    if (YELLOW_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                    }else if(RED_DETECTED){
+                    } else if (RED_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                     } else if (BLUE_DETECTED) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
-                    }else {
+                    } else {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
                     }
 
@@ -835,7 +849,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     runningActions.add(
                             handLM3.HandStop()
                     );
-                    if (SpecimenMode){
+                    if (SpecimenMode) {
                         specArmPos = var.speciArmPrepScore;
                         runningActions.add(
                                 new SequentialAction(
@@ -850,14 +864,14 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-
                 if (gamepad2.dpad_left && !dPadLeftPressed) {
 
                     runningActions.add(
                             handLM3.HandStop()
                     );
-                    if (SpecimenMode){
+                    if (SpecimenMode) {
                         specimenArmHasPid = false;
+                        specCurrentCheck = true;
                         specimenArm.setPower(-0.4);
                         runningActions.add(
                                 new SequentialAction(
@@ -866,18 +880,19 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                                 )
                         );
                     } else if (BasketMode) {
-                        vSlidesPos = var.vSlideLowBasket-200;
+                        vSlidesPos = var.vSlideLowBasket - 200;
                     }
                 }
                 dPadLeftPressed = gamepad2.dpad_left;
 
 
-                if(specimenArmHasPid == false){
-                    if(specimenArm.getCurrent(CurrentUnit.AMPS)>3.5){
+                if (specimenArmHasPid == false && specCurrentCheck) {
+                    if (specimenArm.getCurrent(CurrentUnit.AMPS) > 3.5) {
                         specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         specimenArmHasPid = true;
                         specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    }else{
+                        specCurrentCheck = false;
+                    } else {
                         specimenArm.setPower(-0.4);
                     }
 
@@ -887,10 +902,10 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
                     if (SpecimenMode) {
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
-                        specArmPos=var.speciArmScore;
+                        specArmPos = var.speciArmScore + 50;
                         runningActions.add(
 
-                                        specigrabber.SpeciRotateScore()
+                                specigrabber.SpeciRotateScore()
 
                         );
                         specigrabberIsOpen = true;
@@ -900,39 +915,38 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 dPadRightPressed = gamepad2.dpad_right;
 
 
-
                 if (gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && !outtakeIsOut && BasketMode) {
                     vSlidesPos = 0;
 
 
-                } else if(gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode){
+                } else if (gamepad2.dpad_down && vSlidesCurrentPos > 50 && !dPadDownPressed && outtakeIsOut && BasketMode) {
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
-                    outtakeIsOut=false;
+                    outtakeIsOut = false;
 
-                }else if(gamepad1.dpad_down && !dPadDownPressed){
+                } else if (gamepad1.dpad_down && !dPadDownPressed) {
                     runningActions.add(
                             handLM3.HandStop()
                     );
-                    if(hSlidesCurrentPos > 180) {
+                    if (hSlidesCurrentPos > 180) {
 
                         frontIntakeActive = true;
                         currentlyIntaking = true;
                         ejectStage = false;
                         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
 
-                            runningActions.add(
-                                    new ParallelAction(
-                                            wrist.WristToDist(var.FrontIntakeWristPos),
-                                            elbow.ElbowToDist(var.FrontIntakeElbowPos),
-                                            handLM3.HandIntake()
-                                    )
-                            );
+                        runningActions.add(
+                                new ParallelAction(
+                                        wrist.WristToDist(var.FrontIntakeWristPos),
+                                        elbow.ElbowToDist(var.FrontIntakeElbowPos),
+                                        handLM3.HandIntake()
+                                )
+                        );
 
                     }
 
-                } else if(gamepad2.dpad_down && !dPadDownPressed && SpecimenMode){
+                } else if (gamepad2.dpad_down && !dPadDownPressed && SpecimenMode) {
                     specArmPos = specimenGrabOffset;
                     runningActions.add(
                             new ParallelAction(
@@ -945,8 +959,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 dPadDownPressed = gamepad1.dpad_down || gamepad2.dpad_down;
 
 
-
-                if (gamepad2.left_stick_button&&!debugModeIsOn&&!gamepad2.right_stick_button){
+                if (gamepad2.left_stick_button && !debugModeIsOn && !gamepad2.right_stick_button) {
 
                     BasketMode = false;
                     SpecimenMode = true;
@@ -957,7 +970,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     outtakeIsOut = false;
                 }
 
-                if (gamepad2.right_stick_button&&!debugModeIsOn&&!gamepad2.left_stick_button){
+                if (gamepad2.right_stick_button && !debugModeIsOn && !gamepad2.left_stick_button) {
 
                     BasketMode = true;
                     SpecimenMode = false;
@@ -968,14 +981,16 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     specigrabberIsOpen = false;
                 }
 
-                if (gamepad1.left_stick_button&&debugModeIsOn&&!leftStickPressed&&!gamepad1.right_stick_button){
+                if (gamepad1.left_stick_button && debugModeIsOn && !leftStickPressed && !gamepad1.right_stick_button) {
                     lArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    rArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
                     vSlidesPos = 0;
                 }
 
-                if (gamepad1.right_stick_button&&debugModeIsOn&&!rightStickPressed&&!gamepad1.left_stick_button){
+                if (gamepad1.right_stick_button && debugModeIsOn && !rightStickPressed && !gamepad1.left_stick_button) {
                     hSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_GRAY);
                     hSlidesPos = 0;
@@ -983,46 +998,45 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
                 //Slower when intaking or when stuff is extended
-                if(hSlidesCurrentPos>250|| lArmCurrentPos>1400|| rArmCurrentPos>1400||currentlyIntaking){
-                    driveSpeed = 2.2;
-                } else{
+                if (hSlidesCurrentPos > 350 || lArmCurrentPos > 1400 || rArmCurrentPos > 1400 || currentlyIntaking) {
+                    driveSpeed = 2;
+                } else {
                     driveSpeed = 1.2;
                 }
 
 
-
                 //Failsafes
-                if(vSlidesCurrentPos<400&& outtakeIsOut && !specigrabberIsOpen){
+                if (vSlidesCurrentPos < 400 && outtakeIsOut && !specigrabberIsOpen) {
                     runningActions.add(
                             outtakeLM2.OuttakeIdle()
                     );
                 }
 
-                if(currentlyIntaking && hSlidesPos<150 && !debugModeIsOn){
+                if (currentlyIntaking && hSlidesPos < 150 && !debugModeIsOn) {
                     hSlidesPos = 150;
                 }
 
-                if(vSlidesPos<0 && !debugModeIsOn){
+                if (vSlidesPos < 0 && !debugModeIsOn) {
                     vSlidesPos = 0;
-                } else if (vSlidesPos>var.vSlidePhysicalMax && !debugModeIsOn) {
+                } else if (vSlidesPos > var.vSlidePhysicalMax && !debugModeIsOn) {
                     vSlidesPos = var.vSlidePhysicalMax;
                 }
 
-                if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&!debugModeIsOn){
-                    debugModeSet+=1;
-                    if (debugModeSet >= 45){
-                     debugModeIsOn = true;
-                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
-                     debugModeSet = 0;
+                if (gamepad1.right_bumper && !debugModeIsOn) {
+                    debugModeSet += 1;
+                    if (debugModeSet >= 30) {
+                        debugModeIsOn = true;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
+                        debugModeSet = 0;
                     }
                 }
-                if(gamepad1.left_stick_button&&gamepad1.right_stick_button&&debugModeIsOn){
-                        debugModeSet += 1;
-                        if (debugModeSet >= 45) {
-                            debugModeIsOn = false;
-                            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                            debugModeSet=0;
-                        }
+                if (gamepad1.right_bumper && debugModeIsOn) {
+                    debugModeSet += 1;
+                    if (debugModeSet >= 30) {
+                        debugModeIsOn = false;
+                        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                        debugModeSet = 0;
+                    }
                 }
                 leftStickPressed = gamepad1.left_stick_button;
                 rightStickPressed = gamepad1.right_stick_button;
@@ -1041,30 +1055,32 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 rightFront.setPower(((y + x) - rx) / denominator);
 
                 // Displays x, y, rx, rightVerticalSlidePos, leftVerticalSlidePos, and horizontalSlidesPos
-                telemetry.addData("x = ", x);
-                telemetry.addData("y = ", y);
-                telemetry.addData("rx = ", rx);
-                telemetry.addData("dt", dt);
-                telemetry.addData("specCURRENT = ", specimenArm.getCurrent(CurrentUnit.AMPS));
-                telemetry.addData("specHasPid = ", specimenArmHasPid);
-                telemetry.addData("currentRightArmPos = ", rArmCurrentPos);
-                telemetry.addData("currentLeftArmPos = ", lArmCurrentPos);
-                telemetry.addData("HSlideTransferVar: = ", hSlideTransferCheck);
-                telemetry.addData("FrontIntakeVar: = ", frontIntakeActive);
-                telemetry.addData("SpecArmPosVar: = ", specArmPos);
-                telemetry.addData("SpecArmPos: = ", specimenArm.getCurrentPosition());
-                telemetry.addData("SpecArmPower: = ", (ffSPEC+pidSPEC));
-                telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
-                telemetry.addData("currentHorizontalSlidesPos = ", hSlidesCurrentPos);
-                telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
-                telemetry.addData("BasketMode", BasketMode);
-                telemetry.addData("Currently Intaking: = ", currentlyIntaking);
-                telemetry.addData("Transfer: = ", SampleTransferred);
-                telemetry.addData("DebugModeSet: = ", debugModeSet);
-                telemetry.addData("DebugMode: = ", debugModeIsOn);
-                telemetry.addData("YELLOW DETECTED", pin0.getState()&&pin1.getState());
-                telemetry.addData("BLUE DETECTED", pin0.getState()&&!pin1.getState());
-                telemetry.addData("RED DETECTED", pin1.getState()&&!pin0.getState());
+                if (debugModeIsOn) {
+                    telemetry.addData("x = ", x);
+                    telemetry.addData("y = ", y);
+                    telemetry.addData("rx = ", rx);
+                    telemetry.addData("dt", dt);
+                    telemetry.addData("specCURRENT = ", specimenArm.getCurrent(CurrentUnit.AMPS));
+                    telemetry.addData("specHasPid = ", specimenArmHasPid);
+                    telemetry.addData("currentRightArmPos = ", rArmCurrentPos);
+                    telemetry.addData("currentLeftArmPos = ", lArmCurrentPos);
+                    telemetry.addData("HSlideTransferVar: = ", hSlideTransferCheck);
+                    telemetry.addData("FrontIntakeVar: = ", frontIntakeActive);
+                    telemetry.addData("SpecArmPosVar: = ", specArmPos);
+                    telemetry.addData("SpecArmPos: = ", specimenArm.getCurrentPosition());
+                    telemetry.addData("SpecArmPower: = ", (ffSPEC + pidSPEC));
+                    telemetry.addData("VSlidesPosVariable = ", vSlidesPos);
+                    telemetry.addData("currentHorizontalSlidesPos = ", hSlidesCurrentPos);
+                    telemetry.addData("HSlidesPosVariable = ", hSlidesPos);
+                    telemetry.addData("BasketMode", BasketMode);
+                    telemetry.addData("Currently Intaking: = ", currentlyIntaking);
+                    telemetry.addData("Transfer: = ", SampleTransferred);
+                    telemetry.addData("DebugModeSet: = ", debugModeSet);
+                    telemetry.addData("DebugMode: = ", debugModeIsOn);
+                    telemetry.addData("YELLOW DETECTED", pin0.getState() && pin1.getState());
+                    telemetry.addData("BLUE DETECTED", pin0.getState() && !pin1.getState());
+                    telemetry.addData("RED DETECTED", pin1.getState() && !pin0.getState());
+                }
                 telemetry.update();
 
                 dash.sendTelemetryPacket(packet);

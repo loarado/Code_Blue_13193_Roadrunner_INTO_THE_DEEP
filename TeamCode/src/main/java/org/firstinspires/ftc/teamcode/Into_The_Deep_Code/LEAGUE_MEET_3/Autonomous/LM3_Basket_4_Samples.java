@@ -57,7 +57,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
 
                 new ParallelAction(
                         outtakeLM2.OuttakeIdle(),
-                        specigrabber.SpecigrabberOpen(),
+                        specigrabber.SpecigrabberClose(),
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
@@ -69,6 +69,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
         waitForStart();
 
         int hSlideGrabExtension = var.hSlideRuleMax;
+        int vSlidesPosScore = 2477;
 
         int VSlideTempVelo = 1300;
 
@@ -79,7 +80,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 .setReversed(true)
 
                 //move slides to high basket pos
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
 
                 .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
 
@@ -99,7 +100,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 This strafeTo moves to the basket, afterTime() actions happen after whatever trajectory
                 comes next so all the actions before this happen "dt" seconds after this movement,
                  */
-                .strafeToLinearHeading(new Vector2d(59, 52.5), Math.toRadians(255.5))
+                .strafeToLinearHeading(new Vector2d(59, 51), Math.toRadians(255.5))
 
                 .waitSeconds(sleepTime)
 
@@ -134,7 +135,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-45))
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .waitSeconds(1.25)
 
                 //score sample TWO
@@ -179,7 +180,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
                 .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-5))
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .turn(Math.toRadians(-14.5))
                 .waitSeconds(1)
 
@@ -224,7 +225,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 .afterTime(0, handLM3.HandStop())
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .turn(Math.toRadians(-40))
                 .waitSeconds(1)
 
@@ -237,8 +238,7 @@ public class LM3_Basket_4_Samples extends LinearOpMode {
                 .waitSeconds(sleepTime)
                 .afterTime(0, vslides.SetPosition(735))
                 //park in the designated area
-                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
-                .strafeTo(new Vector2d(21,12));
+                .splineToLinearHeading(new Pose2d(-21, -12,Math.toRadians(180)), Math.toRadians(0));
 
 
         if (isStopRequested()) { return; }
