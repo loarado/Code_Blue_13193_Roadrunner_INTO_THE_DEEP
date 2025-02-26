@@ -406,9 +406,12 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 //For roadrunner localization during tele-op
                 drive.updatePoseEstimate();
                 if (BasketMode) {
-                    hSlidesPos = 150;
                     basketDriveTo = drive.actionBuilder(drive.pose)
-                            .afterTime(0.4, new ParallelAction(vslides.SetPosition(var.vSlideHighBasket), hslide.HSlideToDist(150), wrist.WristMiddle(), elbow.ElbowEject()))
+                            .afterTime(1, new ParallelAction(vslides.SetPosition(var.vSlideHighBasket)))
+                            .afterTime(0, new ParallelAction(
+                                    hslide.HSlideToDist(150),
+                                    wrist.WristMiddle(),
+                                    elbow.ElbowEject()))
                             .strafeToLinearHeading(new Vector2d(0, 0), 0, velFast, accFast);
                     BasketDriveTo = basketDriveTo.build();
                 }
@@ -490,10 +493,11 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 } else if ((gamepad1.left_stick_button) && BasketMode && !leftStickPressed) {
                     lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_OCEAN_PALETTE);
                     vSlidesPos = var.vSlideHighBasket;
+                    hSlidesPos = 100;
                     Actions.runBlocking(
                             new ParallelAction(
                                     BasketDriveTo,  // The main trajectory
-                                    new RunUntilAction(vslides.UpdatePID(), BasketDriveTo)  // Runs UpdatePID only while trajectory is active
+                                    new RunUntilAction(vslides.UpdatePID(), BasketDriveTo)  // Ensures vSlides continue updating
                             )
                     );
 
