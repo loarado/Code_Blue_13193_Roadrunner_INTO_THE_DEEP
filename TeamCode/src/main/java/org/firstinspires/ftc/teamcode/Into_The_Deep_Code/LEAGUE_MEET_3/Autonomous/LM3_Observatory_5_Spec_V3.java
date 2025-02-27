@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
-
+@Disabled
 @Autonomous(name = "LM3 - Observatory 5 Spec V3", group = "Autonomous")
 public class LM3_Observatory_5_Spec_V3 extends LinearOpMode {
 

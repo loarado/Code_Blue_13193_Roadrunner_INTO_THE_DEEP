@@ -1,28 +1,11 @@
-package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.LEAGUE_TOURNAMENT.Autonomous;
+package org.firstinspires.ftc.teamcode.Into_The_Deep_Code.STATE.Autonomous;
 
-import static com.google.gson.internal.JsonReaderInternalAccess.INSTANCE;
-
-import static org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive.pose;
-
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.AccelConstraint;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.ProfileAccelConstraint;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.tuning.roadrunnerStuff.MecanumDrive;
@@ -34,24 +17,15 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM1_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM2_SUBSYSTEMS.OuttakeLM2;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.HandLM3;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_SUBSYSTEMS.SpecigrabberLM3;
-import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LT_SUBSYSTEMS.DistLT;
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
-import kotlin.jvm.internal.Lambda;
-
-
-
-@Disabled
-@Autonomous(name = "LT - 3 Basket 1 Spec", group = "Autonomous")
-public class LT_3Basket_1Spec extends LinearOpMode {
+@Autonomous(name = "! Basket 4 Samples (V2)", group = "Autonomous")
+public class STATE_Basket_4_Samples extends LinearOpMode {
 
     @Override
     public void runOpMode() {
 
-
-
-
-        Pose2d beginPose = new Pose2d(-16, -64, Math.toRadians(278));
+        Pose2d beginPose = new Pose2d(36, 64.25, Math.toRadians(180));
 
         // INSTANTIATE SUBSYSTEMS AND DT
 
@@ -77,15 +51,6 @@ public class LT_3Basket_1Spec extends LinearOpMode {
 
         SpecigrabberLM3 specigrabber = new SpecigrabberLM3(hardwareMap);
 
-        DistLT distance = new DistLT(hardwareMap);
-
-        int grabChange = 10;
-        int hSlideGrabExtension = var.hSlideRuleMax;
-        int sleepTime = 1;
-
-        VelConstraint tempVel = new TranslationalVelConstraint(42);
-        AccelConstraint tempAccel = new ProfileAccelConstraint(-50, 90);
-
         Actions.runBlocking(
 
                 // MAKE SERVOS STAY IN PLACE AND STUFF
@@ -93,7 +58,6 @@ public class LT_3Basket_1Spec extends LinearOpMode {
                 new ParallelAction(
                         outtakeLM2.OuttakeIdle(),
                         specigrabber.SpecigrabberClose(),
-                        specigrabber.SpeciRotateScore(),
                         elbow.ElbowMiddle(),
                         wrist.WristMiddle(),
                         lights.LightsBlue(),
@@ -104,35 +68,40 @@ public class LT_3Basket_1Spec extends LinearOpMode {
 
         waitForStart();
 
+        int hSlideGrabExtension = var.hSlideRuleMax;
+        int vSlidesPosScore = 2477;
 
-        TrajectoryActionBuilder initialDrive = drive.actionBuilder(beginPose)
+        int VSlideTempVelo = 1300;
+
+        double sleepTime = 1;
+
+        TrajectoryActionBuilder path = drive.actionBuilder(beginPose)
+                //trajectories go backwards
                 .setReversed(true)
-                .afterTime(0.5, new ParallelAction(
-                        specigrabber.SetPosition(var.speciArmPrepScore),
-                        specigrabber.SpeciRotateScore(),
-                        vslides.VSlidesToDist(100)
-                ))
-                .splineToLinearHeading(new Pose2d(-14,-37.5, Math.toRadians(270)),Math.toRadians(90));
 
+                //move slides to high basket pos
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
 
-        TrajectoryActionBuilder restDrive = drive.actionBuilder(new Pose2d(-14, 37.5, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(36, 61), Math.toRadians(180))
 
+                //grabber out of way
+                .afterTime(0, specigrabber.SpecigrabberClose())
 
-                .splineToLinearHeading(new Pose2d(-3,-32.5, Math.toRadians(270)),Math.toRadians(90), tempVel, tempAccel)
-                .afterTime(0.2, specigrabber.SetPosition(var.speciArmScore))
-                .afterTime(0.7, specigrabber.SpecigrabberOpen())
-                .waitSeconds(1)
-                .setReversed(false)
+                //robot prepares the outtake to score faster
+                .afterTime(1.5, outtakeLM2.OuttakeOut())
 
-                .afterTime(1.3, new ParallelAction(specigrabber.SetPosition(var.speciArmGrab+grabChange), specigrabber.SpeciRotateGrab()))
-                .setReversed(false)
-                .afterTime(1.3, vslides.SetPosition(0))
-                //prepare to intake sample ONE
-                .afterTime(1, hslide.HSlideToDist(var.hSlideRuleMax))
+                //prepare to intake sample TWO while scoring sample ONE
+                .afterTime(1, hslide.HSlideToDist(hSlideGrabExtension))
                 .afterTime(1, wrist.WristIntake())
                 .afterTime(2, elbow.PrepElbowIntake())
                 .afterTime(2, handLM3.HandIntake())
-                .splineToLinearHeading(new Pose2d(-59, -52.5,Math.toRadians(90-14.5)), Math.toRadians(180))
+
+                /*
+                This strafeTo moves to the basket, afterTime() actions happen after whatever trajectory
+                comes next so all the actions before this happen "dt" seconds after this movement,
+                 */
+                .strafeToLinearHeading(new Vector2d(59, 51), Math.toRadians(259))
+
                 .waitSeconds(sleepTime)
 
                 //score sample number ONE
@@ -166,7 +135,7 @@ public class LT_3Basket_1Spec extends LinearOpMode {
                 .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-45))
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .waitSeconds(1.25)
 
                 //score sample TWO
@@ -211,7 +180,7 @@ public class LT_3Basket_1Spec extends LinearOpMode {
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
                 .afterTime(0, hslide.HSlideToDist(hSlideGrabExtension-5))
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .turn(Math.toRadians(-14.5))
                 .waitSeconds(1)
 
@@ -256,7 +225,7 @@ public class LT_3Basket_1Spec extends LinearOpMode {
                 .afterTime(0, handLM3.HandStop())
                 .afterTime(0, wrist.WristIntake())
                 .afterTime(0, elbow.ElbowMiddle())
-                .afterTime(0, vslides.SetPosition(2377))
+                .afterTime(0, vslides.SetPosition(vSlidesPosScore))
                 .turn(Math.toRadians(-40))
                 .waitSeconds(1)
 
@@ -269,26 +238,16 @@ public class LT_3Basket_1Spec extends LinearOpMode {
                 .waitSeconds(sleepTime)
                 .afterTime(0, vslides.SetPosition(735))
                 //park in the designated area
-                .strafeToLinearHeading(new Vector2d(40,12), Math.toRadians(0))
-                .strafeTo(new Vector2d(21,12));
-
-
+                .splineToLinearHeading(new Pose2d(-21, -12,Math.toRadians(180)), Math.toRadians(0));
 
 
         if (isStopRequested()) { return; }
 
-            Actions.runBlocking(
-                    new ParallelAction(
-                            specigrabber.UpdatePID(),
-                            vslides.UpdatePID(),
-                            new SequentialAction(
-                             initialDrive.build(),
-                                    distance.DistGreater(),
-                                    restDrive.build()
-                            )
-                    )
-            );
-        }
+        Actions.runBlocking(
+                new ParallelAction(
+                        vslides.UpdatePID(),
+                        path.build()
+                )
+        );
     }
-
-
+}

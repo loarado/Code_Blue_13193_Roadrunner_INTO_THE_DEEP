@@ -47,7 +47,7 @@ import java.util.List;
 import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 
-@TeleOp(name = "STATE - 2 Drivers Comp TeleOp", group = "TeleOp")
+@TeleOp(name = "! STATE 2 Driver TeleOp", group = "TeleOp")
 public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
     /*

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.LM3_
 import org.firstinspires.ftc.teamcode.tuning.variables_and_subsystemClasses.VARIABLES.SubsystemsVariables;
 
 
-@Autonomous(name = "| Observatory Spec V4 (Slide Push)", group = "Autonomous")
+@Autonomous(name = "! Observatory Spec Slide Push (V4)", group = "Autonomous")
 public class LT_Observatory_Spec_V4 extends LinearOpMode {
 
     @Override
