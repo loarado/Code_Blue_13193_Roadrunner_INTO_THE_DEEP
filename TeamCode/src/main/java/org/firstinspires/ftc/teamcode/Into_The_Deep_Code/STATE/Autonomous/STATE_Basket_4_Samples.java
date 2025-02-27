@@ -100,7 +100,7 @@ public class STATE_Basket_4_Samples extends LinearOpMode {
                 This strafeTo moves to the basket, afterTime() actions happen after whatever trajectory
                 comes next so all the actions before this happen "dt" seconds after this movement,
                  */
-                .strafeToLinearHeading(new Vector2d(59, 51), Math.toRadians(259))
+                .strafeToLinearHeading(new Vector2d(59, 51), Math.toRadians(252))
 
                 .waitSeconds(sleepTime)
 
@@ -238,7 +238,10 @@ public class STATE_Basket_4_Samples extends LinearOpMode {
                 .waitSeconds(sleepTime)
                 .afterTime(0, vslides.SetPosition(735))
                 //park in the designated area
-                .splineToLinearHeading(new Pose2d(-21, -12,Math.toRadians(180)), Math.toRadians(0));
+                .setReversed(false)
+                .splineToLinearHeading(new Pose2d(40,15, 0), Math.toRadians(0))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(20,12), Math.toRadians(180));
 
 
         if (isStopRequested()) { return; }

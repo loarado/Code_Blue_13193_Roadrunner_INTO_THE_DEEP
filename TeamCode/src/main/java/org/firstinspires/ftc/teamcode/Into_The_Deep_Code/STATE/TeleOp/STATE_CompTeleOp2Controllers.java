@@ -407,7 +407,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                 drive.updatePoseEstimate();
                 if (BasketMode) {
                     basketDriveTo = drive.actionBuilder(drive.pose)
-                            .afterTime(1, new ParallelAction(vslides.SetPosition(var.vSlideHighBasket)))
+                            .afterTime(1.2, new ParallelAction(vslides.SetPosition(var.vSlideHighBasket)))
                             .afterTime(0, new ParallelAction(
                                     hslide.HSlideToDist(150),
                                     wrist.WristMiddle(),
@@ -869,7 +869,7 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
 
 
 
-                if (gamepad2.dpad_left && !dPadLeftPressed) {
+                if (gamepad2.dpad_left && !dPadLeftPressed && specCurrentCheck==false) {
 
                     runningActions.add(
                             handLM3.HandStop()
@@ -887,12 +887,15 @@ public class STATE_CompTeleOp2Controllers extends LinearOpMode {
                     } else if (BasketMode) {
                         vSlidesPos = var.vSlideLowBasket - 200;
                     }
+                }else if(gamepad2.dpad_left && !dPadLeftPressed && specCurrentCheck){
+                    specimenArmHasPid = true;
+                    specCurrentCheck = false;
                 }
                 dPadLeftPressed = gamepad2.dpad_left;
 
 
                 if (specimenArmHasPid == false && specCurrentCheck) {
-                    if (specimenArm.getCurrent(CurrentUnit.AMPS) > 3.2) {
+                    if (specimenArm.getCurrent(CurrentUnit.AMPS) > 2.8) {
                         specimenArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         specimenArmHasPid = true;
                         specimenArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
